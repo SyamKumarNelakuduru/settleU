@@ -1,0 +1,14 @@
+<header class="header">
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/">{{ appName }}</a>
+    </div>
+    <nav class="nav-menu">
+      <ul>
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+        <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
