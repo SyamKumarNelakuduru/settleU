@@ -1,23 +1,33 @@
-import { Component, OnInit, inject, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, inject, signal } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
+import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ModalService } from '../../services/modal.service';
+import { AuthService } from '../../services/auth.service';
+import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, SearchComponent],
+  imports: [CommonModule, RouterModule, SearchComponent, LoginComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
-  private modalService = inject(ModalService);
   appName = 'Lewis University';
   isSearchOpen = false;
+  isLoginOpen = false;
+  currentUser = signal<User | null>(null);
+  
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
     console.log('Header initialized with app name:', this.appName);
+    
+    // Subscribe to authentication state
+    this.authService.user$.subscribe((user) => {
+      this.currentUser.set(user);
+    });
   }
 
   onSearchClick(): void {
@@ -33,6 +43,14 @@ export class HeaderComponent implements OnInit {
     this.isSearchOpen = false;
   }
 
+  openLogin(): void {
+    this.isLoginOpen = true;
+  }
+
+  closeLogin(): void {
+    this.isLoginOpen = false;
+  }
+
   handleSearch(query: string): void {
     console.log('Search submitted:', query);
     // Perform any search handling here or navigate to search results
@@ -40,11 +58,21 @@ export class HeaderComponent implements OnInit {
   }
 
   onLoginClick(): void {
-    this.modalService.openLoginModal();
+    this.openLogin();
+  }
+  
+  async onLogout(): Promise<void> {
+    try {
+      await this.authService.signOut();
+      console.log('User logged out successfully');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }
 
   @HostListener('window:keydown.escape')
   onEscape(): void {
     if (this.isSearchOpen) this.closeSearch();
+    if (this.isLoginOpen) this.closeLogin();
   }
 }

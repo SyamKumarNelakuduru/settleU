@@ -1,36 +1,26 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, EventEmitter, Output, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { ModalService } from '../../services/modal.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-modal',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  @Output() close = new EventEmitter<void>();
+
   private authService = inject(AuthService);
   private router = inject(Router);
-  public modalService = inject(ModalService);
 
   isLoading = false;
   errorMessage = '';
-  isModalOpen = false;
-
-  ngOnInit(): void {
-    this.modalService.isLoginModalOpen$.subscribe(isOpen => {
-      this.isModalOpen = isOpen;
-      if (isOpen) {
-        this.errorMessage = '';
-      }
-    });
-  }
 
   closeModal(): void {
-    this.modalService.closeLoginModal();
+    this.close.emit();
   }
 
   async onGoogleSignIn(): Promise<void> {
@@ -58,5 +48,10 @@ export class LoginComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscape(): void {
+    this.close.emit();
   }
 }

@@ -13,7 +13,7 @@
         <label for="university-search" class="sr-only">Enter your university</label>
         <div class="search-field">
           <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-          <input #searchInput id="university-search" type="text" placeholder="Enter your university" class="search-input" [(ngModel)]="query" />
+          <input #searchInput id="university-search" type="text" placeholder="Enter your university" class="search-input" [(ngModel)]="query" (input)="onInputChange()"/>
           <button *ngIf="query" class="clear-btn" (click)="query=''; searchInput.focus();" aria-label="Clear">✕</button>
           <button class="search-submit" (click)="submit()" aria-label="Submit search">Search</button>
         </div>

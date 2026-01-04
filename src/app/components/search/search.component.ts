@@ -40,15 +40,31 @@ export class SearchComponent implements AfterViewInit {
     { name: 'Rockford University', city: 'Rockford', type: 'Private', website: 'https://www.rockford.edu' }
   ];
 
-  get filteredUniversities() {
-    const q = this.query.trim().toLowerCase();
-    if (!q) return this.universities.slice(0, 10);
-    return this.universities.filter(u => u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)).slice(0, 10);
-  }
+  filteredUniversities: { name: string, city: string, type: string, website: string }[] = [];
+
+  // get filteredUniversities() {
+  //   const q = this.query.trim().toLowerCase();
+  //   if (!q) return this.universities.slice(0, 10);
+  //   return this.universities.filter(u => u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)).slice(0, 10);
+  // }
 
   ngAfterViewInit(): void {
     // autofocus the input when the modal opens
     setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
+    this.getFilteredUniversities();
+  }
+
+  getFilteredUniversities(): void {
+    const q = this.query.trim().toLowerCase();
+    if (!q) {
+      this.filteredUniversities = this.universities;
+    } else {
+      this.filteredUniversities = this.universities.filter(u => u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)).slice(0, 10);
+    }
+  }
+
+  onInputChange(): void {
+    this.getFilteredUniversities();
   }
 
   submit(): void {
