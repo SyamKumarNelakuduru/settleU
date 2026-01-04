@@ -1,17 +1,25 @@
 <header class="header">
   <div class="header-container">
-      <div class="logo">
-        <a routerLink="/">
-          <img src="/assets/logo.png" alt="logo" class="brand-logo" />
-          <span class="brand-title">{{ appName }}</span>
-        </a>
-      </div>
-    <nav class="nav-menu">
-      <ul>
-        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
-        <li><a routerLink="/about" routerLinkActive="active">About</a></li>
-        <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
-      </ul>
-    </nav>
+    <div class="logo">
+      <a routerLink="/">
+        <img src="/assets/logo.png" alt="logo" class="brand-logo" />
+        <span class="brand-title">{{ appName }}</span>
+      </a>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn search-btn" (click)="onSearchClick()" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
+      <button class="icon-btn login-btn" (click)="onLoginClick()" title="Login">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+          <polyline points="10 17 15 12 10 7"></polyline>
+          <line x1="15" y1="12" x2="3" y2="12"></line>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
