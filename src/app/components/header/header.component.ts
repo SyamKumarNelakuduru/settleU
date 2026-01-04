@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
+  private modalService = inject(ModalService);
   appName = 'Lewis University';
 
   ngOnInit(): void {
@@ -22,7 +24,6 @@ export class HeaderComponent implements OnInit {
   }
 
   onLoginClick(): void {
-    // TODO: Navigate to login page or open login modal
-    console.log('Login clicked');
+    this.modalService.openLoginModal();
   }
 }

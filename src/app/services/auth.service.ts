@@ -7,7 +7,11 @@ import {
   onAuthStateChanged,
   User,
   sendPasswordResetEmail,
-  updateProfile
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult
 } from 'firebase/auth';
 import { Observable } from 'rxjs';
 
@@ -63,5 +67,39 @@ export class AuthService {
   // Check if user is authenticated
   isAuthenticated(): boolean {
     return this.auth.currentUser !== null;
+  }
+
+  // Sign in with Google (Popup)
+  async signInWithGoogle(): Promise<User> {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    
+    const credential = await signInWithPopup(this.auth, provider);
+    return credential.user;
+  }
+
+  // Sign in with Google (Redirect) - Alternative for mobile
+  async signInWithGoogleRedirect(): Promise<void> {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    
+    return signInWithRedirect(this.auth, provider);
+  }
+
+  // Get redirect result (call after redirect)
+  async getRedirectResult(): Promise<User | null> {
+    const result = await getRedirectResult(this.auth);
+    return result?.user || null;
+  }
+
+  // Get user ID token
+  async getIdToken(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    if (user) {
+      return user.getIdToken();
+    }
+    return null;
   }
 }
