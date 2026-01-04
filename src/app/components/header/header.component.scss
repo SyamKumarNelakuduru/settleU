@@ -21,12 +21,27 @@
     font-weight: bold;
 
     a {
+      display: flex;
+      align-items: center;
       color: white;
       text-decoration: none;
       transition: color 0.3s ease;
 
       &:hover {
         color: #4CAF50;
+      }
+
+      .brand-logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        margin-right: 0.75rem;
+        display: inline-block;
+      }
+
+      .brand-title {
+        font-size: 1.25rem;
+        font-weight: 700;
       }
     }
   }

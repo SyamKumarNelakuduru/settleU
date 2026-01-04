@@ -1,8 +1,11 @@
 <header class="header">
   <div class="header-container">
-    <div class="logo">
-      <a routerLink="/">{{ appName }}</a>
-    </div>
+      <div class="logo">
+        <a routerLink="/">
+          <img src="/assets/logo.png" alt="logo" class="brand-logo" />
+          <span class="brand-title">{{ appName }}</span>
+        </a>
+      </div>
     <nav class="nav-menu">
       <ul>
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
