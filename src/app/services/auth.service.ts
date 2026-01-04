@@ -21,7 +21,7 @@ export class AuthService {
   // Get current user as Observable
   get user$(): Observable<User | null> {
     return new Observable((observer) => {
-      const unsubscribe = onAuthStateChanged(this.auth, (user) => {
+      const unsubscribe = onAuthStateChanged(this.auth, (user: User | null) => {
         observer.next(user);
       });
       return () => unsubscribe();

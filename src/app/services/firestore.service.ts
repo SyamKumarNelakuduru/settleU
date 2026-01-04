@@ -13,6 +13,9 @@ import {
   orderBy,
   limit,
   DocumentData,
+  QueryDocumentSnapshot,
+  QuerySnapshot,
+  DocumentSnapshot,
   QueryConstraint,
   onSnapshot,
   Unsubscribe
@@ -40,7 +43,7 @@ export class FirestoreService {
   // Get all documents from a collection
   async getDocs<T = DocumentData>(collectionName: string): Promise<T[]> {
     const querySnapshot = await getDocs(collection(this.firestore, collectionName));
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+    return querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as T));
   }
 
   // Get documents with query
@@ -50,7 +53,7 @@ export class FirestoreService {
   ): Promise<T[]> {
     const q = query(collection(this.firestore, collectionName), ...queryConstraints);
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+    return querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as T));
   }
 
   // Add a document
@@ -82,7 +85,7 @@ export class FirestoreService {
   ): Observable<T | null> {
     return new Observable((observer) => {
       const docRef = doc(this.firestore, collectionName, docId);
-      const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      const unsubscribe = onSnapshot(docRef, (docSnap: DocumentSnapshot<DocumentData>) => {
         if (docSnap.exists()) {
           observer.next({ id: docSnap.id, ...docSnap.data() } as T);
         } else {
@@ -100,8 +103,8 @@ export class FirestoreService {
   ): Observable<T[]> {
     return new Observable((observer) => {
       const q = query(collection(this.firestore, collectionName), ...queryConstraints);
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+      const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<DocumentData>) => {
+        const docs = querySnapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({ id: doc.id, ...doc.data() } as T));
         observer.next(docs);
       });
       return () => unsubscribe();
