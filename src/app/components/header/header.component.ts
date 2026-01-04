@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, inject, signal } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { User } from 'firebase/auth';
 
@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
   currentUser = signal<User | null>(null);
   
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     console.log('Header initialized with app name:', this.appName);
@@ -59,6 +60,11 @@ export class HeaderComponent implements OnInit {
 
   onLoginClick(): void {
     this.openLogin();
+  }
+
+  openProfile(): void {
+    console.log('Navigating to profile page');
+    this.router.navigate(['/profile']);
   }
   
   async onLogout(): Promise<void> {

@@ -21,8 +21,8 @@
             [src]="currentUser()?.photoURL || '/assets/default-avatar.png'" 
             [alt]="currentUser()?.displayName || 'User'"
             class="profile-picture"
-            (click)="onLogout()"
-            title="Click to logout"
+            (click)="openProfile()"
+            title="View profile"
           />
         </div>
       } @else {
