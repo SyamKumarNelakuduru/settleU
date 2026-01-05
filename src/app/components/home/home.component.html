@@ -14,12 +14,8 @@
   </section>
 
   <section class="explore-content">
-    <h3>Explore Naperville</h3>
-    <p class="explore-description">Quick overview of nearby services and points of interest in Naperville (mock data).</p>
-
+    <p class="explore">Explore Naperville</p>
     <div class="explore-panel">
-      <h4>Nearby services</h4>
-
       <div class="kpi-grid">
         <button class="kpi-card" *ngFor="let cat of categories" (click)="openCategory(cat.key, cat.label)" aria-label="{{cat.label}} in Naperville">
           <div class="kpi-icon">{{ getEmoji(cat.key) }}</div>
@@ -29,9 +25,6 @@
           </div>
         </button>
       </div>
-
-      <!-- sample restaurants removed per request -->
-
       <app-category-list *ngIf="showCategoryModal" [title]="modalTitle" [items]="modalItems" (close)="closeModal()"></app-category-list>
     </div>
   </section>
