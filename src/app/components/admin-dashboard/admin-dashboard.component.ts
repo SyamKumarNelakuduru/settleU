@@ -6,7 +6,6 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { UniversityService, University } from '../../services/university.service';
 import { User } from 'firebase/auth';
-import { collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -104,12 +103,7 @@ export class AdminDashboardComponent implements OnInit {
   async loadColleges(): Promise<void> {
     this.isLoadingColleges = true;
     try {
-      const db = this.universityService['db'];
-      const querySnapshot = await getDocs(collection(db, 'universities'));
-      this.colleges = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Array<University & { id: string }>;
+      this.colleges = await this.universityService.getAllUniversities();
       console.log('Loaded colleges:', this.colleges.length);
     } catch (error: any) {
       console.error('Error loading colleges:', error);
@@ -134,15 +128,11 @@ export class AdminDashboardComponent implements OnInit {
 
     this.isSavingCollege = true;
     try {
-      const db = this.universityService['db'];
-      const docRef = doc(db, 'universities', this.newCollege.id);
-      
-      await setDoc(docRef, {
+      await this.universityService.addUniversity(this.newCollege.id, {
         name: this.newCollege.name.trim(),
         city: this.newCollege.city.trim(),
         type: this.newCollege.type,
-        website: this.newCollege.website.trim(),
-        createdAt: serverTimestamp()
+        website: this.newCollege.website.trim()
       });
 
       console.log('✅ College added:', this.newCollege.id);
@@ -166,8 +156,7 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     try {
-      const db = this.universityService['db'];
-      await deleteDoc(doc(db, 'universities', collegeId));
+      await this.universityService.deleteUniversity(collegeId);
       
       console.log('✅ College removed:', collegeId);
       alert('✅ College removed successfully!');

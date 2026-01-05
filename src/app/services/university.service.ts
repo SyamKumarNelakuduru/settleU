@@ -4,6 +4,9 @@ import {
   doc, 
   setDoc, 
   getDoc,
+  collection,
+  getDocs,
+  deleteDoc,
   serverTimestamp 
 } from 'firebase/firestore';
 
@@ -88,5 +91,49 @@ export class UniversityService {
     const result = { added, skipped, errors };
     console.log('🎉 Seeding complete:', result);
     return result;
+  }
+
+  /**
+   * Get all universities from Firestore
+   */
+  async getAllUniversities(): Promise<Array<University & { id: string }>> {
+    try {
+      const querySnapshot = await getDocs(collection(this.db, 'universities'));
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Array<University & { id: string }>;
+    } catch (error) {
+      console.error('Error getting universities:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add a new university to Firestore
+   */
+  async addUniversity(id: string, data: University): Promise<void> {
+    try {
+      const docRef = doc(this.db, 'universities', id);
+      await setDoc(docRef, {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Error adding university:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a university from Firestore
+   */
+  async deleteUniversity(id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(this.db, 'universities', id));
+    } catch (error) {
+      console.error('Error deleting university:', error);
+      throw error;
+    }
   }
 }
