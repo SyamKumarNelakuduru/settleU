@@ -19,20 +19,20 @@
 
     <div class="explore-panel">
       <h4>Nearby services</h4>
-      <ul class="explore-counts">
-        <li><strong>Malls:</strong> {{ naperville.counts['malls'] }}</li>
-        <li><strong>Grocery Stores:</strong> {{ naperville.counts['groceryStores'] }}</li>
-        <li><strong>Gas Stations:</strong> {{ naperville.counts['gasStations'] }}</li>
-        <li><strong>Hospitals:</strong> {{ naperville.counts['hospitals'] }}</li>
-        <li><strong>Transport:</strong> {{ naperville.counts['transport'] }}</li>
-        <li><strong>Restaurants:</strong> {{ naperville.counts['restaurants'] }}</li>
-        <li><strong>Car Showrooms:</strong> {{ naperville.counts['carShowrooms'] }}</li>
-      </ul>
 
-      <h4>Sample restaurants</h4>
-      <ul class="poi-sample">
-        <li *ngFor="let p of naperville.items['restaurants']">{{ p.name }}</li>
-      </ul>
+      <div class="kpi-grid">
+        <button class="kpi-card" *ngFor="let cat of categories" (click)="openCategory(cat.key, cat.label)" aria-label="{{cat.label}} in Naperville">
+          <div class="kpi-icon">{{ getEmoji(cat.key) }}</div>
+          <div class="kpi-body">
+            <div class="kpi-count">{{ naperville.counts[cat.key] }}</div>
+            <div class="kpi-label">{{ cat.label }}</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- sample restaurants removed per request -->
+
+      <app-category-list *ngIf="showCategoryModal" [title]="modalTitle" [items]="modalItems" (close)="closeModal()"></app-category-list>
     </div>
   </section>
 </section>

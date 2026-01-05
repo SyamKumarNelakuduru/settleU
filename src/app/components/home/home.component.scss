@@ -90,6 +90,15 @@
 .university-intro { margin-bottom: 0.75rem; }
 .explore-description { margin: 0.25rem 0 0.75rem; color: #444; }
 .explore-panel { padding: 0.9rem; border-radius: 8px; background: #fbfbfb; border: 1px solid #eee; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+
+.kpi-card { display:flex; align-items:center; gap: 0.75rem; padding: 0.75rem; background:white; border-radius:8px; border:1px solid rgba(0,0,0,0.06); cursor:pointer; transition:transform .12s ease; }
+.kpi-card:hover { transform: translateY(-3px); }
+.kpi-icon { font-size: 1.6rem; width: 40px; text-align:center; }
+.kpi-body { text-align:left; }
+.kpi-count { font-weight:700; font-size:1.05rem; }
+.kpi-label { font-size:0.85rem; color:#555; }
+
 .explore-counts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.5rem 1rem; list-style:none; padding:0; margin:0 0 0.5rem 0; }
 .poi-sample { list-style: none; margin: 0; padding: 0; }
 
