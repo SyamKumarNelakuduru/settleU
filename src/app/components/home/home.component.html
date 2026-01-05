@@ -1,12 +1,37 @@
 <section class="home-root">
   <section class="university-intro">
-    <!-- replace /assets/lewis-logo.png with the official Lewis University logo file -->
-    <img class="uni-image" src="/assets/lewis university logo.png" alt="Lewis University logo" />
+    <!-- official Lewis University logo (place file at public/assets/lewis-logo.png) -->
+    <img class="uni-image" src="/assets/lewis-logo.png" alt="Lewis University logo" />
     <div class="uni-content">
       <h2>Lewis University</h2>
+      <p class="brief">Lewis University is a private Lasallian university in Romeoville, Illinois, offering undergraduate and graduate programs with a strong emphasis on aviation and professional studies.</p>
       <ul class="uni-points">
-        <li><strong>Comprehensive programs</strong> — offers undergraduate and graduate programs across arts, sciences, and professional fields.</li>
-        <li><strong>Community-focused</strong> — close campus community with strong local partnerships and hands-on learning.</li>
+        <li><strong>Enrollment</strong> — approximately 7,000 students across undergraduate and graduate programs.</li>
+        <li><strong>Location & focus</strong> — suburban 410-acre campus near Naperville with notable aviation and professional programs.</li>
+      </ul>
+      <a class="uni-link" href="https://www.lewisu.edu/" target="_blank" rel="noopener">Official site</a>
+    </div>
+  </section>
+
+  <section class="explore-content">
+    <h3>Explore Naperville</h3>
+    <p class="explore-description">Quick overview of nearby services and points of interest in Naperville (mock data).</p>
+
+    <div class="explore-panel">
+      <h4>Nearby services</h4>
+      <ul class="explore-counts">
+        <li><strong>Malls:</strong> {{ naperville.counts['malls'] }}</li>
+        <li><strong>Grocery Stores:</strong> {{ naperville.counts['groceryStores'] }}</li>
+        <li><strong>Gas Stations:</strong> {{ naperville.counts['gasStations'] }}</li>
+        <li><strong>Hospitals:</strong> {{ naperville.counts['hospitals'] }}</li>
+        <li><strong>Transport:</strong> {{ naperville.counts['transport'] }}</li>
+        <li><strong>Restaurants:</strong> {{ naperville.counts['restaurants'] }}</li>
+        <li><strong>Car Showrooms:</strong> {{ naperville.counts['carShowrooms'] }}</li>
+      </ul>
+
+      <h4>Sample restaurants</h4>
+      <ul class="poi-sample">
+        <li *ngFor="let p of naperville.items['restaurants']">{{ p.name }}</li>
       </ul>
     </div>
   </section>

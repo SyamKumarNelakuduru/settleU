@@ -1,0 +1,15 @@
+<div class="overlay" (click)="close.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h4>{{ title }}</h4>
+      <button class="close-btn" (click)="close.emit()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <ul class="poi-list">
+        <li *ngFor="let item of items">{{ item.name }}<span class="poi-meta">{{ item.address ? ' — ' + item.address : '' }}</span></li>
+      </ul>
+      <p *ngIf="!items || items.length === 0" class="empty">No items in this mock dataset.</p>
+    </div>
+  </div>
+</div>

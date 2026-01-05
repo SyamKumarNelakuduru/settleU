@@ -1,0 +1,23 @@
+<section class="city-counts-root">
+  <div class="controls">
+    <input class="city-search" type="text" placeholder="Search cities..." [(ngModel)]="searchTerm" aria-label="Search cities" />
+
+    <select class="city-select" [(ngModel)]="selectedCityId" aria-label="Select a city">
+      <option *ngFor="let city of filteredCities" [value]="city.id">{{ city.name }}</option>
+    </select>
+  </div>
+
+  <h3 class="section-title">Nearby services in {{ selectedCity.name }}</h3>
+
+  <div class="counts-grid">
+    <button class="count-card" title="Show list of {{cat.label}}" *ngFor="let cat of categories" (click)="openCategory(cat.key, cat.label)" aria-label="{{cat.label}}">
+      <div class="card-icon">{{ getEmoji(cat.key) }}</div>
+      <div class="card-body">
+          <div class="card-count">{{ getCount(cat.key) }}</div>
+        <div class="card-label">{{ cat.label }}</div>
+      </div>
+    </button>
+  </div>
+
+  <app-category-list *ngIf="showCategoryModal" [title]="modalTitle" [items]="modalItems" (close)="closeModal()"></app-category-list>
+</section>
