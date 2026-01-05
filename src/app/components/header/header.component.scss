@@ -134,6 +134,9 @@
     
     .user-profile {
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       
       .profile-picture {
         width: 40px;
@@ -153,6 +156,39 @@
         
         &:active {
           transform: translateY(0) scale(1.05);
+        }
+        
+        &.admin-badge {
+          border-color: #ffd700;
+          box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+          
+          &:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 16px rgba(255, 215, 0, 0.7);
+          }
+        }
+      }
+      
+      .role-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 14px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        animation: pulse 2s infinite;
+        white-space: nowrap;
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        50% {
+          box-shadow: 0 2px 12px rgba(102, 126, 234, 0.6);
         }
       }
     }

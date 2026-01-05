@@ -52,6 +52,13 @@ export class LoginComponent {
       return;
     }
 
+    // Check if email is authorized for admin login
+    if (!this.userService.isAdminEmail(this.adminEmail)) {
+      this.errorMessage = '⚠️ Invalid Email ID. This email is not authorized for admin access.';
+      this.isLoading = false;
+      return;
+    }
+
     try {
       console.log('Attempting to sign in...');
       const user = await this.authService.signIn(this.adminEmail, this.adminPassword);

@@ -4,6 +4,7 @@ import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 import { User } from 'firebase/auth';
 
 @Component({
@@ -18,16 +19,27 @@ export class HeaderComponent implements OnInit {
   isSearchOpen = false;
   isLoginOpen = false;
   currentUser = signal<User | null>(null);
+  userRole = signal<string | null>(null);
   
   private authService = inject(AuthService);
+  private userService = inject(UserService);
   private router = inject(Router);
 
   ngOnInit(): void {
     console.log('Header initialized with app name:', this.appName);
     
     // Subscribe to authentication state
-    this.authService.user$.subscribe((user) => {
+    this.authService.user$.subscribe(async (user) => {
       this.currentUser.set(user);
+      
+      if (user) {
+        // Fetch user profile to get role
+        const profile = await this.userService.getUserProfile(user.uid);
+        this.userRole.set(profile?.role || 'student');
+        console.log('User role in header:', profile?.role);
+      } else {
+        this.userRole.set(null);
+      }
     });
   }
 
@@ -63,8 +75,21 @@ export class HeaderComponent implements OnInit {
   }
 
   openProfile(): void {
-    console.log('Navigating to profile page');
-    this.router.navigate(['/profile']);
+    const role = this.userRole();
+    if (role === 'admin') {
+      console.log('Navigating to admin dashboard');
+      this.router.navigate(['/admin']);
+    } else {
+      console.log('Navigating to profile page');
+      this.router.navigate(['/profile']);
+    }
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    const user = this.currentUser();
+    const name = user?.displayName || user?.email || 'User';
+    img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=667eea&color=fff&size=200`;
   }
   
   async onLogout(): Promise<void> {

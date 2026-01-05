@@ -16,14 +16,19 @@
       
       <!-- Show profile picture if user is logged in, otherwise show login icon -->
       @if (currentUser()) {
-        <div class="user-profile" title="{{ currentUser()?.displayName || currentUser()?.email }}">
+        <div class="user-profile" [title]="(userRole() === 'admin' ? 'Admin: ' : 'User: ') + (currentUser()?.displayName || currentUser()?.email)">
           <img 
-            [src]="currentUser()?.photoURL || '/assets/default-avatar.png'" 
-            [alt]="currentUser()?.displayName || 'User'"
+            [src]="currentUser()?.photoURL || 'https://ui-avatars.com/api/?name=' + (currentUser()?.displayName || currentUser()?.email || 'User') + '&background=667eea&color=fff&size=200'" 
+            [alt]="currentUser()?.displayName || (userRole() === 'admin' ? 'Admin' : 'User')"
             class="profile-picture"
+            [class.admin-badge]="userRole() === 'admin'"
             (click)="openProfile()"
-            title="View profile"
+            (error)="handleImageError($event)"
+            [title]="userRole() === 'admin' ? '👑 Admin - View profile' : 'View profile'"
           />
+          @if (userRole() === 'admin') {
+            <span class="role-badge">Admin</span>
+          }
         </div>
       } @else {
         <button class="icon-btn login-btn" (click)="onLoginClick()" title="Login">

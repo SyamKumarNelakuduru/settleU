@@ -37,7 +37,7 @@ export class UserService {
   /**
    * Check if an email belongs to an admin
    */
-  private isAdminEmail(email: string | null): boolean {
+  isAdminEmail(email: string | null): boolean {
     if (!email) return false;
     return ADMIN_EMAILS.includes(email.toLowerCase());
   }
