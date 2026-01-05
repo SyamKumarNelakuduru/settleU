@@ -42,6 +42,10 @@ export class AuthService {
   // Sign in with email and password
   async signIn(email: string, password: string): Promise<User> {
     const credential = await signInWithEmailAndPassword(this.auth, email, password);
+    
+    // Save/update user profile in Firestore
+    await this.userService.upsertEmailUser(credential.user);
+    
     return credential.user;
   }
 
