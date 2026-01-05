@@ -4,7 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { UniversityService, University } from '../../services/university.service';
 import { User } from 'firebase/auth';
+import { collection, getDocs, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -18,12 +20,25 @@ export class AdminDashboardComponent implements OnInit {
   userProfile = signal<any>(null);
   
   // College management
-  colleges: string[] = [];
-  newCollege = '';
+  colleges: Array<University & { id: string }> = [];
+  newCollege = {
+    id: '',
+    name: '',
+    city: '',
+    type: 'Public' as 'Public' | 'Private',
+    website: ''
+  };
   showCollegeForm = false;
+  isLoadingColleges = false;
+  isSavingCollege = false;
+  
+  // University seeding
+  isSeeding = false;
+  seedingResult: { added: number; skipped: number; errors: string[] } | null = null;
   
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private universityService = inject(UniversityService);
   private router = inject(Router);
 
   ngOnInit(): void {
@@ -45,6 +60,9 @@ export class AdminDashboardComponent implements OnInit {
         // Redirect non-admins to home
         console.warn('Access denied: User is not an admin');
         this.router.navigate(['/']);
+      } else {
+        // Load colleges if admin
+        this.loadColleges();
       }
     });
   }
@@ -59,28 +77,133 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    const user = this.currentUser();
+    const name = user?.displayName || user?.email || 'Admin';
+    img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=667eea&color=fff&size=200`;
+  }
+
   toggleCollegeForm(): void {
     this.showCollegeForm = !this.showCollegeForm;
     if (!this.showCollegeForm) {
-      this.newCollege = '';
+      this.resetCollegeForm();
     }
   }
 
-  addCollege(): void {
-    if (this.newCollege.trim()) {
-      this.colleges.push(this.newCollege.trim());
-      this.newCollege = '';
-      console.log('College added. Total colleges:', this.colleges.length);
-      // TODO: Save to Firestore
+  resetCollegeForm(): void {
+    this.newCollege = {
+      id: '',
+      name: '',
+      city: '',
+      type: 'Public',
+      website: ''
+    };
+  }
+
+  async loadColleges(): Promise<void> {
+    this.isLoadingColleges = true;
+    try {
+      const db = this.universityService['db'];
+      const querySnapshot = await getDocs(collection(db, 'universities'));
+      this.colleges = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Array<University & { id: string }>;
+      console.log('Loaded colleges:', this.colleges.length);
+    } catch (error: any) {
+      console.error('Error loading colleges:', error);
+      alert('❌ Error loading colleges: ' + error.message);
+    } finally {
+      this.isLoadingColleges = false;
     }
   }
 
-  removeCollege(index: number): void {
-    const collegeName = this.colleges[index];
-    if (confirm(`Are you sure you want to remove "${collegeName}"?`)) {
-      this.colleges.splice(index, 1);
-      console.log('College removed. Remaining colleges:', this.colleges.length);
-      // TODO: Update Firestore
+  async addCollege(): Promise<void> {
+    if (!this.newCollege.name.trim() || !this.newCollege.city.trim() || !this.newCollege.website.trim()) {
+      alert('⚠️ Please fill in all fields');
+      return;
+    }
+
+    // Generate ID from name if not provided
+    if (!this.newCollege.id.trim()) {
+      this.newCollege.id = this.newCollege.name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+    }
+
+    this.isSavingCollege = true;
+    try {
+      const db = this.universityService['db'];
+      const docRef = doc(db, 'universities', this.newCollege.id);
+      
+      await setDoc(docRef, {
+        name: this.newCollege.name.trim(),
+        city: this.newCollege.city.trim(),
+        type: this.newCollege.type,
+        website: this.newCollege.website.trim(),
+        createdAt: serverTimestamp()
+      });
+
+      console.log('✅ College added:', this.newCollege.id);
+      alert('✅ College added successfully!');
+      
+      // Reload colleges and reset form
+      await this.loadColleges();
+      this.resetCollegeForm();
+      this.showCollegeForm = false;
+    } catch (error: any) {
+      console.error('Error adding college:', error);
+      alert('❌ Error adding college: ' + error.message);
+    } finally {
+      this.isSavingCollege = false;
+    }
+  }
+
+  async removeCollege(collegeId: string, collegeName: string): Promise<void> {
+    if (!confirm(`Are you sure you want to remove "${collegeName}"?`)) {
+      return;
+    }
+
+    try {
+      const db = this.universityService['db'];
+      await deleteDoc(doc(db, 'universities', collegeId));
+      
+      console.log('✅ College removed:', collegeId);
+      alert('✅ College removed successfully!');
+      
+      // Reload colleges
+      await this.loadColleges();
+    } catch (error: any) {
+      console.error('Error removing college:', error);
+      alert('❌ Error removing college: ' + error.message);
+    }
+  }
+
+  async seedUniversities(): Promise<void> {
+    if (this.isSeeding) return;
+    
+    if (!confirm('This will add 18 universities to Firestore. Continue?')) {
+      return;
+    }
+
+    this.isSeeding = true;
+    this.seedingResult = null;
+
+    try {
+      const result = await this.universityService.seedUniversities();
+      this.seedingResult = result;
+      
+      if (result.added > 0) {
+        alert(`✅ Successfully added ${result.added} universities!\n⏭️ Skipped ${result.skipped} existing\n${result.errors.length > 0 ? '❌ Errors: ' + result.errors.length : ''}`);
+      } else {
+        alert(`ℹ️ All universities already exist (${result.skipped} skipped)`);
+      }
+    } catch (error: any) {
+      console.error('Seeding error:', error);
+      alert('❌ Error seeding universities: ' + error.message);
+    } finally {
+      this.isSeeding = false;
     }
   }
 }
