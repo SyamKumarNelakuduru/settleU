@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { FirebaseService } from './firebase.service';
+import { UserService } from './user.service';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -20,6 +21,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
   private firebaseService = inject(FirebaseService);
+  private userService = inject(UserService);
   private auth = this.firebaseService.auth;
 
   // Get current user as Observable
@@ -76,6 +78,10 @@ export class AuthService {
     provider.addScope('email');
     
     const credential = await signInWithPopup(this.auth, provider);
+    
+    // Save/update user profile in Firestore
+    await this.userService.upsertGoogleUser(credential.user);
+    
     return credential.user;
   }
 

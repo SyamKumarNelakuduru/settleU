@@ -1,12 +1,13 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
+import { HeaderComponent } from './components/header/header.component';
 import { AuthService } from './services/auth.service';
 import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LoginComponent],
+  imports: [RouterOutlet, LoginComponent, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
