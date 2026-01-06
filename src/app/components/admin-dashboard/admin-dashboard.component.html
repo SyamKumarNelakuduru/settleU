@@ -1,5 +1,5 @@
 <div class="admin-dashboard">
-  @if (currentUser() && userProfile()?.role === 'admin') {
+  @if (currentUser() && userProfile()?.isAdmin === true) {
     <div class="dashboard-container">
       <!-- Admin Header -->
       <div class="admin-header">

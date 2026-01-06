@@ -51,11 +51,11 @@ export class AdminDashboardComponent implements OnInit {
         return;
       }
 
-      // Get user profile to verify admin role
+      // Get user profile to verify admin status
       const profile = await this.userService.getUserProfile(user.uid);
       this.userProfile.set(profile);
 
-      if (profile?.role !== 'admin') {
+      if (profile?.isAdmin !== true) {
         // Redirect non-admins to home
         console.warn('Access denied: User is not an admin');
         this.router.navigate(['/']);

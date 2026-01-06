@@ -13,22 +13,27 @@
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       </button>
+
+      <!-- Show admin icon if user is admin -->
+      @if (currentUser() && isAdmin()) {
+        <button class="icon-btn admin-btn" (click)="openAdminDashboard()" title="Admin Dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </button>
+      }
       
       <!-- Show profile picture if user is logged in, otherwise show login icon -->
       @if (currentUser()) {
-        <div class="user-profile" [title]="(userRole() === 'admin' ? 'Admin: ' : 'User: ') + (currentUser()?.displayName || currentUser()?.email)">
+        <div class="user-profile" [title]="(currentUser()?.displayName || currentUser()?.email)">
           <img 
             [src]="currentUser()?.photoURL || 'https://ui-avatars.com/api/?name=' + (currentUser()?.displayName || currentUser()?.email || 'User') + '&background=667eea&color=fff&size=200'" 
-            [alt]="currentUser()?.displayName || (userRole() === 'admin' ? 'Admin' : 'User')"
+            [alt]="currentUser()?.displayName || 'User'"
             class="profile-picture"
-            [class.admin-badge]="userRole() === 'admin'"
             (click)="openProfile()"
             (error)="handleImageError($event)"
-            [title]="userRole() === 'admin' ? '👑 Admin - View profile' : 'View profile'"
+            title="View profile"
           />
-          @if (userRole() === 'admin') {
-            <span class="role-badge">Admin</span>
-          }
         </div>
       } @else {
         <button class="icon-btn login-btn" (click)="onLoginClick()" title="Login">

@@ -130,6 +130,21 @@
           box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
         }
       }
+
+      &.admin-btn {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.15));
+        border-color: rgba(255, 193, 7, 0.3);
+        
+        &:hover {
+          background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 152, 0, 0.3));
+          border-color: rgba(255, 193, 7, 0.5);
+          box-shadow: 0 4px 16px rgba(255, 193, 7, 0.4);
+        }
+
+        svg {
+          fill: rgba(255, 193, 7, 0.2);
+        }
+      }
     }
     
     .user-profile {

@@ -15,7 +15,8 @@ export interface UserProfile {
   email: string | null;
   photoURL: string | null;
   provider: string;
-  role: string;
+  isAdmin?: boolean;
+  role?: string; // Keep for backwards compatibility
   createdAt?: Timestamp;
   updatedAt: Timestamp;
   lastLoginAt: Timestamp;
@@ -60,13 +61,15 @@ export class UserService {
     try {
       const userRef = doc(this.db, 'users', user.uid);
       
+      const isAdmin = this.isAdminEmail(user.email);
       const profileData: Partial<UserProfile> = {
         uid: user.uid,
         name: user.displayName ?? null,
         email: user.email ?? null,
         photoURL: user.photoURL ?? null,
         provider: 'google',
-        role: this.getUserRole(user.email), // Check if admin
+        isAdmin: isAdmin,
+        role: isAdmin ? 'admin' : 'student', // Keep for backwards compatibility
         updatedAt: serverTimestamp() as Timestamp,
         lastLoginAt: serverTimestamp() as Timestamp
       };
@@ -92,13 +95,15 @@ export class UserService {
     try {
       const userRef = doc(this.db, 'users', user.uid);
       
+      const isAdmin = this.isAdminEmail(user.email);
       const profileData: Partial<UserProfile> = {
         uid: user.uid,
         name: user.displayName ?? user.email?.split('@')[0] ?? null,
         email: user.email ?? null,
         photoURL: user.photoURL ?? null,
         provider: 'email',
-        role: this.getUserRole(user.email), // Check if admin
+        isAdmin: isAdmin,
+        role: isAdmin ? 'admin' : 'student', // Keep for backwards compatibility
         updatedAt: serverTimestamp() as Timestamp,
         lastLoginAt: serverTimestamp() as Timestamp
       };
