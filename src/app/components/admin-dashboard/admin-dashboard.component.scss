@@ -412,7 +412,7 @@
   }
 }
 
-.college-form {
+.university-form {
   background: #f9fafb;
   border-radius: 12px;
   padding: 1.5rem;
@@ -460,7 +460,7 @@
   }
 }
 
-.colleges-list {
+.universities-list {
   .loading-state {
     text-align: center;
     padding: 2rem;
@@ -491,13 +491,13 @@
     }
   }
 
-  .college-items {
+  .university-items {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .college-item {
+  .university-item {
     background: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 10px;
@@ -512,13 +512,13 @@
       background: #f3f4ff;
     }
 
-    .college-info-detailed {
+    .university-info-detailed {
       display: flex;
       align-items: flex-start;
       gap: 1rem;
       flex: 1;
 
-      .college-icon {
+      .university-icon {
         flex-shrink: 0;
         width: 40px;
         height: 40px;
@@ -533,7 +533,7 @@
         }
       }
 
-      .college-details {
+      .university-details {
         flex: 1;
 
         h4 {
@@ -543,7 +543,7 @@
           margin: 0 0 0.5rem 0;
         }
 
-        .college-meta {
+        .university-meta {
           display: flex;
           flex-wrap: wrap;
           gap: 1rem;

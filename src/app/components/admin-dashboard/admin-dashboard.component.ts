@@ -18,18 +18,22 @@ export class AdminDashboardComponent implements OnInit {
   currentUser = signal<User | null>(null);
   userProfile = signal<any>(null);
   
-  // College management
-  colleges: Array<University & { id: string }> = [];
-  newCollege = {
+  // University management
+  universities: Array<University & { id: string }> = [];
+  newUniversity = {
     id: '',
     name: '',
+    streetAddress: '',
     city: '',
+    state: '',
+    zipcode: '',
+    country: '',
     type: 'Public' as 'Public' | 'Private',
     website: ''
   };
-  showCollegeForm = false;
-  isLoadingColleges = false;
-  isSavingCollege = false;
+  showUniversityForm = false;
+  isLoadingUniversities = false;
+  isSavingUniversity = false;
   
   // University seeding
   isSeeding = false;
@@ -60,8 +64,8 @@ export class AdminDashboardComponent implements OnInit {
         console.warn('Access denied: User is not an admin');
         this.router.navigate(['/']);
       } else {
-        // Load colleges if admin
-        this.loadColleges();
+        // Load universities if admin
+        this.loadUniversities();
       }
     });
   }
@@ -83,89 +87,100 @@ export class AdminDashboardComponent implements OnInit {
     img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=667eea&color=fff&size=200`;
   }
 
-  toggleCollegeForm(): void {
-    this.showCollegeForm = !this.showCollegeForm;
-    if (!this.showCollegeForm) {
-      this.resetCollegeForm();
+  toggleUniversityForm(): void {
+    this.showUniversityForm = !this.showUniversityForm;
+    if (!this.showUniversityForm) {
+      this.resetUniversityForm();
     }
   }
 
-  resetCollegeForm(): void {
-    this.newCollege = {
+  resetUniversityForm(): void {
+    this.newUniversity = {
       id: '',
       name: '',
+      streetAddress: '',
       city: '',
+      state: '',
+      zipcode: '',
+      country: '',
       type: 'Public',
       website: ''
     };
   }
 
-  async loadColleges(): Promise<void> {
-    this.isLoadingColleges = true;
+  async loadUniversities(): Promise<void> {
+    this.isLoadingUniversities = true;
     try {
-      this.colleges = await this.universityService.getAllUniversities();
-      console.log('Loaded colleges:', this.colleges.length);
+      this.universities = await this.universityService.getAllUniversities();
+      console.log('Loaded universities:', this.universities.length);
     } catch (error: any) {
-      console.error('Error loading colleges:', error);
-      alert('❌ Error loading colleges: ' + error.message);
+      console.error('Error loading universities:', error);
+      alert('❌ Error loading universities: ' + error.message);
     } finally {
-      this.isLoadingColleges = false;
+      this.isLoadingUniversities = false;
     }
   }
 
-  async addCollege(): Promise<void> {
-    if (!this.newCollege.name.trim() || !this.newCollege.city.trim() || !this.newCollege.website.trim()) {
+  async addUniversity(): Promise<void> {
+    if (!this.newUniversity.name.trim() || !this.newUniversity.streetAddress.trim() || 
+        !this.newUniversity.city.trim() || !this.newUniversity.state.trim() || 
+        !this.newUniversity.zipcode.trim() || !this.newUniversity.country.trim() || 
+        !this.newUniversity.website.trim()) {
       alert('⚠️ Please fill in all fields');
       return;
     }
 
     // Generate ID from name if not provided
-    if (!this.newCollege.id.trim()) {
-      this.newCollege.id = this.newCollege.name.toLowerCase()
+    if (!this.newUniversity.id.trim()) {
+      this.newUniversity.id = this.newUniversity.name.toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
     }
 
-    this.isSavingCollege = true;
+    this.isSavingUniversity = true;
     try {
-      await this.universityService.addUniversity(this.newCollege.id, {
-        name: this.newCollege.name.trim(),
-        city: this.newCollege.city.trim(),
-        type: this.newCollege.type,
-        website: this.newCollege.website.trim()
+      await this.universityService.addUniversity(this.newUniversity.id, {
+        name: this.newUniversity.name.trim(),
+        streetAddress: this.newUniversity.streetAddress.trim(),
+        city: this.newUniversity.city.trim(),
+        state: this.newUniversity.state.trim(),
+        zipcode: this.newUniversity.zipcode.trim(),
+        country: this.newUniversity.country.trim(),
+        type: this.newUniversity.type,
+        website: this.newUniversity.website.trim()
       });
 
-      console.log('✅ College added:', this.newCollege.id);
-      alert('✅ College added successfully!');
+      console.log('✅ University added:', this.newUniversity.id);
+      alert('✅ University added successfully!');
       
-      // Reload colleges and reset form
-      await this.loadColleges();
-      this.resetCollegeForm();
-      this.showCollegeForm = false;
+      // Reload universities and reset form
+      await this.loadUniversities();
+      this.resetUniversityForm();
+      this.showUniversityForm = false;
     } catch (error: any) {
-      console.error('Error adding college:', error);
-      alert('❌ Error adding college: ' + error.message);
+      console.error('Error adding university:', error);
+      alert('❌ Error adding university: ' + error.message);
     } finally {
-      this.isSavingCollege = false;
+      this.isSavingUniversity = false;
     }
   }
 
-  async removeCollege(collegeId: string, collegeName: string): Promise<void> {
-    if (!confirm(`Are you sure you want to remove "${collegeName}"?`)) {
+  async removeUniversity(universityId: string, universityName: string): Promise<void> {
+    if (!confirm(`Are you sure you want to remove "${universityName}"?`)) {
       return;
     }
 
     try {
-      await this.universityService.deleteUniversity(collegeId);
+      await this.universityService.deleteUniversity(universityId);
       
-      console.log('✅ College removed:', collegeId);
-      alert('✅ College removed successfully!');
+      console.log('✅ University removed:', universityId);
+      alert('✅ University removed successfully!');
       
-      // Reload colleges
-      await this.loadColleges();
+      // Reload universities
+      await this.loadUniversities();
     } catch (error: any) {
-      console.error('Error removing college:', error);
-      alert('❌ Error removing college: ' + error.message);
+      console.error('Error removing university:', error);
+      alert('❌ Error removing university: ' + error.message);
     }
   }
 
