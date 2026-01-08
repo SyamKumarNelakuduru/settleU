@@ -15,7 +15,7 @@ import { User } from 'firebase/auth';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
-  appName = 'Lewis University';
+  universityName = 'Lewis University';
   isSearchOpen = false;
   isLoginOpen = false;
   currentUser = signal<User | null>(null);
@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
-    console.log('Header initialized with app name:', this.appName);
+    console.log('Header initialized with university name:', this.universityName);
     
     // Subscribe to authentication state
     this.authService.user$.subscribe(async (user) => {
