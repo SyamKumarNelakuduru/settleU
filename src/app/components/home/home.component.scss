@@ -10,12 +10,12 @@
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  margin-top: 80px; /* Offset for fixed header */
+  margin-top: 0;
 }
 
 .hero-section {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: 100vh;
   position: relative;
   overflow: hidden;
 }
@@ -61,7 +61,7 @@
   }
 
   &.slide-1 {
-    background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+    background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
   }
 
   &.slide-2 {
@@ -190,14 +190,241 @@
   }
 }
 
+// Cards Section
+.cards-section {
+  width: 100%;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  
+  .cards-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+  }
+  
+  .info-card {
+    width: 100%;
+    max-width: 280px;
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .card-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+    
+    &:hover .card-icon {
+      transform: scale(1.1);
+    }
+  }
+  
+  // Student Journey Card
+  .journey-card {
+    width: 100%;
+    max-width: 1200px;
+    margin: 4rem auto 0;
+    background: white;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    
+    .journey-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 0 0 3rem 0;
+      letter-spacing: -1px;
+    }
+    
+    .journey-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      align-items: start;
+    }
+    
+    .journey-kpi {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-5px);
+      }
+      
+      .kpi-image-container {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        position: relative;
+      }
+      
+      .step-number {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        z-index: 10;
+        border: 3px solid white;
+      }
+      
+      &:hover .kpi-image-container {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .kpi-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      &:hover .kpi-image {
+        transform: scale(1.05);
+      }
+      
+      .kpi-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+      }
+      
+      .step-number-inline {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
+      }
+      
+      .kpi-label {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin: 0;
+        letter-spacing: -0.5px;
+      }
+    }
+  }
+  
+  .button-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .journey-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1.25rem 3rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      
+      &::before {
+        width: 300px;
+        height: 300px;
+      }
+    }
+    
+    &:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
+    }
+  }
+}
+
 // Responsive design
 @media (max-width: 768px) {
   .hero-section {
-    height: calc(100vh - 70px);
+    height: 100vh;
   }
 
   .home-root {
-    margin-top: 70px;
+    margin-top: 0;
   }
 
   .carousel-btn {
@@ -225,6 +452,147 @@
 
   .hero-slide .slide-content {
     padding: 1.5rem;
+  }
+
+  .cards-section {
+    padding: 3rem 1.5rem;
+    
+    .cards-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .info-card {
+      max-width: 100%;
+      padding: 2rem 1.5rem;
+      
+      .card-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      
+      .card-title {
+        font-size: 1.25rem;
+      }
+    }
+    
+    .journey-card {
+      margin-top: 3rem;
+      padding: 2.5rem 1.5rem;
+      
+      .journey-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+      
+      .journey-kpis {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      
+      .journey-kpi {
+        .step-number {
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem;
+          top: 12px;
+          left: 12px;
+        }
+        
+        .step-number-inline {
+          width: 35px;
+          height: 35px;
+          font-size: 1.1rem;
+        }
+        
+        .kpi-label {
+          font-size: 1.1rem;
+        }
+      }
+    }
+    
+    .button-container {
+      margin-top: 2.5rem;
+    }
+    
+    .journey-btn {
+      padding: 1.1rem 2.5rem;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .cards-section {
+    padding: 2.5rem 1rem;
+    
+    .cards-container {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    
+    .info-card {
+      padding: 2rem 1.25rem;
+      
+      .card-icon {
+        font-size: 2.5rem;
+      }
+      
+      .card-title {
+        font-size: 1.15rem;
+      }
+    }
+    
+    .journey-card {
+      margin-top: 2.5rem;
+      padding: 2rem 1rem;
+      
+      .journey-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .journey-kpis {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .journey-kpi {
+        .step-number {
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+          top: 10px;
+          left: 10px;
+          border: 3px solid white;
+        }
+        
+        .step-number-inline {
+          width: 32px;
+          height: 32px;
+          font-size: 1rem;
+        }
+        
+        .kpi-image-container {
+          margin-bottom: 1rem;
+        }
+        
+        .kpi-label {
+          font-size: 1rem;
+        }
+      }
+    }
+    
+    .button-container {
+      margin-top: 2rem;
+    }
+    
+    .journey-btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 300px;
+    }
   }
 }
 
