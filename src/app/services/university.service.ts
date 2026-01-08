@@ -10,6 +10,14 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 
+export interface StudentData {
+  total: number;
+  international: number;
+  domestic: number;
+  year: number;
+  source: string;
+}
+
 export interface University {
   name: string;
   streetAddress: string;
@@ -19,6 +27,8 @@ export interface University {
   country: string;
   type: 'Public' | 'Private';
   website: string;
+  about?: string;
+  students?: StudentData;
   createdAt?: any;
 }
 
@@ -127,6 +137,177 @@ export class UniversityService {
       console.error('Error adding university:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get a single university by ID from Firestore
+   */
+  async getUniversityById(id: string): Promise<(University & { id: string }) | null> {
+    try {
+      const docRef = doc(this.db, 'universities', id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return {
+          id: docSnap.id,
+          ...docSnap.data()
+        } as University & { id: string };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error getting university:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update university with about and student data
+   * Use this for adding the new fields to existing universities
+   */
+  async updateUniversityWithStudentData(
+    universityId: string, 
+    about: string, 
+    students: StudentData
+  ): Promise<void> {
+    try {
+      const docRef = doc(this.db, 'universities', universityId);
+      await setDoc(docRef, { about, students }, { merge: true });
+      console.log('✅ Updated university with student data:', universityId);
+    } catch (error) {
+      console.error('Error updating university:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Seed universities with complete data including about and students
+   * This will add the new fields to all universities at once
+   */
+  async seedUniversityDetails(): Promise<{ updated: number; errors: string[] }> {
+    const universityDetails = [
+      {
+        id: 'uiuc',
+        about: 'A flagship public research university known for excellence in engineering, computer science, and business. Located in the twin cities of Urbana and Champaign.',
+        students: { total: 52679, international: 12746, domestic: 39933, year: 2024, source: 'UIUC Enrollment Report 2024' }
+      },
+      {
+        id: 'northwestern',
+        about: 'A private research university offering comprehensive liberal arts education. Home to highly ranked programs in journalism, law, medicine, and business.',
+        students: { total: 22603, international: 4200, domestic: 18403, year: 2024, source: 'Northwestern Common Data Set 2024' }
+      },
+      {
+        id: 'uchicago',
+        about: 'A private research university renowned for rigorous academics and contributions to economics, sociology, and physics. Located in Hyde Park, Chicago.',
+        students: { total: 18452, international: 3850, domestic: 14602, year: 2024, source: 'UChicago Factbook 2024' }
+      },
+      {
+        id: 'illinois-state',
+        about: 'A comprehensive public university offering over 160 undergraduate programs. Known for teacher education and commitment to personalized learning.',
+        students: { total: 20163, international: 380, domestic: 19783, year: 2024, source: 'Illinois State University Data' }
+      },
+      {
+        id: 'siue',
+        about: 'A public university serving the St. Louis metropolitan region with strong programs in nursing, engineering, and business administration.',
+        students: { total: 12656, international: 565, domestic: 12091, year: 2024, source: 'SIUE Factbook 2024' }
+      },
+      {
+        id: 'niu',
+        about: 'A public research university known for programs in meteorology, theater, and education. Located in DeKalb with easy access to Chicago.',
+        students: { total: 16658, international: 850, domestic: 15808, year: 2024, source: 'NIU Data Summary 2024' }
+      },
+      {
+        id: 'luc',
+        about: 'A private Jesuit university with a strong commitment to social justice and liberal arts education. Multiple campuses throughout Chicago area.',
+        students: { total: 17259, international: 1450, domestic: 15809, year: 2024, source: 'Loyola University CDS 2024' }
+      },
+      {
+        id: 'depaul',
+        about: 'The largest Catholic university in the US, known for strong business, communication, and computer science programs. Located in downtown Chicago.',
+        students: { total: 21234, international: 2100, domestic: 19134, year: 2024, source: 'DePaul University Facts 2024' }
+      },
+      {
+        id: 'iwu',
+        about: 'A private liberal arts college emphasizing personalized education and research opportunities. Known for strong pre-professional programs.',
+        students: { total: 1652, international: 145, domestic: 1507, year: 2024, source: 'IWU Institutional Data 2024' }
+      },
+      {
+        id: 'bradley',
+        about: 'A private university offering a comprehensive education with strong programs in engineering, business, and communications. Located in Peoria.',
+        students: { total: 5400, international: 320, domestic: 5080, year: 2024, source: 'Bradley University Profile 2024' }
+      },
+      {
+        id: 'siu-carbondale',
+        about: 'A public research university with extensive programs in aviation, engineering, and agriculture. Beautiful campus in Southern Illinois.',
+        students: { total: 11403, international: 550, domestic: 10853, year: 2024, source: 'SIU Carbondale Data 2024' }
+      },
+      {
+        id: 'neiu',
+        about: 'A public comprehensive university serving diverse student populations with accessible, high-quality education on Chicago\'s north side.',
+        students: { total: 7136, international: 285, domestic: 6851, year: 2024, source: 'NEIU Enrollment Report 2024' }
+      },
+      {
+        id: 'chicago-state',
+        about: 'A public university on Chicago\'s South Side, committed to providing accessible education and serving underrepresented communities.',
+        students: { total: 2574, international: 95, domestic: 2479, year: 2024, source: 'Chicago State Data 2024' }
+      },
+      {
+        id: 'elmhurst',
+        about: 'A private liberal arts university offering personalized education with strong business and nursing programs. Located in suburban Chicago.',
+        students: { total: 3358, international: 180, domestic: 3178, year: 2024, source: 'Elmhurst University Facts 2024' }
+      },
+      {
+        id: 'millikin',
+        about: 'A private university emphasizing performance learning with strong programs in music, theater, and business. Located in Decatur, Illinois.',
+        students: { total: 1897, international: 85, domestic: 1812, year: 2024, source: 'Millikin University Data 2024' }
+      },
+      {
+        id: 'wiu',
+        about: 'A public university offering affordable education with programs in law enforcement, agriculture, and education. Located in Macomb, Illinois.',
+        students: { total: 7917, international: 340, domestic: 7577, year: 2024, source: 'WIU Enrollment Data 2024' }
+      },
+      {
+        id: 'eiu',
+        about: 'A public university known for teacher education and liberal arts programs. Provides a close-knit campus experience in Charleston, Illinois.',
+        students: { total: 7276, international: 225, domestic: 7051, year: 2024, source: 'EIU Factbook 2024' }
+      },
+      {
+        id: 'augustana',
+        about: 'A private liberal arts college with Swedish heritage, offering rigorous academics and study abroad opportunities. Located in Rock Island.',
+        students: { total: 2387, international: 165, domestic: 2222, year: 2024, source: 'Augustana College Profile 2024' }
+      },
+      {
+        id: 'benedictine',
+        about: 'A private Catholic university offering flexible learning options with strong programs in health sciences and business. Located in Lisle.',
+        students: { total: 3743, international: 195, domestic: 3548, year: 2024, source: 'Benedictine University Data 2024' }
+      },
+      {
+        id: 'rockford',
+        about: 'A private university providing personalized education with strong nursing and business programs. Committed to student success in Rockford.',
+        students: { total: 1156, international: 45, domestic: 1111, year: 2024, source: 'Rockford University Profile 2024' }
+      }
+    ];
+
+    let updated = 0;
+    const errors: string[] = [];
+
+    console.log('🎓 Starting university details seeding...');
+
+    for (const uni of universityDetails) {
+      try {
+        await this.updateUniversityWithStudentData(uni.id, uni.about, uni.students);
+        updated++;
+        console.log(`✅ Updated ${uni.id}`);
+      } catch (error: any) {
+        const errorMsg = `❌ Error updating ${uni.id}: ${error.message}`;
+        console.error(errorMsg);
+        errors.push(errorMsg);
+      }
+    }
+
+    const result = { updated, errors };
+    console.log('🎉 University details seeding complete:', result);
+    return result;
   }
 
   /**

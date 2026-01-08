@@ -44,225 +44,58 @@
           </div>
         </div>
 
-        <!-- University Management -->
+        <!-- Admin Actions -->
         <div class="section">
-          <div class="section-header">
-            <h2>University Management</h2>
-            <button class="btn btn-primary" (click)="toggleUniversityForm()">
-              @if (showUniversityForm) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-                Cancel
-              } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                Add University
-              }
-            </button>
-          </div>
-
-          @if (showUniversityForm) {
-            <div class="university-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityId">University ID <small>(optional - auto-generated)</small></label>
-                  <input 
-                    type="text" 
-                    id="universityId"
-                    [(ngModel)]="newUniversity.id"
-                    placeholder="e.g., lewis-university"
-                    class="form-control"
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityName">University Name *</label>
-                  <input 
-                    type="text" 
-                    id="universityName"
-                    [(ngModel)]="newUniversity.name"
-                    placeholder="e.g., Lewis University"
-                    class="form-control"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityStreetAddress">Street Address *</label>
-                  <input 
-                    type="text" 
-                    id="universityStreetAddress"
-                    [(ngModel)]="newUniversity.streetAddress"
-                    placeholder="e.g., One University Parkway"
-                    class="form-control"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityCity">City *</label>
-                  <input 
-                    type="text" 
-                    id="universityCity"
-                    [(ngModel)]="newUniversity.city"
-                    placeholder="e.g., Romeoville"
-                    class="form-control"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label for="universityState">State *</label>
-                  <input 
-                    type="text" 
-                    id="universityState"
-                    [(ngModel)]="newUniversity.state"
-                    placeholder="e.g., Illinois"
-                    class="form-control"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityZipcode">Zipcode *</label>
-                  <input 
-                    type="text" 
-                    id="universityZipcode"
-                    [(ngModel)]="newUniversity.zipcode"
-                    placeholder="e.g., 60446"
-                    class="form-control"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label for="universityCountry">Country *</label>
-                  <input 
-                    type="text" 
-                    id="universityCountry"
-                    [(ngModel)]="newUniversity.country"
-                    placeholder="e.g., United States"
-                    class="form-control"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityType">Type *</label>
-                  <select 
-                    id="universityType"
-                    [(ngModel)]="newUniversity.type"
-                    class="form-control"
-                    required
-                  >
-                    <option value="Public">Public</option>
-                    <option value="Private">Private</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="universityWebsite">Website *</label>
-                  <input 
-                    type="url" 
-                    id="universityWebsite"
-                    [(ngModel)]="newUniversity.website"
-                    placeholder="https://www.example.edu"
-                    class="form-control"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button 
-                class="btn btn-success" 
-                (click)="addUniversity()" 
-                [disabled]="!newUniversity.name.trim() || !newUniversity.streetAddress.trim() || !newUniversity.city.trim() || !newUniversity.state.trim() || !newUniversity.zipcode.trim() || !newUniversity.country.trim() || !newUniversity.website.trim() || isSavingUniversity"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                {{ isSavingUniversity ? 'Saving...' : 'Save University' }}
-              </button>
-            </div>
-          }
-
-          <div class="universities-list">
-            @if (isLoadingUniversities) {
-              <div class="loading-state">
-                <p>Loading universities...</p>
-              </div>
-            } @else if (universities.length === 0) {
-              <div class="empty-state">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <h2>Management</h2>
+          <div class="action-cards">
+            <a class="action-card" routerLink="/admin/universities">
+              <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <p>No universities added yet</p>
-                <small>Click "Add University" to get started</small>
               </div>
-            } @else {
-              <div class="university-items">
-                @for (university of universities; track university.id) {
-                  <div class="university-item">
-                    <div class="university-info-detailed">
-                      <div class="university-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                      </div>
-                      <div class="university-details">
-                        <h4>{{ university.name }}</h4>
-                        <div class="university-meta">
-                          <span class="meta-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                              <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            {{ university.city }}
-                          </span>
-                          <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'">
-                            {{ university.type }}
-                          </span>
-                          <a [href]="university.website" target="_blank" class="meta-item website-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <line x1="2" y1="12" x2="22" y2="12"></line>
-                              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                            </svg>
-                            Website
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    <button class="btn-icon btn-delete" (click)="removeUniversity(university.id, university.name)" title="Remove university">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                      </svg>
-                    </button>
-                  </div>
-                }
+              <div class="card-content">
+                <h3>University Management</h3>
+                <p>Add, edit, and manage universities in the system</p>
               </div>
-            }
+              <div class="card-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </a>
+
+            <div class="action-card disabled">
+              <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div class="card-content">
+                <h3>User Management</h3>
+                <p>Manage user accounts and permissions</p>
+                <span class="coming-soon">Coming Soon</span>
+              </div>
+            </div>
+
+            <div class="action-card disabled">
+              <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <div class="card-content">
+                <h3>Analytics</h3>
+                <p>View system statistics and reports</p>
+                <span class="coming-soon">Coming Soon</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
