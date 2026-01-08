@@ -15,7 +15,7 @@ import { User } from 'firebase/auth';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
-  universityName = 'Lewis University';
+  universityName = 'settleU';
   isSearchOpen = false;
   isLoginOpen = false;
   currentUser = signal<User | null>(null);

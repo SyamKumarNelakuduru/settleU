@@ -1,31 +1,54 @@
 <section class="home-root">
-  <section class="university-intro">
-    <!-- official Lewis University logo (place file at public/assets/lewis-logo.png) -->
-    <img class="uni-image" src="/assets/lewis-logo.png" alt="Lewis University logo" />
-    <div class="uni-content">
-      <h2>Lewis University</h2>
-      <p class="brief">Lewis University is a private Lasallian university in Romeoville, Illinois, offering undergraduate and graduate programs with a strong emphasis on aviation and professional studies.</p>
-      <ul class="uni-points">
-        <li><strong>Enrollment</strong> — approximately 7,000 students across undergraduate and graduate programs.</li>
-        <li><strong>Location & focus</strong> — suburban 410-acre campus near Naperville with notable aviation and professional programs.</li>
-      </ul>
-      <a class="uni-link" href="https://www.lewisu.edu/" target="_blank" rel="noopener">Official site</a>
-    </div>
-  </section>
-
-  <section class="explore-content">
-    <p class="explore">Explore Naperville</p>
-    <div class="explore-panel">
-      <div class="kpi-grid">
-        <button class="kpi-card" *ngFor="let cat of categories" (click)="openCategory(cat.key, cat.label)" aria-label="{{cat.label}} in Naperville">
-          <div class="kpi-icon">{{ getEmoji(cat.key) }}</div>
-          <div class="kpi-body">
-            <div class="kpi-count">{{ naperville.counts[cat.key] }}</div>
-            <div class="kpi-label">{{ cat.label }}</div>
+  <div class="hero-section">
+    <div class="hero-carousel">
+      <div class="carousel-container" [style.transform]="transformValue">
+        <!-- Slide 1 -->
+        <div class="hero-slide slide-1">
+          <div class="slide-content">
+            <h1 class="slide-title">Welcome to settleU</h1>
+            <p class="slide-description">Your gateway to university life and student resources</p>
           </div>
-        </button>
+        </div>
+        
+        <!-- Slide 2 -->
+        <div class="hero-slide slide-2">
+          <div class="slide-content">
+            <h1 class="slide-title">Discover Your Community</h1>
+            <p class="slide-description">Connect with fellow students and explore campus resources</p>
+          </div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="hero-slide slide-3">
+          <div class="slide-content">
+            <h1 class="slide-title">Start Your Journey</h1>
+            <p class="slide-description">Find everything you need to make the most of your university experience</p>
+          </div>
+        </div>
       </div>
-      <app-category-list *ngIf="showCategoryModal" [title]="modalTitle" [items]="modalItems" (close)="closeModal()"></app-category-list>
+      
+      <!-- Navigation Arrows -->
+      <button class="carousel-btn prev-btn" (click)="previousSlide()" aria-label="Previous slide">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="carousel-btn next-btn" (click)="nextSlide()" aria-label="Next slide">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+      
+      <!-- Navigation Dots -->
+      <div class="carousel-dots">
+        <button 
+          *ngFor="let slide of slides; let i = index" 
+          class="dot" 
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Go to slide ' + (i + 1)"
+        ></button>
+      </div>
     </div>
-  </section>
+  </div>
 </section>
