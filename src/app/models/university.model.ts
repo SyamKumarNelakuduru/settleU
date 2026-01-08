@@ -10,4 +10,12 @@ export interface University {
   createdAt?: any;
   numberOfGasStations?: number;
   isadmin?: boolean;
+  about?: string;
+  students?: {
+    total: number;
+    international: number;
+    domestic: number;
+    year: number;
+    source: string;
+  };
 }

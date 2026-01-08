@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
+import { ModalService } from '../../services/modal.service';
 import { User } from 'firebase/auth';
 
 @Component({
@@ -16,14 +17,21 @@ import { User } from 'firebase/auth';
 })
 export class HeaderComponent implements OnInit {
   universityName = 'settleU';
-  isSearchOpen = false;
-  isLoginOpen = false;
   currentUser = signal<User | null>(null);
   isAdmin = signal<boolean>(false);
   
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
+  private modalService = inject(ModalService);
+
+  get isSearchOpen(): boolean {
+    return this.modalService.isSearchModalOpen;
+  }
+
+  get isLoginOpen(): boolean {
+    return this.modalService.isLoginModalOpen;
+  }
 
   ngOnInit(): void {
     console.log('Header initialized with university name:', this.universityName);
@@ -49,19 +57,19 @@ export class HeaderComponent implements OnInit {
   }
 
   openSearch(): void {
-    this.isSearchOpen = true;
+    this.modalService.openSearch();
   }
 
   closeSearch(): void {
-    this.isSearchOpen = false;
+    this.modalService.closeSearch();
   }
 
   openLogin(): void {
-    this.isLoginOpen = true;
+    this.modalService.openLoginModal();
   }
 
   closeLogin(): void {
-    this.isLoginOpen = false;
+    this.modalService.closeLoginModal();
   }
 
   handleSearch(query: string): void {

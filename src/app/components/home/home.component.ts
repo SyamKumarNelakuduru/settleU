@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-home',
@@ -8,63 +9,28 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./home.component.scss'],
   imports: [CommonModule]
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  currentSlide = 0;
-  slides = [0, 1, 2];
-  private autoPlayInterval: any;
+export class HomeComponent implements OnInit {
+  private modalService = inject(ModalService);
+
+  popularCities = [
+    { name: 'Chicago', universities: 25, image: 'https://images.unsplash.com/photo-1494522358652-f30e61a60313?w=800&h=600&fit=crop' },
+    { name: 'Boston', universities: 35, image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=800&h=600&fit=crop' },
+    { name: 'New York', universities: 45, image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&h=600&fit=crop' },
+    { name: 'Los Angeles', universities: 30, image: 'https://images.unsplash.com/photo-1542296332-2e4473faf563?w=800&h=600&fit=crop' },
+    { name: 'Austin', universities: 15, image: 'https://images.unsplash.com/photo-1564630482055-97f1f4a9e7cf?w=800&h=600&fit=crop' },
+    { name: 'Seattle', universities: 20, image: 'https://images.unsplash.com/photo-1492515114975-b062d1a270ae?w=800&h=600&fit=crop' }
+  ];
 
   ngOnInit(): void {
-    this.startAutoPlay();
+    // Component initialization
   }
 
-  ngOnDestroy(): void {
-    if (this.autoPlayInterval) {
-      clearInterval(this.autoPlayInterval);
-    }
+  openSearchModal(): void {
+    this.modalService.openSearch();
   }
 
-  get transformValue(): string {
-    // Container is 300% wide, each slide is 33.333% (100% of viewport)
-    // To move one slide, we translate by 33.333% of container width
-    const translatePercent = (this.currentSlide * 100) / this.slides.length;
-    return `translateX(-${translatePercent}%)`;
-  }
-
-  nextSlide(): void {
-    if (this.currentSlide < this.slides.length - 1) {
-      this.currentSlide++;
-    } else {
-      this.currentSlide = 0; // Loop back to first slide
-    }
-    this.resetAutoPlay();
-  }
-
-  previousSlide(): void {
-    if (this.currentSlide > 0) {
-      this.currentSlide--;
-    } else {
-      this.currentSlide = this.slides.length - 1; // Loop to last slide
-    }
-    this.resetAutoPlay();
-  }
-
-  goToSlide(index: number): void {
-    if (index >= 0 && index < this.slides.length) {
-      this.currentSlide = index;
-      this.resetAutoPlay();
-    }
-  }
-
-  startAutoPlay(): void {
-    this.autoPlayInterval = setInterval(() => {
-      this.nextSlide();
-    }, 5000); // Change slide every 5 seconds
-  }
-
-  resetAutoPlay(): void {
-    if (this.autoPlayInterval) {
-      clearInterval(this.autoPlayInterval);
-    }
-    this.startAutoPlay();
+  searchByCity(cityName: string): void {
+    // Open search modal with city pre-filled
+    this.modalService.openSearch();
   }
 }

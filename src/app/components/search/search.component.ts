@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UniversityService, University, StudentData } from '../../services/university.service';
 
 @Component({
@@ -21,31 +22,32 @@ export class SearchComponent implements AfterViewInit {
   isLoadingDetails = false;
 
   private universityService = inject(UniversityService);
+  private router = inject(Router);
 
   universities = [
-    { id: 'uiuc', name: 'University of Illinois Urbana-Champaign', city: 'Urbana-Champaign', type: 'Public', website: 'https://illinois.edu' },
-    { id: 'northwestern', name: 'Northwestern University', city: 'Evanston', type: 'Private', website: 'https://www.northwestern.edu' },
-    { id: 'uchicago', name: 'University of Chicago', city: 'Chicago', type: 'Private', website: 'https://www.uchicago.edu' },
-    { id: 'illinois-state', name: 'Illinois State University', city: 'Normal', type: 'Public', website: 'https://illinoisstate.edu' },
-    { id: 'siue', name: 'Southern Illinois University Edwardsville', city: 'Edwardsville', type: 'Public', website: 'https://www.siue.edu' },
-    { id: 'niu', name: 'Northern Illinois University', city: 'DeKalb', type: 'Public', website: 'https://www.niu.edu' },
-    { id: 'luc', name: 'Loyola University Chicago', city: 'Chicago', type: 'Private', website: 'https://www.luc.edu' },
-    { id: 'depaul', name: 'DePaul University', city: 'Chicago', type: 'Private', website: 'https://www.depaul.edu' },
-    { id: 'iwu', name: 'Illinois Wesleyan University', city: 'Bloomington', type: 'Private', website: 'https://www.iwu.edu' },
-    { id: 'bradley', name: 'Bradley University', city: 'Peoria', type: 'Private', website: 'https://www.bradley.edu' },
-    { id: 'siu-carbondale', name: 'Southern Illinois University Carbondale', city: 'Carbondale', type: 'Public', website: 'https://siu.edu' },
-    { id: 'neiu', name: 'Northeastern Illinois University', city: 'Chicago', type: 'Public', website: 'https://www.neiu.edu' },
-    { id: 'chicago-state', name: 'Chicago State University', city: 'Chicago', type: 'Public', website: 'https://www.csu.edu' },
-    { id: 'elmhurst', name: 'Elmhurst University', city: 'Elmhurst', type: 'Private', website: 'https://www.elmhurst.edu' },
-    { id: 'millikin', name: 'Millikin University', city: 'Decatur', type: 'Private', website: 'https://www.millikin.edu' },
-    { id: 'wiu', name: 'Western Illinois University', city: 'Macomb', type: 'Public', website: 'https://www.wiu.edu' },
-    { id: 'eiu', name: 'Eastern Illinois University', city: 'Charleston', type: 'Public', website: 'https://www.eiu.edu' },
-    { id: 'augustana', name: 'Augustana College', city: 'Rock Island', type: 'Private', website: 'https://www.augustana.edu' },
-    { id: 'benedictine', name: 'Benedictine University', city: 'Lisle', type: 'Private', website: 'https://www.ben.edu' },
-    { id: 'rockford', name: 'Rockford University', city: 'Rockford', type: 'Private', website: 'https://www.rockford.edu' }
+    { id: 'uiuc', name: 'University of Illinois Urbana-Champaign', city: 'Urbana-Champaign', type: 'Public', website: 'https://illinois.edu', logo: 'https://logo.clearbit.com/illinois.edu' },
+    { id: 'northwestern', name: 'Northwestern University', city: 'Evanston', type: 'Private', website: 'https://www.northwestern.edu', logo: 'https://logo.clearbit.com/northwestern.edu' },
+    { id: 'uchicago', name: 'University of Chicago', city: 'Chicago', type: 'Private', website: 'https://www.uchicago.edu', logo: 'https://logo.clearbit.com/uchicago.edu' },
+    { id: 'illinois-state', name: 'Illinois State University', city: 'Normal', type: 'Public', website: 'https://illinoisstate.edu', logo: 'https://logo.clearbit.com/illinoisstate.edu' },
+    { id: 'siue', name: 'Southern Illinois University Edwardsville', city: 'Edwardsville', type: 'Public', website: 'https://www.siue.edu', logo: 'https://logo.clearbit.com/siue.edu' },
+    { id: 'niu', name: 'Northern Illinois University', city: 'DeKalb', type: 'Public', website: 'https://www.niu.edu', logo: 'https://logo.clearbit.com/niu.edu' },
+    { id: 'luc', name: 'Loyola University Chicago', city: 'Chicago', type: 'Private', website: 'https://www.luc.edu', logo: 'https://logo.clearbit.com/luc.edu' },
+    { id: 'depaul', name: 'DePaul University', city: 'Chicago', type: 'Private', website: 'https://www.depaul.edu', logo: 'https://logo.clearbit.com/depaul.edu' },
+    { id: 'iwu', name: 'Illinois Wesleyan University', city: 'Bloomington', type: 'Private', website: 'https://www.iwu.edu', logo: 'https://logo.clearbit.com/iwu.edu' },
+    { id: 'bradley', name: 'Bradley University', city: 'Peoria', type: 'Private', website: 'https://www.bradley.edu', logo: 'https://logo.clearbit.com/bradley.edu' },
+    { id: 'siu-carbondale', name: 'Southern Illinois University Carbondale', city: 'Carbondale', type: 'Public', website: 'https://siu.edu', logo: 'https://logo.clearbit.com/siu.edu' },
+    { id: 'neiu', name: 'Northeastern Illinois University', city: 'Chicago', type: 'Public', website: 'https://www.neiu.edu', logo: 'https://logo.clearbit.com/neiu.edu' },
+    { id: 'chicago-state', name: 'Chicago State University', city: 'Chicago', type: 'Public', website: 'https://www.csu.edu', logo: 'https://logo.clearbit.com/csu.edu' },
+    { id: 'elmhurst', name: 'Elmhurst University', city: 'Elmhurst', type: 'Private', website: 'https://www.elmhurst.edu', logo: 'https://logo.clearbit.com/elmhurst.edu' },
+    { id: 'millikin', name: 'Millikin University', city: 'Decatur', type: 'Private', website: 'https://www.millikin.edu', logo: 'https://logo.clearbit.com/millikin.edu' },
+    { id: 'wiu', name: 'Western Illinois University', city: 'Macomb', type: 'Public', website: 'https://www.wiu.edu', logo: 'https://logo.clearbit.com/wiu.edu' },
+    { id: 'eiu', name: 'Eastern Illinois University', city: 'Charleston', type: 'Public', website: 'https://www.eiu.edu', logo: 'https://logo.clearbit.com/eiu.edu' },
+    { id: 'augustana', name: 'Augustana College', city: 'Rock Island', type: 'Private', website: 'https://www.augustana.edu', logo: 'https://logo.clearbit.com/augustana.edu' },
+    { id: 'benedictine', name: 'Benedictine University', city: 'Lisle', type: 'Private', website: 'https://www.ben.edu', logo: 'https://logo.clearbit.com/ben.edu' },
+    { id: 'rockford', name: 'Rockford University', city: 'Rockford', type: 'Private', website: 'https://www.rockford.edu', logo: 'https://logo.clearbit.com/rockford.edu' }
   ];
 
-  filteredUniversities: { id: string, name: string, city: string, type: string, website: string }[] = [];
+  filteredUniversities: { id: string, name: string, city: string, type: string, website: string, logo: string }[] = [];
 
   // get filteredUniversities() {
   //   const q = this.query.trim().toLowerCase();
@@ -77,30 +79,9 @@ export class SearchComponent implements AfterViewInit {
   }
 
   selectUniversity(u: { id: string, name: string }): void {
-    this.query = u.name;
-    this.loadUniversityDetails(u.id);
-  }
-
-  async loadUniversityDetails(universityId: string): Promise<void> {
-    this.isLoadingDetails = true;
-    try {
-      const university = await this.universityService.getUniversityById(universityId);
-      if (university) {
-        this.selectedUniversity = university;
-      } else {
-        console.warn('University not found:', universityId);
-        this.selectedUniversity = null;
-      }
-    } catch (error) {
-      console.error('Error loading university details:', error);
-      this.selectedUniversity = null;
-    } finally {
-      this.isLoadingDetails = false;
-    }
-  }
-
-  closeDetails(): void {
-    this.selectedUniversity = null;
+    // Navigate to university details page and close modal
+    this.router.navigate(['/university', u.id]);
+    this.close.emit();
   }
 
   onOverlayClick(): void {
@@ -114,5 +95,16 @@ export class SearchComponent implements AfterViewInit {
   @HostListener('window:keydown.escape')
   onEscape(): void {
     this.close.emit();
+  }
+
+  getUniversityLogo(university: any): string {
+    // Return the logo URL if available, otherwise fallback to UI Avatars
+    return university.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(university.name)}&background=667eea&color=fff&size=128&bold=true&font-size=0.4`;
+  }
+
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    // Fallback to a default university icon
+    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"%3E%3Cpath d="M22 10v6M2 10l10-5 10 5-10 5z"%3E%3C/path%3E%3Cpath d="M6 12v5c3 3 9 3 12 0v-5"%3E%3C/path%3E%3C/svg%3E';
   }
 }
