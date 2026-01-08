@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
   isSearchOpen = false;
   isLoginOpen = false;
   currentUser = signal<User | null>(null);
-  userRole = signal<string | null>(null);
+  isAdmin = signal<boolean>(false);
   
   private authService = inject(AuthService);
   private userService = inject(UserService);
@@ -33,12 +33,12 @@ export class HeaderComponent implements OnInit {
       this.currentUser.set(user);
       
       if (user) {
-        // Fetch user profile to get role
+        // Fetch user profile to check if admin
         const profile = await this.userService.getUserProfile(user.uid);
-        this.userRole.set(profile?.role || 'student');
-        console.log('User role in header:', profile?.role);
+        this.isAdmin.set(profile?.isAdmin === true);
+        console.log('User isAdmin:', profile?.isAdmin);
       } else {
-        this.userRole.set(null);
+        this.isAdmin.set(false);
       }
     });
   }
@@ -75,14 +75,13 @@ export class HeaderComponent implements OnInit {
   }
 
   openProfile(): void {
-    const role = this.userRole();
-    if (role === 'admin') {
-      console.log('Navigating to admin dashboard');
-      this.router.navigate(['/admin']);
-    } else {
-      console.log('Navigating to profile page');
-      this.router.navigate(['/profile']);
-    }
+    console.log('Navigating to profile page');
+    this.router.navigate(['/profile']);
+  }
+
+  openAdminDashboard(): void {
+    console.log('Navigating to admin dashboard');
+    this.router.navigate(['/admin']);
   }
 
   handleImageError(event: Event): void {

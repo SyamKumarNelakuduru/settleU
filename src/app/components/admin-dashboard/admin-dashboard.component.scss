@@ -1,6 +1,5 @@
 .admin-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 2rem;
 }
 
@@ -187,6 +186,86 @@
       color: white;
     }
   }
+
+  &.seed-universities {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    border-color: #fdcb6e;
+
+    svg, span {
+      color: #2d3436;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #fdcb6e, #e17055);
+      border-color: #e17055;
+
+      svg, span {
+        color: white;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+
+      &:hover {
+        transform: none;
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        border-color: #fdcb6e;
+
+        svg, span {
+          color: #2d3436;
+        }
+      }
+    }
+  }
+}
+
+.seeding-result {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border: 2px solid #4caf50;
+
+  h3 {
+    font-size: 1.25rem;
+    margin: 0 0 1rem 0;
+    color: #2e7d32;
+  }
+
+  .result-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+
+    .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    &.success {
+      color: #2e7d32;
+    }
+
+    &.info {
+      color: #1976d2;
+    }
+
+    &.error {
+      color: #d32f2f;
+    }
+  }
 }
 
 .info-card {
@@ -333,20 +412,31 @@
   }
 }
 
-.college-form {
+.university-form {
   background: #f9fafb;
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 
-  .form-group {
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
     margin-bottom: 1rem;
+  }
 
+  .form-group {
     label {
       display: block;
       font-weight: 600;
       color: #374151;
       margin-bottom: 0.5rem;
+
+      small {
+        font-weight: 400;
+        color: #9ca3af;
+        font-size: 0.75rem;
+      }
     }
 
     .form-control {
@@ -363,10 +453,21 @@
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
       }
     }
+
+    select.form-control {
+      cursor: pointer;
+    }
   }
 }
 
-.colleges-list {
+.universities-list {
+  .loading-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+    font-size: 1rem;
+  }
+
   .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -390,13 +491,13 @@
     }
   }
 
-  .college-items {
+  .university-items {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .college-item {
+  .university-item {
     background: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 10px;
@@ -411,21 +512,84 @@
       background: #f3f4ff;
     }
 
-    .college-info {
+    .university-info-detailed {
       display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      align-items: flex-start;
+      gap: 1rem;
       flex: 1;
 
-      svg {
-        color: #667eea;
+      .university-icon {
         flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          color: white;
+        }
       }
 
-      span {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #1a1a2e;
+      .university-details {
+        flex: 1;
+
+        h4 {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: #1a1a2e;
+          margin: 0 0 0.5rem 0;
+        }
+
+        .university-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          align-items: center;
+
+          .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+
+            svg {
+              flex-shrink: 0;
+            }
+
+            &.type-badge {
+              padding: 0.25rem 0.75rem;
+              border-radius: 12px;
+              font-weight: 600;
+              font-size: 0.75rem;
+              text-transform: uppercase;
+
+              &.public {
+                background: #dcfce7;
+                color: #166534;
+              }
+
+              &.private {
+                background: #fef3c7;
+                color: #92400e;
+              }
+            }
+
+            &.website-link {
+              color: #667eea;
+              text-decoration: none;
+              transition: color 0.2s;
+
+              &:hover {
+                color: #764ba2;
+                text-decoration: underline;
+              }
+            }
+          }
+        }
       }
     }
   }
