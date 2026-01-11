@@ -6,12 +6,13 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { UniversityService, University } from '../../services/university.service';
 import { CompareService } from '../../services/compare.service';
+import { SeedAccommodationComponent } from '../seed-accommodation/seed-accommodation.component';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
 
 @Component({
   selector: 'app-university-management',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, SeedAccommodationComponent],
   templateUrl: './university-management.component.html',
   styleUrl: './university-management.component.scss'
 })

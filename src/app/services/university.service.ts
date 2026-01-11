@@ -30,6 +30,13 @@ export interface SafetyInfo {
   source?: string;
 }
 
+export interface AccommodationGroup {
+  name: string;
+  platform: 'Facebook' | 'Discord' | 'Telegram' | 'WhatsApp' | 'Website';
+  url: string;
+  note: string;
+}
+
 export interface University {
   name: string;
   streetAddress: string;
@@ -43,6 +50,8 @@ export interface University {
   students?: StudentData;
   safety?: SafetyInfo;
   bestAreasToLive?: AreaToLive[];
+  accommodationGroups?: AccommodationGroup[];
+  accommodationTips?: string[];
   createdAt?: any;
 }
 
