@@ -492,9 +492,9 @@
     }
 
     .journey-kpi {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
       transition: transform 0.3s ease;
 
       &:hover {
@@ -509,9 +509,9 @@
           transform: scale(1.05);
         }
 
-        .step-number-inline {
+        .step-number {
           transform: scale(1.1);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
       }
 
@@ -520,15 +520,10 @@
         aspect-ratio: 1;
         border-radius: 20px;
         overflow: hidden;
-        margin-bottom: 1.5rem;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         transition: all 0.4s ease;
         position: relative;
         border: 3px solid rgba(102, 126, 234, 0.1);
-      }
-
-      .step-number {
-        display: none;
       }
 
       .kpi-image {
@@ -539,16 +534,21 @@
       }
 
       .kpi-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         display: flex;
         align-items: center;
-        justify-content: center;
         gap: 0.75rem;
-        width: 100%;
+        padding: 1.25rem 1.5rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
+        z-index: 2;
       }
 
-      .step-number-inline {
-        width: 48px;
-        height: 48px;
+      .step-number {
+        width: 50px;
+        height: 50px;
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         border-radius: 50%;
@@ -557,17 +557,19 @@
         justify-content: center;
         font-size: 1.5rem;
         font-weight: 800;
-        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
         flex-shrink: 0;
         transition: all 0.3s ease;
+        border: 3px solid white;
       }
 
       .kpi-label {
         font-size: 1.25rem;
         font-weight: 700;
-        color: #0f172a;
+        color: white;
         margin: 0;
         letter-spacing: -0.3px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -721,18 +723,14 @@
           width: 45px;
           height: 45px;
           font-size: 1.3rem;
-          top: 12px;
-          left: 12px;
-        }
-        
-        .step-number-inline {
-          width: 35px;
-          height: 35px;
-          font-size: 1.1rem;
         }
         
         .kpi-label {
           font-size: 1.1rem;
+        }
+        
+        .kpi-content {
+          padding: 1rem 1.25rem;
         }
       }
     }
@@ -788,21 +786,13 @@
           width: 40px;
           height: 40px;
           font-size: 1.2rem;
-          top: 10px;
-          left: 10px;
-          border: 3px solid white;
+          border: 2px solid white;
         }
-        
-        .step-number-inline {
-          width: 32px;
-          height: 32px;
-          font-size: 1rem;
+
+        .kpi-content {
+          padding: 1rem;
         }
-        
-        .kpi-image-container {
-          margin-bottom: 1rem;
-        }
-        
+
         .kpi-label {
           font-size: 1rem;
         }
