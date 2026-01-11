@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UniversityService } from '../../services/university.service';
 import { CompareService } from '../../services/compare.service';
+import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
 
 @Component({
@@ -18,13 +19,11 @@ export class UniversityDetailsComponent implements OnInit {
   errorMessage = signal<string | null>(null);
 
   private universityId: string | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private universityService: UniversityService,
-    private compareService: CompareService
-  ) {}
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private universityService = inject(UniversityService);
+  private compareService = inject(CompareService);
+  private flyToCompareService = inject(FlyToCompareService);
 
   ngOnInit() {
     this.universityId = this.route.snapshot.paramMap.get('id');
@@ -83,13 +82,26 @@ export class UniversityDetailsComponent implements OnInit {
     }
   }
 
-  addToCompare(university: University, event?: Event): void {
+  async addToCompare(university: University, event?: Event): Promise<void> {
     if (event) {
       event.stopPropagation();
     }
 
     if (!this.universityId) {
       console.error('Cannot add to compare: university ID not found');
+      return;
+    }
+
+    // Check if already in compare list
+    if (this.compareService.isInCompareList(this.universityId)) {
+      console.log('Already in compare list:', university.name);
+      return;
+    }
+
+    // Get the source element (the compare icon button)
+    const sourceElement = event?.currentTarget as HTMLElement;
+    if (!sourceElement) {
+      console.warn('Source element not found for animation');
       return;
     }
 
@@ -102,11 +114,13 @@ export class UniversityDetailsComponent implements OnInit {
       website: university.website
     };
 
+    // Trigger fly animation (uses CSS selector for target element)
+    await this.flyToCompareService.animate(sourceElement, '.compare-btn');
+
+    // Add to compare list after animation completes
     const added = this.compareService.addToCompare(compareUniversity);
     if (added) {
       console.log('Added to compare:', university.name);
-    } else {
-      console.log('Already in compare list:', university.name);
     }
   }
 

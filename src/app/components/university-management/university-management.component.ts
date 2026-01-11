@@ -7,6 +7,7 @@ import { UserService } from '../../services/user.service';
 import { UniversityService, University } from '../../services/university.service';
 import { CompareService } from '../../services/compare.service';
 import { SeedAccommodationComponent } from '../seed-accommodation/seed-accommodation.component';
+import { FlyToCompareService } from '../../services/fly-to-compare.service';
 
 @Component({
   selector: 'app-university-management',
@@ -44,6 +45,7 @@ export class UniversityManagementComponent implements OnInit {
   private universityService = inject(UniversityService);
   private router = inject(Router);
   private compareService = inject(CompareService);
+  private flyToCompareService = inject(FlyToCompareService);
 
   ngOnInit(): void {
     // Subscribe to authentication state
@@ -165,9 +167,22 @@ export class UniversityManagementComponent implements OnInit {
     }
   }
 
-  addToCompare(university: University & { id: string }, event?: Event): void {
+  async addToCompare(university: University & { id: string }, event?: Event): Promise<void> {
     if (event) {
       event.stopPropagation();
+    }
+
+    // Check if already in compare list
+    if (this.compareService.isInCompareList(university.id)) {
+      console.log('Already in compare list:', university.name);
+      return;
+    }
+
+    // Get the source element (the compare icon button)
+    const sourceElement = event?.currentTarget as HTMLElement;
+    if (!sourceElement) {
+      console.warn('Source element not found for animation');
+      return;
     }
 
     const compareUniversity = {
@@ -179,11 +194,13 @@ export class UniversityManagementComponent implements OnInit {
       website: university.website
     };
 
+    // Trigger fly animation (uses CSS selector for target element)
+    await this.flyToCompareService.animate(sourceElement, '.compare-btn');
+
+    // Add to compare list after animation completes
     const added = this.compareService.addToCompare(compareUniversity);
     if (added) {
       console.log('Added to compare:', university.name);
-    } else {
-      console.log('Already in compare list:', university.name);
     }
   }
 
