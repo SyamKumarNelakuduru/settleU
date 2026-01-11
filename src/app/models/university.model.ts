@@ -1,3 +1,15 @@
+export interface AreaToLive {
+  name: string;
+  reason: string;
+  link?: string;
+}
+
+export interface SafetyInfo {
+  level: 'Safe' | 'Moderate' | 'Use Caution';
+  note: string;
+  source?: string;
+}
+
 export interface University {
   name: string;
   streetAddress: string;
@@ -18,4 +30,6 @@ export interface University {
     year: number;
     source: string;
   };
+  safety?: SafetyInfo;
+  bestAreasToLive?: AreaToLive[];
 }
