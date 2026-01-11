@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { UniversityService, University } from '../../services/university.service';
+import { CompareService } from '../../services/compare.service';
 
 @Component({
   selector: 'app-university-management',
@@ -40,6 +41,7 @@ export class UniversityManagementComponent implements OnInit {
   private userService = inject(UserService);
   private universityService = inject(UniversityService);
   private router = inject(Router);
+  private compareService = inject(CompareService);
 
   ngOnInit(): void {
     // Subscribe to authentication state
@@ -158,6 +160,28 @@ export class UniversityManagementComponent implements OnInit {
     } catch (error: any) {
       console.error('Error removing university:', error);
       alert('❌ Error removing university: ' + error.message);
+    }
+  }
+
+  addToCompare(university: University & { id: string }, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const compareUniversity = {
+      id: university.id,
+      name: university.name,
+      city: university.city,
+      state: university.state,
+      type: university.type,
+      website: university.website
+    };
+
+    const added = this.compareService.addToCompare(compareUniversity);
+    if (added) {
+      console.log('Added to compare:', university.name);
+    } else {
+      console.log('Already in compare list:', university.name);
     }
   }
 
