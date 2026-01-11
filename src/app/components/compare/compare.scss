@@ -1,0 +1,307 @@
+.compare-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.empty-state {
+  max-width: 600px;
+  margin: 4rem auto;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+
+  .empty-icon {
+    color: #667eea;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+  }
+}
+
+.compare-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .header-content {
+    flex: 1;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.5px;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.btn-back,
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.btn-back {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+
+  &:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+
+  &:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.universities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.university-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: #ef4444;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 2;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.2);
+      transform: scale(1.1);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .university-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    flex-shrink: 0;
+
+    .university-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .university-info {
+    flex: 1;
+
+    .university-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 0.75rem 0;
+      line-height: 1.3;
+    }
+
+    .university-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #64748b;
+
+        svg {
+          width: 14px;
+          height: 14px;
+          color: #667eea;
+          flex-shrink: 0;
+        }
+
+        &.type-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.375rem 0.75rem;
+          border-radius: 8px;
+          font-weight: 700;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          width: fit-content;
+
+          &.public {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+          }
+
+          &.private {
+            background: rgba(147, 51, 234, 0.1);
+            color: #9333ea;
+          }
+        }
+      }
+    }
+  }
+
+  .website-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: auto;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.2);
+      transform: translateX(4px);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

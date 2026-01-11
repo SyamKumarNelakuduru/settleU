@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UniversityService } from '../../services/university.service';
+import { CompareService } from '../../services/compare.service';
 import { University } from '../../models/university.model';
 
 @Component({
@@ -16,16 +17,19 @@ export class UniversityDetailsComponent implements OnInit {
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
 
+  private universityId: string | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private universityService: UniversityService
+    private universityService: UniversityService,
+    private compareService: CompareService
   ) {}
 
   ngOnInit() {
-    const universityId = this.route.snapshot.paramMap.get('id');
-    if (universityId) {
-      this.loadUniversityDetails(universityId);
+    this.universityId = this.route.snapshot.paramMap.get('id');
+    if (this.universityId) {
+      this.loadUniversityDetails(this.universityId);
     } else {
       this.errorMessage.set('No university ID provided');
       this.isLoading.set(false);
@@ -76,6 +80,33 @@ export class UniversityDetailsComponent implements OnInit {
           <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
         </svg>
       `;
+    }
+  }
+
+  addToCompare(university: University, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (!this.universityId) {
+      console.error('Cannot add to compare: university ID not found');
+      return;
+    }
+
+    const compareUniversity = {
+      id: this.universityId,
+      name: university.name,
+      city: university.city,
+      state: university.state,
+      type: university.type,
+      website: university.website
+    };
+
+    const added = this.compareService.addToCompare(compareUniversity);
+    if (added) {
+      console.log('Added to compare:', university.name);
+    } else {
+      console.log('Already in compare list:', university.name);
     }
   }
 }

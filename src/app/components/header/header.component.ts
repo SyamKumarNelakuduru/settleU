@@ -6,6 +6,7 @@ import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { ModalService } from '../../services/modal.service';
+import { CompareService } from '../../services/compare.service';
 import { User } from 'firebase/auth';
 
 @Component({
@@ -19,11 +20,13 @@ export class HeaderComponent implements OnInit {
   universityName = 'settleU';
   currentUser = signal<User | null>(null);
   isAdmin = signal<boolean>(false);
+  compareCount = signal<number>(0);
   
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private router = inject(Router);
   private modalService = inject(ModalService);
+  private compareService = inject(CompareService);
 
   get isSearchOpen(): boolean {
     return this.modalService.isSearchModalOpen;
@@ -49,6 +52,11 @@ export class HeaderComponent implements OnInit {
         this.isAdmin.set(false);
       }
     });
+
+    // Subscribe to compare list changes
+    this.compareService.compareList$.subscribe(list => {
+      this.compareCount.set(list.length);
+    });
   }
 
   onSearchClick(): void {
@@ -62,6 +70,10 @@ export class HeaderComponent implements OnInit {
 
   closeSearch(): void {
     this.modalService.closeSearch();
+  }
+
+  openCompare(): void {
+    this.router.navigate(['/compare']);
   }
 
   openLogin(): void {

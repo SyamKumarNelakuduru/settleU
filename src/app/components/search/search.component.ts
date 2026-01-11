@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UniversityService, University, StudentData } from '../../services/university.service';
+import { CompareService } from '../../services/compare.service';
 
 @Component({
   selector: 'app-search-modal',
@@ -23,6 +24,7 @@ export class SearchComponent implements AfterViewInit {
 
   private universityService = inject(UniversityService);
   private router = inject(Router);
+  private compareService = inject(CompareService);
 
   universities = [
     { id: 'uiuc', name: 'University of Illinois Urbana-Champaign', city: 'Urbana-Champaign', type: 'Public', website: 'https://illinois.edu', logo: 'https://logo.clearbit.com/illinois.edu' },
@@ -106,5 +108,36 @@ export class SearchComponent implements AfterViewInit {
     const img = event.target as HTMLImageElement;
     // Fallback to a default university icon
     img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"%3E%3Cpath d="M22 10v6M2 10l10-5 10 5-10 5z"%3E%3C/path%3E%3Cpath d="M6 12v5c3 3 9 3 12 0v-5"%3E%3C/path%3E%3C/svg%3E';
+  }
+
+  addToCompare(university: { id: string, name: string, city: string, type: string, website: string }, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    // Extract state from city if available, otherwise default to Illinois (all search universities are in Illinois)
+    // This is a simple mapping - you may want to enhance this based on your needs
+    const state = this.getStateFromCity(university.city);
+    
+    const compareUniversity = {
+      id: university.id,
+      name: university.name,
+      city: university.city,
+      state: state,
+      type: university.type as 'Public' | 'Private',
+      website: university.website
+    };
+    const added = this.compareService.addToCompare(compareUniversity);
+    if (added) {
+      console.log('Added to compare:', university.name);
+    } else {
+      console.log('Already in compare list:', university.name);
+    }
+  }
+
+  private getStateFromCity(city: string): string {
+    // Since all universities in the search component are in Illinois, default to Illinois
+    // You can enhance this with a proper mapping if needed
+    return 'Illinois';
   }
 }

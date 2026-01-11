@@ -1,0 +1,92 @@
+<div class="compare-page">
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="compareList.length === 0">
+    <div class="empty-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+    </div>
+    <h2>No Universities to Compare</h2>
+    <p>Add universities to compare by clicking the compare icon next to any university name.</p>
+    <button class="btn-primary" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back to Home
+    </button>
+  </div>
+
+  <!-- Compare List -->
+  <div class="compare-container" *ngIf="compareList.length > 0">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Compare Universities</h1>
+        <p class="page-subtitle">{{ compareList.length }} {{ compareList.length === 1 ? 'university' : 'universities' }} in comparison</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" (click)="clearAll()" *ngIf="compareList.length > 0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="m19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear All
+        </button>
+        <button class="btn-back" (click)="goBack()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back
+        </button>
+      </div>
+    </div>
+
+    <!-- Universities Grid -->
+    <div class="universities-grid">
+      <div class="university-card" *ngFor="let university of compareList" (click)="goToUniversity(university.id)">
+        <button class="remove-btn" (click)="removeFromCompare(university.id); $event.stopPropagation()" title="Remove from compare">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="university-icon">
+          <img 
+            [src]="getUniversityLogo(university.name)" 
+            [alt]="university.name + ' logo'"
+            class="university-logo"
+            (error)="handleImageError($event)"
+          />
+        </div>
+        <div class="university-info">
+          <h3 class="university-name">{{ university.name }}</h3>
+          <div class="university-meta">
+            <span class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              {{ university.city }}, {{ university.state }}
+            </span>
+            <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'">
+              {{ university.type }}
+            </span>
+          </div>
+        </div>
+        <a class="website-link" [href]="university.website" target="_blank" rel="noopener noreferrer" (click)="openWebsite(university.website, $event)" title="Visit website">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          Website
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

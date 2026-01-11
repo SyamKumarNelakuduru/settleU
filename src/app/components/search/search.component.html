@@ -30,7 +30,17 @@
             (error)="handleImageError($event)"
           />
           <div class="result-main">
-            <div class="result-name">{{ u.name }}</div>
+            <div class="result-name">
+              <span>{{ u.name }}</span>
+              <button class="compare-icon-btn" (click)="addToCompare(u, $event)" title="Add to Compare">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+            </div>
             <div class="result-meta">{{ u.city }} • {{ u.type }}</div>
           </div>
           <a class="result-link" href="{{ u.website }}" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">website</a>
