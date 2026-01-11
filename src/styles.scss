@@ -13,3 +13,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Fly-to-Compare Animation Styles */
+.fly-to-compare-clone {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  padding: 4px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 2.5;
+  }
+}
