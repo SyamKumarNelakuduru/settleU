@@ -21,11 +21,24 @@ export class HomeComponent implements OnInit {
     { name: 'Seattle', universities: 20, image: 'https://images.unsplash.com/photo-1492515114975-b062d1a270ae?w=800&h=600&fit=crop' }
   ];
 
+  quickSearchUniversities = [
+    { label: 'Top 10 Universities', count: 10 },
+    { label: 'Top 20 Universities', count: 20 },
+    { label: 'Top 50 Universities', count: 50 },
+    { label: 'Top 100 Universities', count: 100 }
+  ];
+
   ngOnInit(): void {
     // Component initialization
   }
 
   openSearchModal(): void {
+    this.modalService.openSearch();
+  }
+
+  searchByUniversityRank(count: number): void {
+    // Open search modal filtered by top N universities
+    // This could be connected to an API that fetches real-time rankings
     this.modalService.openSearch();
   }
 
