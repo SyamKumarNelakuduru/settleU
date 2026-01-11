@@ -143,12 +143,18 @@ export class SearchComponent implements AfterViewInit {
       website: university.website
     };
 
+    // Check if university can be added (only checks if already in list)
+    if (!this.compareService.canAddUniversity(university.id)) {
+      console.log('Already in compare list:', university.name);
+      return;
+    }
+
     // Trigger fly animation (uses CSS selector for target element)
     await this.flyToCompareService.animate(sourceElement, '.compare-btn');
 
     // Add to compare list after animation completes
-    const added = this.compareService.addToCompare(compareUniversity);
-    if (added) {
+    const result = this.compareService.addToCompare(compareUniversity);
+    if (result.success) {
       console.log('Added to compare:', university.name);
     }
   }

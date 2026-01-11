@@ -26,7 +26,13 @@
     <div class="page-header">
       <div class="header-content">
         <h1 class="page-title">Compare Universities</h1>
-        <p class="page-subtitle">{{ compareList.length }} {{ compareList.length === 1 ? 'university' : 'universities' }} in comparison</p>
+        <p class="page-subtitle">
+          {{ compareList.length }} {{ compareList.length === 1 ? 'university' : 'universities' }} in list
+          <span *ngIf="getSelectedCount() > 0"> • {{ getSelectedCount() }} of {{ maxCompareCount }} selected to compare</span>
+        </p>
+        <p class="selection-hint" *ngIf="compareList.length > 0">
+          Select up to {{ maxCompareCount }} universities to compare
+        </p>
       </div>
       <div class="header-actions">
         <button class="btn-secondary" (click)="clearAll()" *ngIf="compareList.length > 0">
@@ -48,44 +54,68 @@
 
     <!-- Universities Grid -->
     <div class="universities-grid">
-      <div class="university-card" *ngFor="let university of compareList" (click)="goToUniversity(university.id)">
-        <button class="remove-btn" (click)="removeFromCompare(university.id); $event.stopPropagation()" title="Remove from compare">
+      <div class="university-card" 
+           [class.selected]="isSelected(university.id)" 
+           [class.selection-disabled]="!isSelected(university.id) && isSelectionLimitReached()"
+           *ngFor="let university of compareList">
+        <!-- Selection Checkbox -->
+        <label class="selection-checkbox" 
+               [title]="isSelected(university.id) ? 'Deselect for comparison' : (isSelectionLimitReached() ? 'Maximum ' + maxCompareCount + ' selections reached' : 'Select for comparison')">
+          <input type="checkbox" 
+                 [checked]="isSelected(university.id)" 
+                 [disabled]="!isSelected(university.id) && isSelectionLimitReached()"
+                 (click)="toggleSelection(university.id, $event)"
+                 (change)="$event.preventDefault()"
+                 [attr.aria-label]="'Select ' + university.name + ' for comparison'">
+          <span class="checkmark" *ngIf="isSelected(university.id)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="checkbox-empty" *ngIf="!isSelected(university.id)"></span>
+        </label>
+        
+        <button class="remove-btn" (click)="removeFromCompare(university.id, $event)" title="Remove from compare">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <div class="university-icon">
-          <img 
-            [src]="getUniversityLogo(university.name)" 
-            [alt]="university.name + ' logo'"
-            class="university-logo"
-            (error)="handleImageError($event)"
-          />
-        </div>
-        <div class="university-info">
-          <h3 class="university-name">{{ university.name }}</h3>
-          <div class="university-meta">
-            <span class="meta-item">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              {{ university.city }}, {{ university.state }}
-            </span>
-            <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'">
-              {{ university.type }}
-            </span>
+        
+        <!-- Card Content - Clickable Area -->
+        <div class="card-content" (click)="goToUniversity(university.id)">
+          <div class="university-icon">
+            <img 
+              [src]="getUniversityLogo(university.name)" 
+              [alt]="university.name + ' logo'"
+              class="university-logo"
+              (error)="handleImageError($event)"
+            />
           </div>
+          <div class="university-info">
+            <h3 class="university-name">{{ university.name }}</h3>
+            <div class="university-meta">
+              <span class="meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                {{ university.city }}, {{ university.state }}
+              </span>
+              <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'">
+                {{ university.type }}
+              </span>
+            </div>
+          </div>
+          <a class="website-link" [href]="university.website" target="_blank" rel="noopener noreferrer" (click)="openWebsite(university.website, $event)" title="Visit website">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            Website
+          </a>
         </div>
-        <a class="website-link" [href]="university.website" target="_blank" rel="noopener noreferrer" (click)="openWebsite(university.website, $event)" title="Visit website">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          Website
-        </a>
       </div>
     </div>
   </div>

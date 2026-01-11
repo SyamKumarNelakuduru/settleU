@@ -15,6 +15,7 @@ export interface CompareUniversity {
 })
 export class CompareService {
   private readonly STORAGE_KEY = 'compareUniversities';
+  private readonly MAX_COMPARE_COUNT = 4; // Maximum number of universities that can be compared
   private compareListSubject = new BehaviorSubject<CompareUniversity[]>([]);
   public compareList$: Observable<CompareUniversity[]> = this.compareListSubject.asObservable();
 
@@ -51,18 +52,39 @@ export class CompareService {
     return this.compareListSubject.value.length;
   }
 
-  addToCompare(university: CompareUniversity): boolean {
+  /**
+   * Gets the maximum number of universities that can be compared
+   */
+  getMaxCompareCount(): number {
+    return this.MAX_COMPARE_COUNT;
+  }
+
+  /**
+   * Checks if a specific university can be added (only checks if already in list)
+   * Note: Users can now add unlimited universities; limit only applies to selection on compare page
+   */
+  canAddUniversity(universityId: string): boolean {
+    const currentList = this.compareListSubject.value;
+    // Check if already in list
+    if (currentList.some(u => u.id === universityId)) {
+      return false; // Already in compare list
+    }
+    return true; // Can always add if not already in list
+  }
+
+  addToCompare(university: CompareUniversity): { success: boolean; reason?: 'already_added' } {
     const currentList = this.compareListSubject.value;
     
     // Check if already in list
     if (currentList.some(u => u.id === university.id)) {
-      return false; // Already in compare list
+      return { success: false, reason: 'already_added' }; // Already in compare list
     }
 
+    // No limit on adding - users can add as many as they want
     const newList = [...currentList, university];
     this.compareListSubject.next(newList);
     this.saveToStorage(newList);
-    return true; // Successfully added
+    return { success: true }; // Successfully added
   }
 
   removeFromCompare(universityId: string): void {

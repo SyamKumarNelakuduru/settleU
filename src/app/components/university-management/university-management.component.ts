@@ -171,8 +171,8 @@ export class UniversityManagementComponent implements OnInit {
       event.stopPropagation();
     }
 
-    // Check if already in compare list
-    if (this.compareService.isInCompareList(university.id)) {
+    // Check if university can be added (only checks if already in list)
+    if (!this.compareService.canAddUniversity(university.id)) {
       console.log('Already in compare list:', university.name);
       return;
     }
@@ -197,8 +197,8 @@ export class UniversityManagementComponent implements OnInit {
     await this.flyToCompareService.animate(sourceElement, '.compare-btn');
 
     // Add to compare list after animation completes
-    const added = this.compareService.addToCompare(compareUniversity);
-    if (added) {
+    const result = this.compareService.addToCompare(compareUniversity);
+    if (result.success) {
       console.log('Added to compare:', university.name);
     }
   }
