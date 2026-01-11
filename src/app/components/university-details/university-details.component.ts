@@ -109,4 +109,23 @@ export class UniversityDetailsComponent implements OnInit {
       console.log('Already in compare list:', university.name);
     }
   }
+
+  openGroupUrl(url: string): void {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  getAccommodationTips(): string[] {
+    const uni = this.university();
+    if (uni?.accommodationTips && uni.accommodationTips.length > 0) {
+      return uni.accommodationTips;
+    }
+    
+    // Default tips if none provided
+    return [
+      'Never pay deposits before seeing the lease.',
+      'Prefer university-affiliated housing resources when possible.'
+    ];
+  }
 }
