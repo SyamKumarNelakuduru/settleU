@@ -13,26 +13,32 @@
 
       <div class="profile-info">
         <div class="info-section">
-          <h2>Account Information</h2>
-          <div class="info-item">
-            <span class="info-label">User ID:</span>
-            <span class="info-value">{{ currentUser()?.uid }}</span>
+          <h2>University Card</h2>
+          <div class="university-info">
+            <h3 class="university-name">University Name</h3>
+            <div class="university-about">
+              <h4>About</h4>
+              <p class="about-text">
+                This is a placeholder for university information. The university description, 
+                programs offered, campus facilities, and other relevant details will be displayed here.
+              </p>
+            </div>
           </div>
           <div class="info-item">
-            <span class="info-label">Email Verified:</span>
-            <span class="info-value">{{ currentUser()?.emailVerified ? 'Yes' : 'No' }}</span>
+            <span class="info-label">Location:</span>
+            <span class="info-value">City, Country</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Provider:</span>
-            <span class="info-value">{{ currentUser()?.providerData?.[0]?.providerId || 'N/A' }}</span>
+            <span class="info-label">Established:</span>
+            <span class="info-value">Year</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Last Sign In:</span>
-            <span class="info-value">{{ currentUser()?.metadata?.lastSignInTime }}</span>
+            <span class="info-label">Type:</span>
+            <span class="info-value">Public/Private</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Created:</span>
-            <span class="info-value">{{ currentUser()?.metadata?.creationTime }}</span>
+            <span class="info-label">Website:</span>
+            <span class="info-value">university.edu</span>
           </div>
         </div>
 
