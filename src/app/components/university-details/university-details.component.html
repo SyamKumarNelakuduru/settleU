@@ -55,6 +55,10 @@
               </svg>
             </button>
           </h1>
+          <div class="university-about">
+            <p *ngIf="university()!.about">{{ university()!.about }}</p>
+            <p *ngIf="!university()!.about" class="no-data">No information available yet.</p>
+          </div>
           <p class="university-location">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -79,22 +83,6 @@
         </svg>
         Visit Website
       </button>
-    </div>
-
-    <!-- About Section -->
-    <div class="content-section about-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-        </svg>
-        <h2>About</h2>
-      </div>
-      <div class="section-content">
-        <p *ngIf="university()!.about">{{ university()!.about }}</p>
-        <p *ngIf="!university()!.about" class="no-data">No information available yet.</p>
-      </div>
     </div>
 
     <!-- Student Population Section -->
