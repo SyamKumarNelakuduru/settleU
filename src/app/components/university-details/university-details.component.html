@@ -179,5 +179,72 @@
 
       <p *ngIf="!university()!.students" class="no-data">No student data available yet.</p>
     </div>
+
+    <!-- Safety Section -->
+    <div class="content-section safety-section">
+      <div class="section-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <h2>Safety Near Campus</h2>
+      </div>
+      <div class="section-content">
+        <div *ngIf="university()!.safety" class="safety-info">
+          <div class="safety-level" [class.safe]="university()!.safety!.level === 'Safe'" 
+               [class.moderate]="university()!.safety!.level === 'Moderate'" 
+               [class.caution]="university()!.safety!.level === 'Use Caution'">
+            <span class="level-badge">{{ university()!.safety!.level }}</span>
+          </div>
+          <p class="safety-note">{{ university()!.safety!.note }}</p>
+          <p *ngIf="university()!.safety!.source" class="safety-source">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Source: {{ university()!.safety!.source }}
+          </p>
+        </div>
+        <p *ngIf="!university()!.safety" class="no-data">Safety information not available yet.</p>
+      </div>
+    </div>
+
+    <!-- Best Areas to Live Section -->
+    <div class="content-section areas-section">
+      <div class="section-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <h2>Best Areas to Live</h2>
+      </div>
+      <div class="section-content">
+        <div *ngIf="university()!.bestAreasToLive && university()!.bestAreasToLive!.length > 0" class="areas-list">
+          <div *ngFor="let area of university()!.bestAreasToLive" class="area-card">
+            <div class="area-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <div class="area-content">
+              <h3 class="area-name">
+                <a *ngIf="area.link" [href]="area.link" target="_blank" rel="noopener noreferrer" class="area-link">
+                  {{ area.name }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="external-icon">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                  </svg>
+                </a>
+                <span *ngIf="!area.link">{{ area.name }}</span>
+              </h3>
+              <p class="area-reason">{{ area.reason }}</p>
+            </div>
+          </div>
+        </div>
+        <p *ngIf="!university()!.bestAreasToLive || university()!.bestAreasToLive!.length === 0" class="no-data">No area recommendations available yet.</p>
+      </div>
+    </div>
   </div>
 </div>

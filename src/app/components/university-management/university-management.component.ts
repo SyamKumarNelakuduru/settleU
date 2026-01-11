@@ -34,6 +34,7 @@ export class UniversityManagementComponent implements OnInit {
   // University seeding
   isSeeding = false;
   isSeedingDetails = false;
+  isSeedingSafety = false;
   seedingResult: { added: number; skipped: number; errors: string[] } | null = null;
   
   private authService = inject(AuthService);
@@ -192,7 +193,7 @@ export class UniversityManagementComponent implements OnInit {
   async seedUniversityDetails(): Promise<void> {
     if (this.isSeedingDetails) return;
     
-    if (!confirm('This will add About & Student data to all 20 universities. Continue?')) {
+    if (!confirm('This will add About & Student data (real NCES data) to all 20 universities. Continue?')) {
       return;
     }
 
@@ -210,6 +211,30 @@ export class UniversityManagementComponent implements OnInit {
       alert('❌ Error seeding university details: ' + error.message);
     } finally {
       this.isSeedingDetails = false;
+    }
+  }
+
+  async seedSafetyData(): Promise<void> {
+    if (this.isSeedingSafety) return;
+    
+    if (!confirm('This will add Safety info and Best Areas to Live data to all 20 universities. Continue?')) {
+      return;
+    }
+
+    this.isSeedingSafety = true;
+
+    try {
+      const result = await this.universityService.seedUniversitySafetyData();
+      
+      if (result.updated > 0) {
+        alert(`✅ Successfully updated ${result.updated} universities with Safety & Best Areas data!\n${result.errors.length > 0 ? '❌ Errors: ' + result.errors.length : ''}`);
+        await this.loadUniversities();
+      }
+    } catch (error: any) {
+      console.error('Seeding safety data error:', error);
+      alert('❌ Error seeding safety data: ' + error.message);
+    } finally {
+      this.isSeedingSafety = false;
     }
   }
 }
