@@ -644,6 +644,477 @@ export class UniversityService {
   }
 
   /**
+   * Update university with accommodation groups and tips
+   * Use this for adding accommodation information to existing universities
+   */
+  async updateUniversityWithAccommodationData(
+    universityId: string,
+    accommodationGroups: AccommodationGroup[],
+    accommodationTips: string[]
+  ): Promise<void> {
+    try {
+      const docRef = doc(this.db, 'universities', universityId);
+      await setDoc(docRef, { accommodationGroups, accommodationTips }, { merge: true });
+      console.log('✅ Updated university with accommodation data:', universityId);
+    } catch (error) {
+      console.error('Error updating university accommodation data:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Seed universities with accommodation groups and tips
+   * This will add accommodation information to all universities
+   */
+  async seedUniversityAccommodationData(): Promise<{ updated: number; errors: string[] }> {
+    const universityAccommodationData = [
+      {
+        id: 'uiuc',
+        accommodationGroups: [
+          { name: 'UIUC Housing, Sublets & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/uiuchousing', note: 'Most active housing group with 20K+ members' },
+          { name: 'UIUC Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/illinihousing', note: 'Official university-monitored group' },
+          { name: 'UIUC Sublets & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/uiucsublets', note: 'Best for short-term and semester sublets' },
+          { name: 'r/UIUC Housing Thread', platform: 'Website' as const, url: 'https://www.reddit.com/r/UIUC/', note: 'Reddit community with housing megathreads' }
+        ],
+        accommodationTips: [
+          'Start your housing search 3-4 months before your move-in date',
+          'Green Street apartments are closest to campus but can be noisy',
+          'West side apartments (Prospect Ave area) offer better value and quieter environment',
+          'Most leases run August-August, sign early (Dec-Feb) for best options',
+          'Budget $600-900/month for shared apartments, $900-1400 for studios',
+          'Check Smile Student Living, JSM, and CPM for reputable property managers',
+          'Avoid signing without seeing the property or reading reviews online',
+          'University Housing also offers apartments for grad students and families'
+        ]
+      },
+      {
+        id: 'northwestern',
+        accommodationGroups: [
+          { name: 'Northwestern Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/northwesternhousing', note: 'Primary housing group for NU students' },
+          { name: 'Northwestern Off-Campus Life', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/NUoffcampus', note: 'Official university resources and listings' },
+          { name: 'Evanston Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/evanstonhousing', note: 'Broader Evanston community group' },
+          { name: 'NU Housing Resources', platform: 'Website' as const, url: 'https://www.northwestern.edu/residential-services/', note: 'Official university housing portal' }
+        ],
+        accommodationTips: [
+          'Downtown Evanston is walkable but expensive ($1200-2000/month)',
+          'South Evanston offers better value with Purple Line access',
+          'Rogers Park in Chicago is more affordable option with Red Line',
+          'Most students live in Evanston for first 1-2 years',
+          'Start searching in January-February for September move-in',
+          'Check PPM, First Evanston, and Evanston Place for reliable landlords',
+          'Utilities often not included in rent - budget extra $100-150/month',
+          'Consider proximity to Purple Line for easy campus access'
+        ]
+      },
+      {
+        id: 'uchicago',
+        accommodationGroups: [
+          { name: 'UChicago Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/uchicagohousing', note: 'Main housing group for students' },
+          { name: 'UChicago Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/uchicagooffcampus', note: 'University-affiliated listings' },
+          { name: 'Hyde Park Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/hydeparkhousing', note: 'Neighborhood-wide listings' },
+          { name: 'Mac Properties Housing Portal', platform: 'Website' as const, url: 'https://www.macapartments.com/', note: 'Major landlord in Hyde Park area' }
+        ],
+        accommodationTips: [
+          'Hyde Park is the safest and most convenient neighborhood',
+          'Rent ranges $800-1200 for shared, $1200-1800 for studios',
+          'Mac Properties owns many buildings - reliable but corporate',
+          'Start searching 2-3 months before move-in date',
+          'Check university housing office for verified off-campus listings',
+          'Avoid areas south of 61st Street for safety reasons',
+          'Use university shuttle services in evenings',
+          'Many students live in university-owned graduate housing'
+        ]
+      },
+      {
+        id: 'illinois-state',
+        accommodationGroups: [
+          { name: 'ISU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/isuhousing', note: 'Primary student housing group' },
+          { name: 'Normal-Bloomington Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/bnhousing', note: 'Local community housing listings' },
+          { name: 'ISU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/isuoffcampus', note: 'University-monitored group' },
+          { name: 'ISU Housing Portal', platform: 'Website' as const, url: 'https://housing.illinoisstate.edu/', note: 'Official university housing resources' }
+        ],
+        accommodationTips: [
+          'Old Town Normal is most popular for walkability to campus',
+          'Rent typically $400-700/month for shared apartments',
+          'Most leases are August-August, start searching by March',
+          'Check Landmark, Camelot, and Town & Country for student housing',
+          'College Hills area offers affordable options slightly farther from campus',
+          'Many students use Connect Transit (free with ID) for commuting',
+          'Avoid signing leases without visiting - scams do occur',
+          'Budget for utilities separately ($50-100/month per person)'
+        ]
+      },
+      {
+        id: 'siue',
+        accommodationGroups: [
+          { name: 'SIUE Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/siuehousing', note: 'Main student housing community' },
+          { name: 'SIUE Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/siueoffcampus', note: 'University-affiliated listings' },
+          { name: 'Edwardsville/Glen Carbon Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/edwardsvillehousing', note: 'Local area housing group' },
+          { name: 'SIUE Housing Portal', platform: 'Website' as const, url: 'https://www.siue.edu/housing/', note: 'Official housing resources' }
+        ],
+        accommodationTips: [
+          'Consider on-campus apartments - competitive pricing and convenient',
+          'Edwardsville and Glen Carbon are primary off-campus areas',
+          'Rent ranges $500-800/month for shared housing',
+          'Suburban setting means car is highly recommended',
+          'Most affordable housing in Illinois compared to other universities',
+          'Start looking 2 months before semester for best availability',
+          'Check The District, Cougar Village, and Woodland Hall options',
+          'Many students commute from surrounding towns (Maryville, Troy)'
+        ]
+      },
+      {
+        id: 'niu',
+        accommodationGroups: [
+          { name: 'NIU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/niuhousing', note: 'Primary housing group for students' },
+          { name: 'NIU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/niuoffcampus', note: 'University housing resources' },
+          { name: 'DeKalb Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/dekalbhousing', note: 'Community-wide listings' },
+          { name: 'NIU Housing Portal', platform: 'Website' as const, url: 'https://www.niu.edu/housing/', note: 'Official university housing site' }
+        ],
+        accommodationTips: [
+          'DeKalb is small college town - housing is affordable ($400-700/month)',
+          'West Lincoln Highway area has many student apartment complexes',
+          'Start searching by February-March for August move-in',
+          'Check Campus Pointe, The Venue, and Greek Row properties',
+          'Most apartments within walking/biking distance to campus',
+          'Winters are harsh - ensure good heating and insulation',
+          'Many landlords cater specifically to students with flexible terms',
+          'Consider university housing for first year for easier transition'
+        ]
+      },
+      {
+        id: 'luc',
+        accommodationGroups: [
+          { name: 'Loyola Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/loyolahousing', note: 'Main housing group for LUC students' },
+          { name: 'Loyola Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/loyolaoffcampus', note: 'Official university resources' },
+          { name: 'Rogers Park Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/rogersparkhousing', note: 'Lake Shore campus area' },
+          { name: 'Lincoln Park Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/lincolnparkhousing', note: 'Downtown campus area' }
+        ],
+        accommodationTips: [
+          'Rogers Park (Lake Shore campus) is more affordable than Lincoln Park',
+          'Expect $700-1000/month for shared apartments in Rogers Park',
+          'Lincoln Park area costs $1000-1500/month for shared housing',
+          'Red Line provides easy access between both campuses',
+          'Start searching 2-3 months before move-in date',
+          'Check Kiser Group and Habitat properties near campus',
+          'Edgewater is a good middle-ground option for affordability',
+          'Many students live along the Red Line corridor for accessibility'
+        ]
+      },
+      {
+        id: 'depaul',
+        accommodationGroups: [
+          { name: 'DePaul Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/depaulhousing', note: 'Largest housing group for DPU students' },
+          { name: 'DePaul Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/depauloffcampus', note: 'Official university listings' },
+          { name: 'Lincoln Park Apartments', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/lincolnparkapts', note: 'Main campus neighborhood' },
+          { name: 'DePaul Loop Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/depaulloop', note: 'Downtown campus area' }
+        ],
+        accommodationTips: [
+          'Lincoln Park is prime location but expensive ($900-1400/month)',
+          'Lakeview offers good value with excellent public transit',
+          'Loop/South Loop good for downtown campus students',
+          'Start searching in January-February for best selection',
+          'Check PPM, Planned Property Management, and First Choice properties',
+          'Most leases are June 1 or September 1 in Chicago',
+          'Budget for utilities (often not included) - $100-150/month',
+          'Use CTA Red, Brown, or Purple lines for campus access'
+        ]
+      },
+      {
+        id: 'iwu',
+        accommodationGroups: [
+          { name: 'IWU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/iwuhousing', note: 'Student housing community' },
+          { name: 'IWU Off-Campus Life', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/iwuoffcampus', note: 'University-affiliated resources' },
+          { name: 'Bloomington-Normal Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/bnhousing', note: 'Local area listings' },
+          { name: 'IWU Student Life', platform: 'Website' as const, url: 'https://www.iwu.edu/student-life/', note: 'Official university resources' }
+        ],
+        accommodationTips: [
+          'Most students live on campus for all four years',
+          'Limited off-campus housing due to small student body',
+          'Rent is affordable ($500-800/month) for off-campus options',
+          'Downtown Bloomington offers more diverse housing options',
+          'Start searching early if seeking off-campus housing',
+          'University housing offers strong sense of community',
+          'Transportation needed for off-campus living in most cases',
+          'Check with student life office for verified off-campus listings'
+        ]
+      },
+      {
+        id: 'bradley',
+        accommodationGroups: [
+          { name: 'Bradley Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/bradleyhousing', note: 'Main student housing group' },
+          { name: 'Bradley Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/bradleyoffcampus', note: 'University resources' },
+          { name: 'Peoria Area Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/peoriahousing', note: 'Broader community listings' },
+          { name: 'Bradley Housing Portal', platform: 'Website' as const, url: 'https://www.bradley.edu/campus-life/housing/', note: 'Official university site' }
+        ],
+        accommodationTips: [
+          'Bradley campus area offers safest and most convenient housing',
+          'Rent typically $500-800/month for shared apartments',
+          'West Peoria neighborhoods are safer than downtown',
+          'Start searching 2-3 months before move-in',
+          'Many students live in university-owned properties first year',
+          'Check Bradley Housing office for approved landlord list',
+          'Car recommended for off-campus living in Peoria',
+          'Be selective about neighborhoods - crime varies significantly'
+        ]
+      },
+      {
+        id: 'siu-carbondale',
+        accommodationGroups: [
+          { name: 'SIU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/siuhousing', note: 'Primary student housing group' },
+          { name: 'SIU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/siuoffcampus', note: 'University-affiliated listings' },
+          { name: 'Carbondale Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/carbondalehousing', note: 'Community-wide group' },
+          { name: 'SIU Housing Portal', platform: 'Website' as const, url: 'https://housing.siu.edu/', note: 'Official university resources' }
+        ],
+        accommodationTips: [
+          'Very affordable housing - $400-700/month for shared apartments',
+          'East Grand Avenue area is popular with students',
+          'Most housing within walking/biking distance to campus',
+          'Start searching 1-2 months before semester starts',
+          'Check Saluki Row, Campus Pointe, and local landlords',
+          'Many houses available for rent in addition to apartments',
+          'Consider roommate situations for best value',
+          'University housing available for upperclassmen and grad students'
+        ]
+      },
+      {
+        id: 'neiu',
+        accommodationGroups: [
+          { name: 'NEIU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/neiuhousing', note: 'Student housing community' },
+          { name: 'NEIU Commuter Students', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/neiucommuters', note: 'Resources for commuting students' },
+          { name: 'Albany Park Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/albanyparkhousing', note: 'Near-campus neighborhood' },
+          { name: 'NEIU Student Resources', platform: 'Website' as const, url: 'https://www.neiu.edu/student-life', note: 'Official university resources' }
+        ],
+        accommodationTips: [
+          'NEIU is primarily commuter school - limited housing culture',
+          'Albany Park and North Park offer closest neighborhoods',
+          'Rent ranges $700-1100/month for shared Chicago apartments',
+          'Brown Line provides good access to campus',
+          'Many students live at home or throughout Chicago area',
+          'No university-owned housing available',
+          'Consider proximity to Brown Line stations for commuting',
+          'Check Chicago Apartment Finders for area listings'
+        ]
+      },
+      {
+        id: 'chicago-state',
+        accommodationGroups: [
+          { name: 'CSU Students Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/csuhousing', note: 'Student housing group' },
+          { name: 'CSU Commuters & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/csucommuters', note: 'Commuter resources' },
+          { name: 'South Side Chicago Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/southsidehousing', note: 'Area housing listings' },
+          { name: 'CSU Housing Office', platform: 'Website' as const, url: 'https://www.csu.edu/studenthousing/', note: 'University housing resources' }
+        ],
+        accommodationTips: [
+          'Primarily commuter school - many students live at home',
+          'On-campus housing available and recommended for safety',
+          'South Shore and Chatham are nearby residential areas',
+          'Research neighborhoods carefully for safety',
+          'Public transit access varies - plan commute carefully',
+          'Consider university housing for convenience and security',
+          'Many students carpool or drive to campus',
+          'Contact housing office for approved off-campus options'
+        ]
+      },
+      {
+        id: 'elmhurst',
+        accommodationGroups: [
+          { name: 'Elmhurst Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/elmhursthousing', note: 'Student housing community' },
+          { name: 'Elmhurst University Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/euhhousing', note: 'University-specific group' },
+          { name: 'Elmhurst/Villa Park Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/elmhurstvillapark', note: 'Local area listings' },
+          { name: 'EU Housing Portal', platform: 'Website' as const, url: 'https://www.elmhurst.edu/campus-life/housing/', note: 'Official university resources' }
+        ],
+        accommodationTips: [
+          'Most students live on campus in residence halls',
+          'Downtown Elmhurst offers limited off-campus apartments',
+          'Expect $800-1200/month for apartments in Elmhurst',
+          'Villa Park offers more affordable alternatives nearby',
+          'Suburban location - car helpful but not essential',
+          'Metra Union Pacific West line connects to Chicago',
+          'Safe, family-friendly neighborhoods throughout area',
+          'Start searching 2 months ahead if planning off-campus'
+        ]
+      },
+      {
+        id: 'millikin',
+        accommodationGroups: [
+          { name: 'Millikin Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/millikinhousing', note: 'Student housing group' },
+          { name: 'Millikin Off-Campus Life', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/millikinoffcampus', note: 'University resources' },
+          { name: 'Decatur Area Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/decaturhousing', note: 'Local housing listings' },
+          { name: 'Millikin Residence Life', platform: 'Website' as const, url: 'https://millikin.edu/student-life/housing', note: 'Official housing info' }
+        ],
+        accommodationTips: [
+          'Most students live on campus all four years',
+          'Very affordable off-campus housing ($400-700/month)',
+          'West End neighborhood near campus is popular',
+          'Small school means limited off-campus housing market',
+          'Start searching early for off-campus options',
+          'Car recommended for off-campus living',
+          'Check with residence life for housing resources',
+          'On-campus housing creates strong community bonds'
+        ]
+      },
+      {
+        id: 'wiu',
+        accommodationGroups: [
+          { name: 'WIU Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/wiuhousing', note: 'Main student housing group' },
+          { name: 'WIU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/wiuoffcampus', note: 'University resources' },
+          { name: 'Macomb Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/macombhousing', note: 'Community listings' },
+          { name: 'WIU Housing Portal', platform: 'Website' as const, url: 'https://www.wiu.edu/student_services/housing/', note: 'Official university site' }
+        ],
+        accommodationTips: [
+          'Extremely affordable housing in Macomb ($350-600/month)',
+          'Small college town - most housing within walking distance',
+          'Start searching 1-2 months before semester',
+          'Many apartment complexes cater specifically to students',
+          'Downtown Macomb offers some apartment options',
+          'Consider on-campus housing for convenience and community',
+          'Winter weather harsh - ensure good heating and insulation',
+          'Check University Housing office for approved landlord list'
+        ]
+      },
+      {
+        id: 'eiu',
+        accommodationGroups: [
+          { name: 'EIU Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/eiuhousing', note: 'Primary student housing group' },
+          { name: 'EIU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/eiuoffcampus', note: 'University-affiliated listings' },
+          { name: 'Charleston Housing & Sublets', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/charlestonilhousing', note: 'Community-wide group' },
+          { name: 'EIU Housing Portal', platform: 'Website' as const, url: 'https://www.eiu.edu/housing/', note: 'Official university resources' }
+        ],
+        accommodationTips: [
+          'Very affordable Charleston housing ($400-700/month)',
+          'Most apartments within walking/biking distance to campus',
+          'Start searching by March for August move-in',
+          'Check Unique Properties, Lincoln Wood Pinetree, and local landlords',
+          'Many houses available for group rentals',
+          'On-campus housing guaranteed for freshmen',
+          'Small town atmosphere - safe and friendly',
+          'Budget for utilities separately in most rentals'
+        ]
+      },
+      {
+        id: 'augustana',
+        accommodationGroups: [
+          { name: 'Augustana Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/augustanahousing', note: 'Student housing community' },
+          { name: 'Augustana College Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/augiehousing', note: 'College-affiliated group' },
+          { name: 'Quad Cities Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/quadcitieshousing', note: 'Regional housing listings' },
+          { name: 'Augustana Residence Life', platform: 'Website' as const, url: 'https://www.augustana.edu/student-life/housing', note: 'Official housing resources' }
+        ],
+        accommodationTips: [
+          'Most students live on campus all four years',
+          'Limited off-campus housing market due to small enrollment',
+          'Rock Island and Moline offer affordable apartments ($500-800/month)',
+          'Broadway District near campus has some rental options',
+          'Consider on-campus living for full college experience',
+          'Car helpful but not required for on-campus students',
+          'Start searching early if planning off-campus living',
+          'Contact residence life for housing guidance'
+        ]
+      },
+      {
+        id: 'benedictine',
+        accommodationGroups: [
+          { name: 'Benedictine Housing & Roommates', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/benedictinehousing', note: 'Student housing group' },
+          { name: 'BenU Off-Campus Life', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/benuoffcampus', note: 'University resources' },
+          { name: 'Lisle/Naperville Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/lislehousing', note: 'Local area listings' },
+          { name: 'BenU Housing Portal', platform: 'Website' as const, url: 'https://www.ben.edu/student-life/housing/', note: 'Official university site' }
+        ],
+        accommodationTips: [
+          'On-campus housing available and convenient',
+          'Lisle and Naperville areas more expensive than other IL towns',
+          'Expect $800-1200/month for shared apartments',
+          'Suburban setting - car recommended for off-campus',
+          'Metra BNSF line connects to Chicago from nearby stations',
+          'Safe neighborhoods throughout Lisle/Naperville area',
+          'Start searching 2-3 months before semester',
+          'Many commuter students due to Chicago proximity'
+        ]
+      },
+      {
+        id: 'rockford',
+        accommodationGroups: [
+          { name: 'Rockford Univ Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/rockfordhousing', note: 'Student housing community' },
+          { name: 'RU Off-Campus Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/ruoffcampus', note: 'University resources' },
+          { name: 'Rockford Area Housing', platform: 'Facebook' as const, url: 'https://www.facebook.com/groups/rockfordilhousing', note: 'Local housing group' },
+          { name: 'RU Student Life', platform: 'Website' as const, url: 'https://www.rockford.edu/campus-life/housing/', note: 'Official university info' }
+        ],
+        accommodationTips: [
+          'Small university - many students live on campus',
+          'Affordable off-campus housing ($500-800/month)',
+          'East Rockford neighborhoods generally safer',
+          'Research neighborhoods carefully before committing',
+          'Loves Park offers family-friendly alternative',
+          'Car recommended for off-campus living',
+          'Contact housing office for neighborhood recommendations',
+          'On-campus housing provides good community for small school'
+        ]
+      }
+    ];
+
+    let updated = 0;
+    const errors: string[] = [];
+
+    console.log('🏠 Starting university accommodation data seeding...');
+
+    for (const uni of universityAccommodationData) {
+      try {
+        await this.updateUniversityWithAccommodationData(
+          uni.id, 
+          uni.accommodationGroups, 
+          uni.accommodationTips
+        );
+        updated++;
+        console.log(`✅ Updated ${uni.id}`);
+      } catch (error: any) {
+        const errorMsg = `❌ Error updating ${uni.id}: ${error.message}`;
+        console.error(errorMsg);
+        errors.push(errorMsg);
+      }
+    }
+
+    const result = { updated, errors };
+    console.log('🎉 University accommodation data seeding complete:', result);
+    return result;
+  }
+
+  /**
+   * Remove accommodation data from universities
+   * This will delete accommodationGroups and accommodationTips fields
+   */
+  async removeAccommodationData(): Promise<{ updated: number; errors: string[] }> {
+    const universityIds = [
+      'uiuc', 'northwestern', 'uchicago', 'illinois-state', 'siue', 'niu',
+      'luc', 'depaul', 'iwu', 'bradley', 'siu-carbondale', 'neiu',
+      'chicago-state', 'elmhurst', 'millikin', 'wiu', 'eiu',
+      'augustana', 'benedictine', 'rockford'
+    ];
+
+    let updated = 0;
+    const errors: string[] = [];
+
+    console.log('🗑️  Starting accommodation data removal...');
+
+    for (const id of universityIds) {
+      try {
+        const docRef = doc(this.db, 'universities', id);
+        await setDoc(docRef, { 
+          accommodationGroups: null,
+          accommodationTips: null 
+        }, { merge: true });
+        updated++;
+        console.log(`✅ Removed accommodation data from ${id}`);
+      } catch (error: any) {
+        const errorMsg = `❌ Error removing data from ${id}: ${error.message}`;
+        console.error(errorMsg);
+        errors.push(errorMsg);
+      }
+    }
+
+    const result = { updated, errors };
+    console.log('🎉 Accommodation data removal complete:', result);
+    return result;
+  }
+
+  /**
    * Delete a university from Firestore
    */
   async deleteUniversity(id: string): Promise<void> {
@@ -653,5 +1124,33 @@ export class UniversityService {
       console.error('Error deleting university:', error);
       throw error;
     }
+  }
+
+  /**
+   * Delete all universities from Firestore
+   * WARNING: This will delete all university data!
+   */
+  async deleteAllUniversities(): Promise<{ deleted: number; errors: string[] }> {
+    const universities = await this.getAllUniversities();
+    let deleted = 0;
+    const errors: string[] = [];
+
+    console.log('⚠️  WARNING: Deleting all universities...');
+
+    for (const uni of universities) {
+      try {
+        await this.deleteUniversity(uni.id);
+        deleted++;
+        console.log(`✅ Deleted ${uni.id}`);
+      } catch (error: any) {
+        const errorMsg = `❌ Error deleting ${uni.id}: ${error.message}`;
+        console.error(errorMsg);
+        errors.push(errorMsg);
+      }
+    }
+
+    const result = { deleted, errors };
+    console.log('🎉 Deletion complete:', result);
+    return result;
   }
 }
