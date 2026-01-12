@@ -553,6 +553,124 @@
     }
   }
 
+  .country-breakdown-card {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: 0.5rem;
+
+    .breakdown-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+
+      svg {
+        color: #f093fb;
+        flex-shrink: 0;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+      }
+    }
+
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      .breakdown-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .country-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .country-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.938rem;
+          }
+
+          .country-count {
+            font-size: 0.875rem;
+            color: #64748b;
+          }
+        }
+
+        .percentage-bar {
+          position: relative;
+          height: 28px;
+          background: #f1f5f9;
+          border-radius: 8px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          padding: 0 0.75rem;
+
+          .percentage-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 8px;
+            transition: width 0.6s ease;
+            opacity: 0.8;
+          }
+
+          .percentage-text {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            font-size: 0.813rem;
+            color: #1e293b;
+            margin-left: auto;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 1.25rem;
+
+      .breakdown-header {
+        h3 {
+          font-size: 1.063rem;
+        }
+      }
+
+      .breakdown-list {
+        .breakdown-item {
+          .country-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+          }
+
+          .percentage-bar {
+            height: 24px;
+            padding: 0 0.625rem;
+
+            .percentage-text {
+              font-size: 0.75rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .data-source-card {
     grid-column: 1 / -1;
     display: flex;

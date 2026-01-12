@@ -5,11 +5,12 @@ import { UniversityService } from '../../services/university.service';
 import { CompareService } from '../../services/compare.service';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
+import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
 @Component({
   selector: 'app-university-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InternationalStudentDemographicsComponent],
   templateUrl: './university-details.component.html',
   styleUrl: './university-details.component.scss'
 })
@@ -17,6 +18,7 @@ export class UniversityDetailsComponent implements OnInit {
   university = signal<University | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
+  isDemographicModalOpen = signal(false);
 
   private universityId: string | null = null;
   private route = inject(ActivatedRoute);
@@ -82,7 +84,26 @@ export class UniversityDetailsComponent implements OnInit {
     }
   }
 
-  async addToCompare(university: University, event?: Event): Promise<void> {
+      getInternationalCountryBreakdown(): Array<{ country: string; count: number; percentage: number }> {
+        const students = this.university()?.students;
+        if (!students?.internationalCountryBreakdown || !students.international || students.international === 0) {
+          return [];
+        }
+
+        const breakdown = students.internationalCountryBreakdown;
+        const totalInternational = students.international;
+
+        // Convert to array and calculate percentages
+        return Object.entries(breakdown)
+          .map(([country, count]) => ({
+            country,
+            count: count as number,
+            percentage: ((count as number) / totalInternational) * 100
+          }))
+          .sort((a, b) => b.count - a.count); // Sort by count descending
+      }
+
+      async addToCompare(university: University, event?: Event): Promise<void> {
     if (event) {
       event.stopPropagation();
     }
@@ -141,5 +162,13 @@ export class UniversityDetailsComponent implements OnInit {
       'Never pay deposits before seeing the lease.',
       'Prefer university-affiliated housing resources when possible.'
     ];
+  }
+
+  openDemographicModal(): void {
+    this.isDemographicModalOpen.set(true);
+  }
+
+  closeDemographicModal(): void {
+    this.isDemographicModalOpen.set(false);
   }
 }

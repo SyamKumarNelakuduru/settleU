@@ -16,6 +16,7 @@ export interface StudentData {
   domestic: number;
   year: number;
   source: string;
+  internationalCountryBreakdown?: { [country: string]: number }; // Country name -> student count
 }
 
 export interface AreaToLive {

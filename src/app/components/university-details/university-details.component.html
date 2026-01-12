@@ -122,7 +122,7 @@
           </div>
         </div>
         
-        <div class="stat-card international-card">
+        <div class="stat-card international-card" (click)="openDemographicModal()" style="cursor: pointer;">
           <div class="card-background"></div>
           <div class="card-content-wrapper">
             <div class="stat-icon-wrapper">
@@ -140,6 +140,30 @@
               <div class="stat-trend">
                 <span class="trend-icon">🌍</span>
                 <span class="trend-text">{{ ((university()!.students!.international / university()!.students!.total) * 100).toFixed(1) }}% of total</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- International Country Breakdown -->
+        <div class="country-breakdown-card" *ngIf="getInternationalCountryBreakdown().length > 0">
+          <div class="breakdown-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <h3>International Students by Country</h3>
+          </div>
+          <div class="breakdown-list">
+            <div class="breakdown-item" *ngFor="let item of getInternationalCountryBreakdown()">
+              <div class="country-info">
+                <span class="country-name">{{ item.country }}</span>
+                <span class="country-count">{{ item.count.toLocaleString() }} students</span>
+              </div>
+              <div class="percentage-bar">
+                <div class="percentage-fill" [style.width.%]="item.percentage"></div>
+                <span class="percentage-text">{{ item.percentage.toFixed(1) }}%</span>
               </div>
             </div>
           </div>
@@ -316,3 +340,10 @@
     </div>
   </div>
 </div>
+
+<!-- International Student Demographics Modal -->
+<app-international-student-demographics
+  [isOpen]="isDemographicModalOpen()"
+  [universityName]="university()?.name || ''"
+  (close)="closeDemographicModal()">
+</app-international-student-demographics>
