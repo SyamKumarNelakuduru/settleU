@@ -1,0 +1,239 @@
+// Demographic Modal Styles
+.demographic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-out;
+  overflow-y: auto;
+}
+
+.demographic-modal {
+  position: relative;
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  animation: slideUpModal 0.4s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10001;
+
+  svg {
+    color: #64748b;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  &:active {
+    transform: rotate(90deg) scale(0.95);
+  }
+}
+
+.modal-content {
+  padding: 2.5rem;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f1f5f9;
+
+  .modal-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+
+    svg {
+      color: white;
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.3px;
+  }
+
+  .modal-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.modal-body {
+  .demographic-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .chart-container {
+      position: relative;
+      height: 450px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .stat-label {
+          font-size: 0.875rem;
+          color: #64748b;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: #0f172a;
+          font-variant-numeric: tabular-nums;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .demographic-modal-overlay {
+    padding: 1rem;
+  }
+
+  .demographic-modal {
+    border-radius: 20px;
+    max-height: 95vh;
+  }
+
+  .modal-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .modal-header {
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+
+  .modal-body {
+    .demographic-info {
+      .chart-container {
+        height: 300px;
+      }
+
+      .summary-stats {
+        grid-template-columns: 1fr;
+        padding: 1.25rem;
+        gap: 1rem;
+
+        .stat-item {
+          .stat-value {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  .modal-close-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

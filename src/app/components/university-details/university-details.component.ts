@@ -1,48 +1,31 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UniversityDetailsService, UniversityDetail } from '../../services/university-details.service';
+import { UniversityService } from '../../services/university.service';
+import { CompareService } from '../../services/compare.service';
+import { FlyToCompareService } from '../../services/fly-to-compare.service';
+import { University } from '../../models/university.model';
+import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
 @Component({
   selector: 'app-university-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InternationalStudentDemographicsComponent],
   templateUrl: './university-details.component.html',
   styleUrl: './university-details.component.scss'
 })
 export class UniversityDetailsComponent implements OnInit {
-  universityDetails = signal<UniversityDetail | null>(null);
+  university = signal<University | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
+  isDemographicModalOpen = signal(false);
 
-  universityId: string | null = null;
+  private universityId: string | null = null;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private universityDetailsService = inject(UniversityDetailsService);
-
-  // Map university IDs to their full names
-  private universityNames: { [key: string]: string } = {
-    'uiuc': 'University of Illinois Urbana-Champaign',
-    'northwestern': 'Northwestern University',
-    'uchicago': 'University of Chicago',
-    'illinois-state': 'Illinois State University',
-    'siue': 'Southern Illinois University Edwardsville',
-    'niu': 'Northern Illinois University',
-    'luc': 'Loyola University Chicago',
-    'depaul': 'DePaul University',
-    'iwu': 'Illinois Wesleyan University',
-    'bradley': 'Bradley University',
-    'siu-carbondale': 'Southern Illinois University Carbondale',
-    'neiu': 'Northeastern Illinois University',
-    'chicago-state': 'Chicago State University',
-    'elmhurst': 'Elmhurst University',
-    'millikin': 'Millikin University',
-    'wiu': 'Western Illinois University',
-    'eiu': 'Eastern Illinois University',
-    'augustana': 'Augustana College',
-    'benedictine': 'Benedictine University',
-    'rockford': 'Rockford University'
-  };
+  private universityService = inject(UniversityService);
+  private compareService = inject(CompareService);
+  private flyToCompareService = inject(FlyToCompareService);
 
   ngOnInit() {
     this.universityId = this.route.snapshot.paramMap.get('id');
@@ -58,27 +41,20 @@ export class UniversityDetailsComponent implements OnInit {
     try {
       this.isLoading.set(true);
       this.errorMessage.set(null);
+      console.log('Fetching university with ID:', id);
+      const data = await this.universityService.getUniversityById(id);
+      console.log('University data received:', data);
       
-      // Get university name from the mapping
-      const universityName = this.universityNames[id];
-      
-      if (!universityName) {
-        console.warn('No university name found for ID:', id);
+      if (data) {
+        this.university.set(data);
+        console.log('University data loaded successfully');
+      } else {
+        console.warn('No university found for ID:', id);
         this.errorMessage.set('University not found');
-        this.isLoading.set(false);
-        return;
       }
-      
-      console.log('Fetching AI-powered details for:', universityName);
-      
-      // Fetch AI-generated details directly from Gemini
-      const details = await this.universityDetailsService.getUniversityDetails(universityName);
-      this.universityDetails.set(details);
-      console.log('AI university details loaded successfully:', details);
-      
     } catch (error) {
-      console.error('Error loading university details:', error);
-      this.errorMessage.set('Failed to load university details. Please try again.');
+      console.error('Error loading university:', error);
+      this.errorMessage.set('Failed to load university details');
     } finally {
       this.isLoading.set(false);
     }
@@ -94,4 +70,105 @@ export class UniversityDetailsComponent implements OnInit {
     }
   }
 
+  handleImageError(event: any) {
+    // Fallback to a default gradient if image fails to load
+    event.target.style.display = 'none';
+    if (event.target.parentElement) {
+      event.target.parentElement.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+      event.target.parentElement.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+      `;
+    }
+  }
+
+      getInternationalCountryBreakdown(): Array<{ country: string; count: number; percentage: number }> {
+        const students = this.university()?.students;
+        if (!students?.internationalCountryBreakdown || !students.international || students.international === 0) {
+          return [];
+        }
+
+        const breakdown = students.internationalCountryBreakdown;
+        const totalInternational = students.international;
+
+        // Convert to array and calculate percentages
+        return Object.entries(breakdown)
+          .map(([country, count]) => ({
+            country,
+            count: count as number,
+            percentage: ((count as number) / totalInternational) * 100
+          }))
+          .sort((a, b) => b.count - a.count); // Sort by count descending
+      }
+
+      async addToCompare(university: University, event?: Event): Promise<void> {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (!this.universityId) {
+      console.error('Cannot add to compare: university ID not found');
+      return;
+    }
+
+    // Check if university can be added (only checks if already in list)
+    if (!this.compareService.canAddUniversity(this.universityId)) {
+      console.log('Already in compare list:', university.name);
+      return;
+    }
+
+    // Get the source element (the compare icon button)
+    const sourceElement = event?.currentTarget as HTMLElement;
+    if (!sourceElement) {
+      console.warn('Source element not found for animation');
+      return;
+    }
+
+    const compareUniversity = {
+      id: this.universityId,
+      name: university.name,
+      city: university.city,
+      state: university.state,
+      type: university.type,
+      website: university.website
+    };
+
+    // Trigger fly animation (uses CSS selector for target element)
+    await this.flyToCompareService.animate(sourceElement, '.compare-btn');
+
+    // Add to compare list after animation completes
+    const result = this.compareService.addToCompare(compareUniversity);
+    if (result.success) {
+      console.log('Added to compare:', university.name);
+    }
+  }
+
+  openGroupUrl(url: string): void {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  getAccommodationTips(): string[] {
+    const uni = this.university();
+    if (uni?.accommodationTips && uni.accommodationTips.length > 0) {
+      return uni.accommodationTips;
+    }
+    
+    // Default tips if none provided
+    return [
+      'Never pay deposits before seeing the lease.',
+      'Prefer university-affiliated housing resources when possible.'
+    ];
+  }
+
+  openDemographicModal(): void {
+    this.isDemographicModalOpen.set(true);
+  }
+
+  closeDemographicModal(): void {
+    this.isDemographicModalOpen.set(false);
+  }
 }

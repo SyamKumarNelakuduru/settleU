@@ -36,6 +36,7 @@ export interface University {
     domestic: number;
     year: number;
     source: string;
+    internationalCountryBreakdown?: { [country: string]: number };
   };
   safety?: SafetyInfo;
   bestAreasToLive?: AreaToLive[];
