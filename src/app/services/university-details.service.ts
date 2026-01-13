@@ -1,6 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { AiService } from './ai.service';
 
+export interface CampusJob {
+  title: string; // Job title; example "Graduate Assistant"
+  description: string; // Brief job description; example "Assist professors with research and teaching duties"
+  hourlyRate: string; // Pay rate range; example "$15-20/hour"
+  availability: string; // Availability info; example "Available for graduate students"
+}
+
 export interface UniversityDetail {
   name: string; // University name; example "Harvard University"
   description: string; // Brief description of the university; example "Harvard University is a prestigious Ivy League institution located in Cambridge, Massachusetts."
@@ -10,6 +17,8 @@ export interface UniversityDetail {
   website: string; // Official website URL; example "https://www.harvard.edu"
   address: Address; // Address object containing street, city, state, country, and zip code
   student_population: StudentPopulation; // Student population details
+  campus_jobs?: CampusJob[]; // Optional list of on-campus job opportunities
+  indian_amenities?: string[]; // Optional list of Indian restaurants, grocery stores, and cultural amenities; example ["Maharaja Indian Restaurant", "India Bazaar Grocery", "Indian Spice House"]
   near_by_attractions?: string[]; // Optional list of nearby attractions; example ["Museum of Fine Arts", "Fenway Park"]
   near_by_transportation?: string[]; // Optional list of nearby transportation options; example ["Harvard Square T Station", "Bus routes 1, 66, 86"]
   near_by_housing_options?: string[]; // Optional list of nearby housing options; example ["Apartments on Mass Ave", "Student dormitories"]
@@ -96,6 +105,27 @@ The JSON must follow this exact structure:
     },
     "domestic_students": domestic_number
   },
+  "campus_jobs": [
+    {
+      "title": "Graduate Assistant (GA)",
+      "description": "Brief description of GA responsibilities and departments",
+      "hourlyRate": "$XX-XX/hour or stipend amount",
+      "availability": "Available for graduate students enrolled in specific programs"
+    },
+    {
+      "title": "Teaching Assistant (TA)",
+      "description": "Brief description of TA responsibilities",
+      "hourlyRate": "$XX-XX/hour",
+      "availability": "Available for graduate and advanced undergraduate students"
+    },
+    {
+      "title": "Dining Services",
+      "description": "Brief description of dining hall positions",
+      "hourlyRate": "$XX-XX/hour",
+      "availability": "Available for all students"
+    }
+  ],
+  "indian_amenities": ["Indian Restaurant 1", "Indian Grocery Store 1", "Indian Restaurant 2", "Indian Grocery Store 2", "Indian Cultural Center or Temple"],
   "near_by_attractions": ["Attraction1", "Attraction2", "Attraction3", "Attraction4", "Attraction5"],
   "near_by_transportation": ["Transit1", "Transit2", "Transit3", "Transit4"],
   "near_by_housing_options": ["Housing1", "Housing2", "Housing3", "Housing4"],
@@ -125,7 +155,9 @@ Requirements:
   * Include popular student hangouts and practical necessities
 - For transportation: Include public transit options, stations, bus routes, bike shares, etc.
 - For housing: Include nearby neighborhoods, apartment complexes, student housing areas
-- For food: Include diverse cuisine options, popular student restaurants, cafes
+- For food: Include diverse cuisine options, popular student restaurants, cafes (exclude Indian food from this list)
+- For indian_amenities: Include 4-6 Indian-specific places like Indian restaurants, Indian grocery stores, Indian sweet shops, temples, cultural centers within 1-10 miles of campus
+- For campus_jobs: Include 3-5 common on-campus job opportunities (GA, TA, Dining Services, Library, Research Assistant, etc.) with realistic pay rates and availability requirements
 - For need_car: Set to false if campus is walkable and has good public transit; true if car is beneficial
 - Ensure all fields are filled with accurate information
 - Return ONLY the JSON object, nothing else`;
