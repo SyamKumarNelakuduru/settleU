@@ -55,6 +55,40 @@ export interface University {
   createdAt?: any;
 }
 
+export interface UniversityDetail {
+  name: string; // University name; example "Harvard University"
+  description: string; // Brief description of the university; example "Harvard University is a prestigious Ivy League institution located in Cambridge, Massachusetts."
+  location: string; // Location of the university; example "Cambridge, Massachusetts, USA"
+  established: number; // Year the university was established; example 1636
+  notablePrograms: string[]; // List of notable academic programs; example ["Law", "Medicine", "Business"]
+  website: string; // Official website URL; example "https://www.harvard.edu"
+  address: Address; // Address object containing street, city, state, country, and zip code
+  student_population: StudentPopulation; // Student population details
+}
+
+export interface Address {
+  street: string; // Street address; example "Massachusetts Hall, Cambridge, MA 02138"
+  city: string; // City; example "Cambridge"
+  state: string; // State or province; example "Massachusetts"
+  country: string; // Country; example "USA"
+  zipCode: string; // Postal code; example "02138"
+}
+
+export interface StudentPopulation {
+  total_students: number; // Total number of students; example 20000
+  undergraduate_students: number; // Number of undergraduate students; example 15000
+  graduate_students: number; // Number of graduate students; example 5000
+  international_students: InternationStudents; // International student details
+  domestic_students: number; // Number of domestic students; example 16000
+}
+
+export interface InternationStudents {
+  total_international_students: number; // Total number of international students; example 4000
+  countries_represented: number; // Number of countries represented; example 100
+  top_countries: string[]; // List of top countries by student count; example ["China", "India", "South Korea"]
+  countires_percentage_population: { [country: string]: number }; // Percentage of total student population by country; example { "China": 10, "India": 8, "South Korea": 5 }
+}
+
 @Injectable({
   providedIn: 'root'
 })

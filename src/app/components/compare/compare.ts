@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { CompareService, CompareUniversity } from '../../services/compare.service';
+import { AiService } from '../../services/ai.service';
 
 @Component({
   selector: 'app-compare',
@@ -17,6 +18,7 @@ export class Compare implements OnInit {
 
   private compareService = inject(CompareService);
   private router = inject(Router);
+  private aiService = inject(AiService);
 
   ngOnInit(): void {
     this.maxCompareCount = this.compareService.getMaxCompareCount();
@@ -111,5 +113,14 @@ export class Compare implements OnInit {
    */
   isSelectionLimitReached(): boolean {
     return this.selectedUniversities.size >= this.maxCompareCount;
+  }
+
+  /**
+   * Test AI service with a sample prompt
+   */
+  async testAI(event: Event): Promise<void> {
+    event.stopPropagation();
+    console.log('Testing Gemini AI...');
+    await this.aiService.testGemini();
   }
 }

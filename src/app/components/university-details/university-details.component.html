@@ -2,7 +2,7 @@
   <!-- Loading State -->
   <div class="loading-container" *ngIf="isLoading()">
     <div class="spinner"></div>
-    <p>Loading university details...</p>
+    <p>Loading AI-powered university insights...</p>
   </div>
 
   <!-- Error State -->
@@ -19,7 +19,7 @@
   </div>
 
   <!-- University Details -->
-  <div class="details-container" *ngIf="university() && !isLoading()">
+  <div class="details-container" *ngIf="universityDetails() && !isLoading()">
     <!-- Header Section -->
     <div class="page-header">
       <button class="back-btn" (click)="goBack()">
@@ -31,288 +31,543 @@
       </button>
     </div>
 
-    <!-- University Info Card -->
-    <div class="university-card">
-      <div class="university-header">
-        <div class="university-icon">
-          <img 
-            [src]="'https://ui-avatars.com/api/?name=' + university()!.name + '&size=200&background=667eea&color=fff&bold=true&font-size=0.4'" 
-            [alt]="university()!.name + ' logo'"
-            class="university-logo"
-            (error)="handleImageError($event)"
-          />
+    <!-- Hero Section with University Name and Description -->
+    <div class="hero-card">
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <span>University Profile</span>
         </div>
-        <div class="university-info">
-          <h1 class="university-name">
-            <span>{{ university()!.name }}</span>
-
-            <button class="compare-icon-btn" (click)="addToCompare(university()!, $event)" title="Add to Compare">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-            </button>
-          </h1>
-          <div class="university-about">
-            <p *ngIf="university()!.about">{{ university()!.about }}</p>
-            <p *ngIf="!university()!.about" class="no-data">No information available yet.</p>
-          </div>
-          <p class="university-location">
+        <h1 class="hero-title">{{ universityDetails()!.name }}</h1>
+        <p class="hero-description">{{ universityDetails()!.description }}</p>
+        
+        <div class="hero-meta">
+          <div class="meta-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            {{ university()!.city }}, {{ university()!.state }}
-          </p>
-          <div class="badges">
-            <span class="type-badge" [class.public]="university()!.type === 'Public'" [class.private]="university()!.type === 'Private'">
-              {{ university()!.type }}
-            </span>
+            <span>{{ universityDetails()!.location }}</span>
           </div>
+          <div class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Established {{ universityDetails()!.established }}</span>
+          </div>
+          <button class="website-btn-hero" *ngIf="universityDetails()!.website" (click)="openWebsite(universityDetails()!.website)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            Visit Website
+          </button>
         </div>
       </div>
-
-      <!-- Website Button -->
-      <button class="website-btn" *ngIf="university()!.website" (click)="openWebsite(university()!.website)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-        Visit Website
-      </button>
     </div>
 
-    <!-- Student Population Section -->
-    <div class="content-section student-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <h2>Student Population</h2>
-      </div>
+    <!-- Two Column Layout -->
+    <div class="content-grid">
+      <!-- Left Column -->
+      <div class="left-column">
+        
+        <!-- Notable Programs -->
+        <div class="content-card programs-card">
+          <div class="card-header">
+            <div class="header-icon programs-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <h2>Notable Programs</h2>
+          </div>
+          <div class="programs-grid">
+            <div *ngFor="let program of universityDetails()!.notablePrograms" class="program-chip">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              {{ program }}
+            </div>
+          </div>
+        </div>
 
-      <div class="student-stats" *ngIf="university()!.students">
-        <div class="stat-card total-card">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon total">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Student Population -->
+        <div class="content-card population-card">
+          <div class="card-header">
+            <div class="header-icon population-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h2>Student Population</h2>
+          </div>
+          
+          <div class="population-stats">
+            <div class="stat-item primary-stat">
+              <div class="stat-icon-circle total">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                   <circle cx="9" cy="7" r="4"></circle>
                   <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </div>
+              <div class="stat-details">
+                <span class="stat-label">Total Students</span>
+                <span class="stat-value">{{ universityDetails()!.student_population.total_students.toLocaleString() }}</span>
+              </div>
             </div>
-            <div class="stat-details">
-              <p class="stat-label">Total Students</p>
-              <p class="stat-value">{{ university()!.students!.total.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">📊</span>
-                <span class="trend-text">Campus Population</span>
+
+            <div class="secondary-stats">
+              <div class="stat-item">
+                <div class="stat-mini-icon undergrad">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label-sm">Undergraduate</span>
+                  <span class="stat-value-sm">{{ universityDetails()!.student_population.undergraduate_students.toLocaleString() }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-mini-icon graduate">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label-sm">Graduate</span>
+                  <span class="stat-value-sm">{{ universityDetails()!.student_population.graduate_students.toLocaleString() }}</span>
+                </div>
+              </div>
+
+              <div class="stat-item">
+                <div class="stat-mini-icon domestic">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  </svg>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-label-sm">Domestic</span>
+                  <span class="stat-value-sm">{{ universityDetails()!.student_population.domestic_students.toLocaleString() }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <div class="stat-card international-card">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon international">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="2" y1="12" x2="22" y2="12"></line>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                </svg>
+
+        <!-- International Students -->
+        <div class="content-card international-card">
+          <div class="card-header">
+            <div class="header-icon international-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <h2>International Students</h2>
+          </div>
+          
+          <div class="international-stats">
+            <div class="international-overview">
+              <div class="overview-stat">
+                <span class="overview-value">{{ universityDetails()!.student_population.international_students.total_international_students.toLocaleString() }}</span>
+                <span class="overview-label">Total International</span>
+              </div>
+              <div class="overview-divider"></div>
+              <div class="overview-stat">
+                <span class="overview-value">{{ universityDetails()!.student_population.international_students.countries_represented }}</span>
+                <span class="overview-label">Countries</span>
+              </div>
+              <div class="overview-divider"></div>
+              <div class="overview-stat">
+                <span class="overview-value">{{ ((universityDetails()!.student_population.international_students.total_international_students / universityDetails()!.student_population.total_students) * 100).toFixed(1) }}%</span>
+                <span class="overview-label">of Total</span>
               </div>
             </div>
-            <div class="stat-details">
-              <p class="stat-label">International</p>
-              <p class="stat-value">{{ university()!.students!.international.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">🌍</span>
-                <span class="trend-text">{{ ((university()!.students!.international / university()!.students!.total) * 100).toFixed(1) }}% of total</span>
+
+            <div class="top-countries">
+              <h4 class="subsection-title">Top Countries</h4>
+              <div class="countries-list">
+                <div *ngFor="let country of universityDetails()!.student_population.international_students.top_countries; let i = index" class="country-item">
+                  <div class="country-rank">{{ i + 1 }}</div>
+                  <div class="country-info">
+                    <span class="country-name">{{ country }}</span>
+                    <span class="country-percentage" *ngIf="universityDetails()!.student_population.international_students.countires_percentage_population[country]">
+                      {{ universityDetails()!.student_population.international_students.countires_percentage_population[country] }}% of total students
+                    </span>
+                  </div>
+                  <div class="country-bar">
+                    <div class="country-bar-fill" [style.width.%]="universityDetails()!.student_population.international_students.countires_percentage_population[country] || 0"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <div class="stat-card domestic-card">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon domestic">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="stat-details">
-              <p class="stat-label">Domestic</p>
-              <p class="stat-value">{{ university()!.students!.domestic.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">🏠</span>
-                <span class="trend-text">{{ ((university()!.students!.domestic / university()!.students!.total) * 100).toFixed(1) }}% of total</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="data-source-card" *ngIf="university()!.students!.source">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <span>Data from: {{ university()!.students!.source }} ({{ university()!.students!.year }})</span>
-        </div>
+
       </div>
 
-      <p *ngIf="!university()!.students" class="no-data">No student data available yet.</p>
-    </div>
-
-    <!-- Safety Section -->
-    <div class="content-section safety-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        <h2>Safety Near Campus</h2>
-      </div>
-      <div class="section-content">
-        <div *ngIf="university()!.safety" class="safety-info">
-          <div class="safety-level" [class.safe]="university()!.safety!.level === 'Safe'" 
-               [class.moderate]="university()!.safety!.level === 'Moderate'" 
-               [class.caution]="university()!.safety!.level === 'Use Caution'">
-            <span class="level-badge">{{ university()!.safety!.level }}</span>
-          </div>
-          <p class="safety-note">{{ university()!.safety!.note }}</p>
-          <p *ngIf="university()!.safety!.source" class="safety-source">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            Source: {{ university()!.safety!.source }}
-          </p>
-        </div>
-        <p *ngIf="!university()!.safety" class="no-data">Safety information not available yet.</p>
-      </div>
-    </div>
-
-    <!-- Best Areas to Live Section -->
-    <div class="content-section areas-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <h2>Best Areas to Live</h2>
-      </div>
-      <div class="section-content">
-        <div *ngIf="university()!.bestAreasToLive && university()!.bestAreasToLive!.length > 0" class="areas-list">
-          <div *ngFor="let area of university()!.bestAreasToLive" class="area-card">
-            <div class="area-icon">
+      <!-- Right Column -->
+      <div class="right-column">
+        
+        <!-- Address -->
+        <div class="content-card address-card">
+          <div class="card-header">
+            <div class="header-icon address-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
             </div>
-            <div class="area-content">
-              <h3 class="area-name">
-                <a *ngIf="area.link" [href]="area.link" target="_blank" rel="noopener noreferrer" class="area-link">
-                  {{ area.name }}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="external-icon">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                </a>
-                <span *ngIf="!area.link">{{ area.name }}</span>
-              </h3>
-              <p class="area-reason">{{ area.reason }}</p>
-            </div>
+            <h2>Address</h2>
+          </div>
+          <div class="address-content">
+            <p class="address-line">{{ universityDetails()!.address.street }}</p>
+            <p class="address-line">{{ universityDetails()!.address.city }}, {{ universityDetails()!.address.state }}</p>
+            <p class="address-line">{{ universityDetails()!.address.zipCode }}</p>
+            <p class="address-line country">{{ universityDetails()!.address.country }}</p>
           </div>
         </div>
-        <p *ngIf="!university()!.bestAreasToLive || university()!.bestAreasToLive!.length === 0" class="no-data">No area recommendations available yet.</p>
-      </div>
-    </div>
 
-    <!-- Student Accommodation Groups Section -->
-    <div class="content-section accommodation-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <h2>Student Accommodation Groups</h2>
-      </div>
-      <div class="section-content">
-        <div *ngIf="university()!.accommodationGroups && university()!.accommodationGroups!.length > 0" class="accommodation-content">
-          <div class="groups-list">
-            <div *ngFor="let group of university()!.accommodationGroups" class="group-card">
-              <div class="group-header">
-                <div class="group-info">
-                  <h3 class="group-name">{{ group.name }}</h3>
-                  <span class="platform-badge" [class]="'badge-' + group.platform.toLowerCase()">
-                    <svg *ngIf="group.platform === 'Facebook'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Discord'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Telegram'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'WhatsApp'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967c-.273-.099-.471-.148-.67.15c-.197.297-.767.966-.94 1.164c-.173.199-.347.223-.644.075c-.297-.15-1.255-.463-2.39-1.475c-.883-.788-1.48-1.761-1.653-2.059c-.173-.297-.018-.458.13-.606c.134-.133.298-.347.446-.52c.149-.174.198-.298.298-.497c.099-.198.05-.371-.025-.52c-.075-.149-.669-1.612-.916-2.207c-.242-.579-.487-.5-.669-.51c-.173-.008-.371-.01-.57-.01c-.198 0-.52.074-.792.372c-.272.297-1.04 1.016-1.04 2.479c0 1.462 1.065 2.875 1.213 3.074c.149.198 2.096 3.2 5.077 4.487c.709.306 1.262.489 1.694.625c.712.227 1.36.195 1.871.118c.571-.085 1.758-.719 2.006-1.413c.248-.694.248-1.289.173-1.413c-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214l-3.741.982l.998-3.648l-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Website'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="2" y1="12" x2="22" y2="12"></line>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    {{ group.platform }}
-                  </span>
-                </div>
-                <button *ngIf="group.url" class="open-btn" (click)="openGroupUrl(group.url)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                  Open
-                </button>
-              </div>
-              <p class="group-note">{{ group.note }}</p>
-            </div>
-          </div>
-
-          <!-- Safety Tips Box -->
-          <div class="safety-tips-box">
-            <div class="tips-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <!-- Nearby Amenities (if available) -->
+        <div class="content-card amenities-card" *ngIf="universityDetails()!.near_by_attractions && universityDetails()!.near_by_attractions!.length > 0">
+          <div class="card-header">
+            <div class="header-icon amenities-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
               </svg>
-              <h4>Safety Tips</h4>
             </div>
-            <ul class="tips-list">
-              <li *ngFor="let tip of getAccommodationTips()">{{ tip }}</li>
-            </ul>
+            <h2>Nearby Attractions</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let attraction of universityDetails()!.near_by_attractions">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ attraction }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Transportation -->
+        <div class="content-card transport-card" *ngIf="universityDetails()!.near_by_transportation && universityDetails()!.near_by_transportation!.length > 0">
+          <div class="card-header">
+            <div class="header-icon transport-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+            <h2>Transportation</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let transport of universityDetails()!.near_by_transportation">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ transport }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Car Requirement -->
+        <div class="content-card car-card" *ngIf="universityDetails()!.need_car !== undefined">
+          <div class="card-header">
+            <div class="header-icon car-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
+                <circle cx="7" cy="17" r="2"></circle>
+                <path d="M9 17h6"></path>
+                <circle cx="17" cy="17" r="2"></circle>
+              </svg>
+            </div>
+            <h2>Car Requirement</h2>
+          </div>
+          <div class="car-content">
+            <div class="car-status" [class.needed]="universityDetails()!.need_car" [class.not-needed]="!universityDetails()!.need_car">
+              <svg *ngIf="!universityDetails()!.need_car" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <svg *ngIf="universityDetails()!.need_car" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span *ngIf="!universityDetails()!.need_car">Car Not Required</span>
+              <span *ngIf="universityDetails()!.need_car">Car Recommended</span>
+            </div>
+            <p class="car-description" *ngIf="!universityDetails()!.need_car">
+              Good public transportation and walkable campus area.
+            </p>
+            <p class="car-description" *ngIf="universityDetails()!.need_car">
+              Having a car would be beneficial for getting around.
+            </p>
           </div>
         </div>
-        <p *ngIf="!university()!.accommodationGroups || university()!.accommodationGroups!.length === 0" class="no-data">No accommodation groups added yet.</p>
+
+        <!-- Housing Options -->
+        <div class="content-card housing-card" *ngIf="universityDetails()!.near_by_housing_options && universityDetails()!.near_by_housing_options!.length > 0">
+          <div class="card-header">
+            <div class="header-icon housing-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            <h2>Housing Options</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let housing of universityDetails()!.near_by_housing_options">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ housing }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Food Options -->
+        <div class="content-card food-card" *ngIf="universityDetails()!.near_by_food_options && universityDetails()!.near_by_food_options!.length > 0">
+          <div class="card-header">
+            <div class="header-icon food-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </div>
+            <h2>Food & Dining</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let food of universityDetails()!.near_by_food_options">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ food }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Parks & Recreation -->
+        <div class="content-card parks-card" *ngIf="universityDetails()!.near_by_parks_and_recreation && universityDetails()!.near_by_parks_and_recreation!.length > 0">
+          <div class="card-header">
+            <div class="header-icon parks-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                <path d="M2 2l7.586 7.586"></path>
+                <circle cx="11" cy="11" r="2"></circle>
+              </svg>
+            </div>
+            <h2>Parks & Recreation</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let park of universityDetails()!.near_by_parks_and_recreation">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ park }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Healthcare Facilities -->
+        <div class="content-card healthcare-card" *ngIf="universityDetails()!.near_by_healthcare_facilities && universityDetails()!.near_by_healthcare_facilities!.length > 0">
+          <div class="card-header">
+            <div class="header-icon healthcare-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <h2>Healthcare</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let healthcare of universityDetails()!.near_by_healthcare_facilities">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ healthcare }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cultural Centers -->
+        <div class="content-card cultural-card" *ngIf="universityDetails()!.near_by_cultural_centers && universityDetails()!.near_by_cultural_centers!.length > 0">
+          <div class="card-header">
+            <div class="header-icon cultural-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                <rect x="9" y="9" width="6" height="6"></rect>
+                <line x1="9" y1="1" x2="9" y2="4"></line>
+                <line x1="15" y1="1" x2="15" y2="4"></line>
+                <line x1="9" y1="20" x2="9" y2="23"></line>
+                <line x1="15" y1="20" x2="15" y2="23"></line>
+                <line x1="20" y1="9" x2="23" y2="9"></line>
+                <line x1="20" y1="14" x2="23" y2="14"></line>
+                <line x1="1" y1="9" x2="4" y2="9"></line>
+                <line x1="1" y1="14" x2="4" y2="14"></line>
+              </svg>
+            </div>
+            <h2>Cultural Centers</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let cultural of universityDetails()!.near_by_cultural_centers">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ cultural }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Shopping Centers -->
+        <div class="content-card shopping-card" *ngIf="universityDetails()!.near_by_shopping_centers && universityDetails()!.near_by_shopping_centers!.length > 0">
+          <div class="card-header">
+            <div class="header-icon shopping-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </div>
+            <h2>Shopping</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let shopping of universityDetails()!.near_by_shopping_centers">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ shopping }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Sports Facilities -->
+        <div class="content-card sports-card" *ngIf="universityDetails()!.near_by_sports_facilities && universityDetails()!.near_by_sports_facilities!.length > 0">
+          <div class="card-header">
+            <div class="header-icon sports-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+            </div>
+            <h2>Sports Facilities</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let sports of universityDetails()!.near_by_sports_facilities">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ sports }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Libraries -->
+        <div class="content-card libraries-card" *ngIf="universityDetails()!.near_by_libraries && universityDetails()!.near_by_libraries!.length > 0">
+          <div class="card-header">
+            <div class="header-icon libraries-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <h2>Libraries</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let library of universityDetails()!.near_by_libraries">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ library }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Pubs & Bars -->
+        <div class="content-card pubs-card" *ngIf="universityDetails()!.near_by_pubs_and_bars && universityDetails()!.near_by_pubs_and_bars!.length > 0">
+          <div class="card-header">
+            <div class="header-icon pubs-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+            </div>
+            <h2>Nightlife & Social</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let pub of universityDetails()!.near_by_pubs_and_bars">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ pub }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Nearby Cities -->
+        <div class="content-card cities-card" *ngIf="universityDetails()!.near_by_cities_of_interest && universityDetails()!.near_by_cities_of_interest!.length > 0">
+          <div class="card-header">
+            <div class="header-icon cities-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <line x1="9" y1="22" x2="9" y2="12"></line>
+                <line x1="15" y1="22" x2="15" y2="12"></line>
+              </svg>
+            </div>
+            <h2>Nearby Cities</h2>
+          </div>
+          <ul class="amenities-list">
+            <li *ngFor="let city of universityDetails()!.near_by_cities_of_interest">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              {{ city }}
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
+
   </div>
 </div>
