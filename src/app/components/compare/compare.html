@@ -102,7 +102,7 @@
                 </svg>
                 {{ university.city }}, {{ university.state }}
               </span>
-              <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'">
+              <span class="meta-item type-badge" [class.public]="university.type === 'Public'" [class.private]="university.type === 'Private'" (click)="testAI($event)" style="cursor: pointer;" title="Click to test AI">
                 {{ university.type }}
               </span>
             </div>

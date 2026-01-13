@@ -41,3 +41,11 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files with sensitive keys
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
+
+# Environment files with sensitive keys
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
