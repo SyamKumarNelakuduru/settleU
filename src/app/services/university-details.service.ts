@@ -32,6 +32,7 @@ export interface UniversityDetail {
   near_by_pubs_and_bars?: string[]; // Optional list of nearby pubs and bars; example ["The Sinclair", "Grendel's Den"]
   near_by_cities_of_interest?: string[]; // Optional list of nearby cities of interest; example ["Boston", "Somerville"]
   need_car?: boolean; // Optional boolean indicating if a car is needed; example false
+
 }
 
 export interface Address {

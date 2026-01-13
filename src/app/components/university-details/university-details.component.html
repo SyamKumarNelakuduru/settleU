@@ -126,7 +126,7 @@
           </div>
         </div>
         
-        <div class="stat-card international-card" (click)="openDemographicModal()" style="cursor: pointer;">
+        <div class="stat-card international-card">
           <div class="card-background"></div>
           <div class="card-content-wrapper">
             <div class="stat-icon-wrapper">
@@ -344,10 +344,3 @@
     </div>
   </div>
 </div>
-
-<!-- International Student Demographics Modal -->
-<app-international-student-demographics
-  [isOpen]="isDemographicModalOpen()"
-  [universityName]="university()?.name || ''"
-  (close)="closeDemographicModal()">
-</app-international-student-demographics>

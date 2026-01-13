@@ -5,12 +5,11 @@ import { UniversityDetailsService, UniversityDetail } from '../../services/unive
 import { CompareService } from '../../services/compare.service';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
-import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
 @Component({
   selector: 'app-university-details',
   standalone: true,
-  imports: [CommonModule, InternationalStudentDemographicsComponent],
+  imports: [CommonModule],
   templateUrl: './university-details.component.html',
   styleUrl: './university-details.component.scss'
 })
@@ -19,7 +18,6 @@ export class UniversityDetailsComponent implements OnInit {
   aiDetails = signal<UniversityDetail | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
-  isDemographicModalOpen = signal(false);
 
   private universityId: string | null = null;
   private route = inject(ActivatedRoute);
@@ -217,18 +215,13 @@ export class UniversityDetailsComponent implements OnInit {
     ];
   }
 
-  openDemographicModal(): void {
-    this.isDemographicModalOpen.set(true);
-  }
-
-  closeDemographicModal(): void {
-    this.isDemographicModalOpen.set(false);
-  }
-
   /**
    * Convert AI UniversityDetail to University format
    */
   private convertAIDetailsToUniversity(aiDetail: UniversityDetail): University {
+    console.log('🔄 Converting AI details to University format...');
+    console.log('AI Detail received:', aiDetail);
+    
     // Convert international students data
     const internationalCountryBreakdown: { [country: string]: number } = {};
     if (aiDetail.student_population.international_students.countires_percentage_population) {
@@ -238,7 +231,56 @@ export class UniversityDetailsComponent implements OnInit {
       });
     }
 
-    return {
+    // Convert near_by_housing_options to bestAreasToLive format
+    const bestAreasToLive: any[] = [];
+    if (aiDetail.near_by_housing_options && aiDetail.near_by_housing_options.length > 0) {
+      aiDetail.near_by_housing_options.slice(0, 5).forEach((area: string, index: number) => {
+        bestAreasToLive.push({
+          name: area,
+          reason: 'Popular student housing area with convenient access to campus and amenities',
+          link: undefined
+        });
+      });
+    }
+
+    // Create safety info based on available data
+    const safety: any = {
+      level: 'Moderate' as const,
+      note: `${aiDetail.name} maintains a campus security presence. Use general urban safety precautions. Emergency services and campus police are available 24/7.`,
+      source: 'AI Generated Assessment'
+    };
+
+    // Create accommodation tips
+    const accommodationTips: string[] = [
+      'Start your housing search 2-3 months before moving',
+      'Check university housing office for verified listings',
+      'Visit properties in person or via video call before committing',
+      'Read lease agreements carefully before signing',
+      'Consider proximity to campus and public transportation'
+    ];
+
+    // Add Indian amenities if available
+    if (aiDetail.indian_amenities && aiDetail.indian_amenities.length > 0) {
+      accommodationTips.push(`Indian amenities nearby: ${aiDetail.indian_amenities.slice(0, 3).join(', ')}`);
+    }
+
+    // Create accommodation groups (generic Facebook groups based on university name)
+    const accommodationGroups: any[] = [
+      {
+        name: `${aiDetail.name} Housing`,
+        platform: 'Facebook' as const,
+        url: `https://www.facebook.com/search/groups/?q=${encodeURIComponent(aiDetail.name + ' housing')}`,
+        note: 'Search for housing groups on Facebook'
+      },
+      {
+        name: `${aiDetail.name} Off-Campus Housing`,
+        platform: 'Facebook' as const,
+        url: `https://www.facebook.com/search/groups/?q=${encodeURIComponent(aiDetail.name + ' off campus')}`,
+        note: 'Connect with students looking for roommates'
+      }
+    ];
+
+    const university: University = {
       name: aiDetail.name,
       streetAddress: aiDetail.address.street,
       city: aiDetail.address.city,
@@ -255,7 +297,14 @@ export class UniversityDetailsComponent implements OnInit {
         year: new Date().getFullYear(),
         source: 'AI Generated (Gemini)',
         internationalCountryBreakdown: internationalCountryBreakdown
-      }
+      },
+      safety: safety,
+      bestAreasToLive: bestAreasToLive.length > 0 ? bestAreasToLive : undefined,
+      accommodationGroups: accommodationGroups,
+      accommodationTips: accommodationTips
     };
+
+    console.log('✅ Converted university object:', university);
+    return university;
   }
 }

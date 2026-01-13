@@ -61,8 +61,10 @@ export class SearchComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // autofocus the input when the modal opens
-    setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
-    this.getFilteredUniversities();
+    setTimeout(() => {
+      this.searchInput?.nativeElement.focus();
+      this.getFilteredUniversities();
+    }, 0);
   }
 
   getFilteredUniversities(): void {
