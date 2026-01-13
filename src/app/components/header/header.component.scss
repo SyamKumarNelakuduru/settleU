@@ -1,16 +1,16 @@
 .header {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   color: #1a1a2e;
   padding: 0;
-  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.06), 0 1px 0 rgba(102, 126, 234, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   z-index: 1000;
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 
   &::before {
@@ -19,19 +19,13 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    opacity: 0.8;
+    height: 2px;
+    background: #2c3e50;
+    opacity: 0.9;
   }
 
   &::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+    content: none;
   }
 
   .header-container {
@@ -136,13 +130,13 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
+      padding: 0.625rem 1rem;
       color: #4a5568;
       text-decoration: none;
-      font-size: 0.938rem;
-      font-weight: 600;
-      border-radius: 12px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
 
@@ -150,7 +144,7 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+        background: rgba(44, 62, 80, 0.05);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -170,10 +164,9 @@
       }
 
       &:hover {
-        color: #667eea;
-        background: rgba(102, 126, 234, 0.08);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        color: #2c3e50;
+        background: rgba(44, 62, 80, 0.06);
+        transform: translateY(-1px);
 
         &::before {
           opacity: 1;
@@ -181,15 +174,14 @@
 
         svg {
           opacity: 1;
-          transform: translateY(-1px) scale(1.1);
+          transform: scale(1.05);
         }
       }
 
       &.active {
-        color: #667eea;
-        background: rgba(102, 126, 234, 0.15);
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        color: #2c3e50;
+        background: rgba(44, 62, 80, 0.1);
+        font-weight: 600;
 
         svg {
           opacity: 1;
@@ -202,9 +194,9 @@
           left: 50%;
           transform: translateX(-50%);
           width: 24px;
-          height: 3px;
-          background: linear-gradient(90deg, #667eea, #764ba2);
-          border-radius: 3px 3px 0 0;
+          height: 2px;
+          background: #2c3e50;
+          border-radius: 2px 2px 0 0;
         }
       }
     }
@@ -218,31 +210,31 @@
 
     .icon-btn {
       position: relative;
-      background: linear-gradient(135deg, #f8f9fa, #ffffff);
-      border: 1px solid rgba(102, 126, 234, 0.15);
+      background: #f8f9fa;
+      border: 1px solid rgba(0, 0, 0, 0.08);
       color: #4a5568;
       cursor: pointer;
-      padding: 0.75rem;
-      border-radius: 12px;
+      padding: 0.625rem;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       overflow: hidden;
 
       &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+        background: rgba(44, 62, 80, 0.05);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
 
       svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         stroke-width: 2;
         position: relative;
         z-index: 1;
@@ -250,10 +242,10 @@
       }
 
       &:hover {
-        background: linear-gradient(135deg, #ffffff, #f8f9fb);
-        border-color: rgba(102, 126, 234, 0.3);
-        color: #667eea;
-        transform: translateY(-3px);
+        background: #ffffff;
+        border-color: rgba(0, 0, 0, 0.12);
+        color: #2c3e50;
+        transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2);
 
         &::before {
@@ -261,49 +253,49 @@
         }
 
         svg {
-          transform: scale(1.15) rotate(5deg);
+          transform: scale(1.08) rotate(3deg);
         }
       }
 
       &:active {
-        transform: translateY(-1px);
-        box-shadow: 0 3px 10px rgba(102, 126, 234, 0.15);
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
       }
 
       &.admin-btn {
-        border-color: rgba(245, 124, 0, 0.2);
+        border-color: rgba(245, 124, 0, 0.15);
 
         &:hover {
-          border-color: rgba(245, 124, 0, 0.4);
+          border-color: rgba(245, 124, 0, 0.25);
           color: #f57c00;
-          box-shadow: 0 6px 16px rgba(245, 124, 0, 0.2);
+          box-shadow: 0 2px 8px rgba(245, 124, 0, 0.15);
         }
       }
     }
 
     .compare-btn {
       position: relative;
-      background: linear-gradient(135deg, #f8f9fa, #ffffff);
-      border: 1px solid rgba(102, 126, 234, 0.15);
+      background: #f8f9fa;
+      border: 1px solid rgba(0, 0, 0, 0.08);
       color: #4a5568;
       cursor: pointer;
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
+      padding: 0.625rem 1rem;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       overflow: hidden;
-      font-size: 0.938rem;
-      font-weight: 600;
+      font-size: 0.875rem;
+      font-weight: 500;
 
       &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
+        background: rgba(44, 62, 80, 0.05);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -324,36 +316,36 @@
       }
 
       &:hover {
-        background: linear-gradient(135deg, #ffffff, #f8f9fb);
-        border-color: rgba(102, 126, 234, 0.3);
-        color: #667eea;
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2);
+        background: #ffffff;
+        border-color: rgba(0, 0, 0, 0.12);
+        color: #2c3e50;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
         &::before {
           opacity: 1;
         }
 
         svg {
-          transform: scale(1.1);
+          transform: scale(1.05);
         }
       }
 
       &:active {
-        transform: translateY(-1px);
-        box-shadow: 0 3px 10px rgba(102, 126, 234, 0.15);
+        transform: translateY(0);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
       }
 
       .compare-count {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #2c3e50;
         color: white;
         font-size: 0.75rem;
-        font-weight: 700;
+        font-weight: 600;
         padding: 0.125rem 0.5rem;
-        border-radius: 12px;
+        border-radius: 10px;
         min-width: 20px;
         text-align: center;
-        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 1px 3px rgba(44, 62, 80, 0.2);
       }
     }
 
@@ -361,16 +353,16 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 0.625rem 1.5rem;
+      background: #2c3e50;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
       color: white;
-      font-size: 0.938rem;
-      font-weight: 700;
+      font-size: 0.875rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
       position: relative;
       overflow: hidden;
 
@@ -378,7 +370,7 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+        background: rgba(255, 255, 255, 0.1);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -390,10 +382,10 @@
         left: 50%;
         width: 0;
         height: 0;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
         border-radius: 50%;
         transform: translate(-50%, -50%);
-        transition: width 0.6s ease, height 0.6s ease;
+        transition: width 0.4s ease, height 0.4s ease;
       }
 
       svg {
@@ -410,8 +402,9 @@
       }
 
       &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+        background: #34495e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
 
         &::before {
           opacity: 1;
@@ -423,13 +416,13 @@
         }
 
         svg {
-          transform: translateX(3px);
+          transform: translateX(2px);
         }
       }
 
       &:active {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.2);
       }
     }
 
@@ -440,14 +433,14 @@
       gap: 8px;
       
       .profile-picture {
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
         object-fit: cover;
         cursor: pointer;
-        border: 2px solid rgba(102, 126, 234, 0.3);
-        box-shadow: 0 3px 10px rgba(102, 126, 234, 0.15);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(44, 62, 80, 0.15);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
         position: relative;
         
         &::before {
@@ -455,7 +448,7 @@
           position: absolute;
           inset: -2px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: #2c3e50;
           opacity: 0;
           transition: opacity 0.3s ease;
           z-index: -1;

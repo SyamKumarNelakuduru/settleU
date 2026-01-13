@@ -135,6 +135,10 @@ Requirements:
       const response = await this.aiService.getGeminiResponse(prompt);
       console.log('🤖 Raw AI Response:', response);
       
+      if (!response || response.trim() === '') {
+        throw new Error('Empty response from AI service');
+      }
+      
       // Clean the response - remove markdown code blocks if present
       let cleanedResponse = response.trim();
       if (cleanedResponse.startsWith('```json')) {
@@ -142,6 +146,8 @@ Requirements:
       } else if (cleanedResponse.startsWith('```')) {
         cleanedResponse = cleanedResponse.replace(/```\n?/, '').replace(/\n?```$/, '');
       }
+      
+      console.log('🧹 Cleaned response:', cleanedResponse.substring(0, 200) + '...');
       
       // Parse the JSON response
       const universityDetail: UniversityDetail = JSON.parse(cleanedResponse);
@@ -151,6 +157,11 @@ Requirements:
       
     } catch (error) {
       console.error(`❌ Error fetching university details for "${universityName}":`, error);
+      console.error('Error details:', {
+        name: error instanceof Error ? error.name : 'Unknown',
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
       throw new Error(`Failed to fetch university details: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }

@@ -53,6 +53,7 @@ export interface University {
   accommodationGroups?: AccommodationGroup[];
   accommodationTips?: string[];
   createdAt?: any;
+  
 }
 
 export interface UniversityDetail {

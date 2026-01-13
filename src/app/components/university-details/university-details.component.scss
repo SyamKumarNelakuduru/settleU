@@ -54,9 +54,10 @@
   align-items: center;
   justify-content: center;
   min-height: 50vh;
-  gap: 1.5rem;
+  gap: 1rem;
   position: relative;
   z-index: 1;
+  padding: 2rem;
 
   .error-icon {
     font-size: 4rem;
@@ -68,6 +69,47 @@
     font-size: 1.75rem;
     margin: 0;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  .error-hint {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 

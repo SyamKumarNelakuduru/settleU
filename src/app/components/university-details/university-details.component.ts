@@ -15,7 +15,7 @@ export class UniversityDetailsComponent implements OnInit {
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
 
-  private universityId: string | null = null;
+  universityId: string | null = null;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private universityDetailsService = inject(UniversityDetailsService);
