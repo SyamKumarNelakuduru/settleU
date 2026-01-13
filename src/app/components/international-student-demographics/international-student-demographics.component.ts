@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
@@ -105,7 +105,7 @@ export class InternationalStudentDemographicsComponent implements OnInit, OnDest
     const isMobile = window.innerWidth < 768;
     const legendPosition = isMobile ? 'bottom' : 'right';
 
-    const config: ChartConfiguration<'pie'> = {
+    const config: any = {
       type: 'pie',
       data: {
         labels: this.mockCountryData.map(item => item.country),
@@ -132,10 +132,10 @@ export class InternationalStudentDemographicsComponent implements OnInit, OnDest
                 size: isMobile ? 10 : 11,
                 family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
               },
-              generateLabels: (chart) => {
+              generateLabels: (chart: any) => {
                 const data = chart.data;
                 if (data.labels && data.datasets) {
-                  return data.labels.map((label, i) => {
+                  return data.labels.map((label: any, i: number) => {
                     const dataset = data.datasets[0];
                     const value = dataset.data[i] as number;
                     const percentage = ((value / totalStudents) * 100).toFixed(1);
@@ -164,7 +164,7 @@ export class InternationalStudentDemographicsComponent implements OnInit, OnDest
           },
           tooltip: {
             callbacks: {
-              label: (context) => {
+              label: (context: any) => {
                 const label = context.label || '';
                 const value = context.parsed || 0;
                 const percentage = ((value / totalStudents) * 100).toFixed(1);

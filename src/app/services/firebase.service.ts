@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { initializeApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, Firestore, CACHE_SIZE_UNLIMITED, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { firebaseConfig } from '../../environments/environment';
 
@@ -20,7 +20,22 @@ export class FirebaseService {
     
     // Initialize Firebase services
     this.auth = getAuth(this.app);
-    this.firestore = getFirestore(this.app);
+    
+    // Initialize Firestore with persistent cache (new method - replaces deprecated enableIndexedDbPersistence)
+    try {
+      this.firestore = initializeFirestore(this.app, {
+        localCache: persistentLocalCache({
+          cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+          tabManager: persistentMultipleTabManager()
+        })
+      });
+      console.log('✅ Firestore initialized with persistent cache');
+    } catch (err: any) {
+      // Fallback to default Firestore if initialization fails
+      console.warn('⚠️ Failed to initialize Firestore with cache, using default:', err);
+      this.firestore = getFirestore(this.app);
+    }
+    
     this.storage = getStorage(this.app);
   }
 

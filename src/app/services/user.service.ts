@@ -4,6 +4,7 @@ import {
   doc, 
   setDoc, 
   getDoc,
+  getDocFromCache,
   serverTimestamp, 
   Timestamp 
 } from 'firebase/firestore';
@@ -121,6 +122,7 @@ export class UserService {
 
   /**
    * Get a user profile from Firestore by UID.
+   * Tries to get from server first, falls back to cache if offline.
    * 
    * @param uid - User's Firebase Auth UID
    * @returns Promise with user profile data or null if not found
@@ -128,14 +130,41 @@ export class UserService {
   async getUserProfile(uid: string): Promise<UserProfile | null> {
     try {
       const userRef = doc(this.db, 'users', uid);
-      const docSnap = await getDoc(userRef);
       
-      if (docSnap.exists()) {
-        return docSnap.data() as UserProfile;
+      // Try to get from server first
+      try {
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          return docSnap.data() as UserProfile;
+        }
+      } catch (serverError: any) {
+        // If offline, try to get from cache
+        if (serverError?.code === 'unavailable' || serverError?.message?.includes('offline')) {
+          console.log('📴 Offline: Attempting to get user profile from cache...');
+          try {
+            const cachedDoc = await getDocFromCache(userRef);
+            if (cachedDoc.exists()) {
+              console.log('✅ User profile found in cache');
+              return cachedDoc.data() as UserProfile;
+            }
+          } catch (cacheError) {
+            // Cache doesn't have the document, that's okay
+            console.log('ℹ️ User profile not found in cache');
+          }
+        } else {
+          // Re-throw if it's not an offline error
+          throw serverError;
+        }
       }
+      
       return null;
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
+    } catch (error: any) {
+      // Only log non-offline errors as errors
+      if (error?.code === 'unavailable' || error?.message?.includes('offline')) {
+        console.log('ℹ️ User profile unavailable (offline):', error?.message);
+      } else {
+        console.error('Failed to fetch user profile:', error);
+      }
       return null;
     }
   }

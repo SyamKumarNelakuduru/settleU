@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UniversityService } from '../../services/university.service';
+import { UniversityDetailsService, UniversityDetail } from '../../services/university-details.service';
 import { CompareService } from '../../services/compare.service';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
@@ -16,6 +16,7 @@ import { InternationalStudentDemographicsComponent } from '../international-stud
 })
 export class UniversityDetailsComponent implements OnInit {
   university = signal<University | null>(null);
+  aiDetails = signal<UniversityDetail | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
   isDemographicModalOpen = signal(false);
@@ -23,7 +24,7 @@ export class UniversityDetailsComponent implements OnInit {
   private universityId: string | null = null;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private universityService = inject(UniversityService);
+  private universityDetailsService = inject(UniversityDetailsService);
   private compareService = inject(CompareService);
   private flyToCompareService = inject(FlyToCompareService);
 
@@ -42,15 +43,67 @@ export class UniversityDetailsComponent implements OnInit {
       this.isLoading.set(true);
       this.errorMessage.set(null);
       console.log('Fetching university with ID:', id);
-      const data = await this.universityService.getUniversityById(id);
-      console.log('University data received:', data);
       
-      if (data) {
-        this.university.set(data);
-        console.log('University data loaded successfully');
-      } else {
-        console.warn('No university found for ID:', id);
-        this.errorMessage.set('University not found');
+      // Map university IDs to their full names for AI service
+      const universityNameMap: { [key: string]: string } = {
+        'uiuc': 'University of Illinois Urbana-Champaign',
+        'northwestern': 'Northwestern University',
+        'uchicago': 'University of Chicago',
+        'illinois-state': 'Illinois State University',
+        'siue': 'Southern Illinois University Edwardsville',
+        'niu': 'Northern Illinois University',
+        'luc': 'Loyola University Chicago',
+        'depaul': 'DePaul University',
+        'iwu': 'Illinois Wesleyan University',
+        'bradley': 'Bradley University',
+        'siu-carbondale': 'Southern Illinois University Carbondale',
+        'neiu': 'Northeastern Illinois University',
+        'chicago-state': 'Chicago State University',
+        'elmhurst': 'Elmhurst University',
+        'millikin': 'Millikin University',
+        'wiu': 'Western Illinois University',
+        'eiu': 'Eastern Illinois University',
+        'augustana': 'Augustana College',
+        'benedictine': 'Benedictine University',
+        'rockford': 'Rockford University'
+      };
+      
+      const universityName = universityNameMap[id] || id;
+      
+      // Use only AI service to fetch university details
+      try {
+        console.log('🤖 Fetching university details from AI service for:', universityName);
+        const aiDetails = await this.universityDetailsService.getUniversityDetails(universityName);
+        console.log('✅ AI-powered details received:', aiDetails);
+        
+        // Store AI details
+        this.aiDetails.set(aiDetails);
+        
+        // Convert AI data to University format
+        console.log('📊 Converting AI data to University format');
+        const convertedUniversity = this.convertAIDetailsToUniversity(aiDetails);
+        this.university.set(convertedUniversity);
+        console.log('✅ University data set from AI:', convertedUniversity);
+        
+      } catch (aiError: any) {
+        console.error('❌ AI service error:', aiError);
+        console.error('Error details:', {
+          message: aiError?.message,
+          name: aiError?.name,
+          code: aiError?.code,
+          status: aiError?.status,
+          stack: aiError?.stack
+        });
+        console.warn('⚠️ AI service unavailable');
+        this.errorMessage.set('Unable to load university details from AI service. Please check your internet connection and try again.');
+      }
+      
+      // Check if we have data
+      if (!this.university()) {
+        console.warn('No university data available from AI service');
+        if (!this.errorMessage()) {
+          this.errorMessage.set('University not found');
+        }
       }
     } catch (error) {
       console.error('Error loading university:', error);
@@ -170,5 +223,39 @@ export class UniversityDetailsComponent implements OnInit {
 
   closeDemographicModal(): void {
     this.isDemographicModalOpen.set(false);
+  }
+
+  /**
+   * Convert AI UniversityDetail to University format
+   */
+  private convertAIDetailsToUniversity(aiDetail: UniversityDetail): University {
+    // Convert international students data
+    const internationalCountryBreakdown: { [country: string]: number } = {};
+    if (aiDetail.student_population.international_students.countires_percentage_population) {
+      const totalIntl = aiDetail.student_population.international_students.total_international_students;
+      Object.entries(aiDetail.student_population.international_students.countires_percentage_population).forEach(([country, percentage]) => {
+        internationalCountryBreakdown[country] = Math.round((totalIntl * percentage) / 100);
+      });
+    }
+
+    return {
+      name: aiDetail.name,
+      streetAddress: aiDetail.address.street,
+      city: aiDetail.address.city,
+      state: aiDetail.address.state,
+      zipcode: aiDetail.address.zipCode,
+      country: aiDetail.address.country,
+      type: 'Public', // Default to Public, can be enhanced later
+      website: aiDetail.website,
+      about: aiDetail.description,
+      students: {
+        total: aiDetail.student_population.total_students,
+        international: aiDetail.student_population.international_students.total_international_students,
+        domestic: aiDetail.student_population.domestic_students,
+        year: new Date().getFullYear(),
+        source: 'AI Generated (Gemini)',
+        internationalCountryBreakdown: internationalCountryBreakdown
+      }
+    };
   }
 }
