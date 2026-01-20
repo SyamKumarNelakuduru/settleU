@@ -100,7 +100,8 @@
       <main class="main-content">
         <!-- OVERVIEW SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'overview'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Overview</h2>
             <p class="section-subtitle">{{ aiDetails()!.location }}</p>
           </div>
@@ -167,7 +168,8 @@
 
         <!-- ACCOMMODATION SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'accommodation'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Accommodation</h2>
             <p class="section-subtitle">Housing options and transportation</p>
       </div>
@@ -673,7 +675,8 @@
 
         <!-- AMENITIES SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'amenities'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Neighborhood & Amenities</h2>
             <p class="section-subtitle">Explore what's around the campus</p>
           </div>
@@ -804,7 +807,8 @@
 
         <!-- ACADEMICS SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'academics'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1427504494785-cddc0c5ae97b?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Academic Programs</h2>
             <p class="section-subtitle">Notable programs offered</p>
         </div>
@@ -822,7 +826,8 @@
 
         <!-- DEMOGRAPHICS SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'demographics'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Student Demographics</h2>
             <p class="section-subtitle">Campus population breakdown</p>
           </div>
@@ -872,9 +877,106 @@
           </div>
         </section>
 
+        <!-- SAFETY & SECURITY SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'safety' && aiDetails()!.safety_info">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1557804506-669714126472?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
+            <h2>Safety & Security</h2>
+            <p class="section-subtitle">Campus and area safety information</p>
+          </div>
+          <div class="section-content">
+            <!-- Overall Safety Rating -->
+            <div class="safety-rating-section">
+              <div class="safety-rating-card" [class]="'rating-' + aiDetails()!.safety_info!.overall_safety_rating!.toLowerCase().replace(' ', '-')">
+                <div class="rating-header">
+                  <span class="rating-icon">🛡️</span>
+                  <h3>Overall Safety Rating</h3>
+                </div>
+                <div class="rating-display">
+                  <span class="rating-badge">{{ aiDetails()!.safety_info!.overall_safety_rating }}</span>
+                </div>
+                <p class="rating-description">{{ aiDetails()!.safety_info!.crime_statistics }}</p>
+              </div>
+            </div>
+
+            <!-- Campus Security -->
+            <div class="subsection" *ngIf="aiDetails()!.safety_info!.campus_security">
+              <h3>🏫 Campus Security Services</h3>
+              <div class="security-info">
+                <p>{{ aiDetails()!.safety_info!.campus_security }}</p>
+              </div>
+            </div>
+
+            <!-- Safety Tips for Students -->
+            <div class="subsection" *ngIf="aiDetails()!.safety_info!.safety_tips && aiDetails()!.safety_info!.safety_tips!.length > 0">
+              <h3>💡 Safety Tips for Students</h3>
+              <div class="tips-list">
+                <div *ngFor="let tip of aiDetails()!.safety_info!.safety_tips" class="tip-item">
+                  <span class="tip-icon">✓</span>
+                  <span class="tip-text">{{ tip }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Places to Avoid -->
+            <div class="subsection warning-section" *ngIf="aiDetails()!.safety_info!.places_to_avoid && aiDetails()!.safety_info!.places_to_avoid!.length > 0">
+              <h3>⚠️ Areas to Avoid</h3>
+              <p class="warning-note">Be cautious in or avoid these areas, especially at night:</p>
+              <div class="places-list">
+                <div *ngFor="let place of aiDetails()!.safety_info!.places_to_avoid" class="place-item">
+                  <span class="place-icon">📍</span>
+                  <span class="place-name">{{ place }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="subsection" *ngIf="aiDetails()!.safety_info!.emergency_contacts && aiDetails()!.safety_info!.emergency_contacts!.length > 0">
+              <h3>📞 Emergency Contacts</h3>
+              <div class="emergency-contacts-grid">
+                <div *ngFor="let contact of aiDetails()!.safety_info!.emergency_contacts" class="emergency-card">
+                  <div class="contact-header">
+                    <h4>{{ contact.name }}</h4>
+                    <span class="contact-number">{{ contact.number }}</span>
+                  </div>
+                  <p class="contact-desc" *ngIf="contact.description">{{ contact.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Safety Resources -->
+            <div class="subsection resources-section">
+              <h3>🔗 Additional Safety Resources</h3>
+              <div class="resources-grid">
+                <div class="resource-card">
+                  <div class="resource-icon">🚨</div>
+                  <h4>Emergency Alert System</h4>
+                  <p>Sign up for campus emergency notifications via text, email, and phone</p>
+                </div>
+                <div class="resource-card">
+                  <div class="resource-icon">👥</div>
+                  <h4>Campus Safety Escort</h4>
+                  <p>Free walking escorts available after dark - call campus security</p>
+                </div>
+                <div class="resource-card">
+                  <div class="resource-icon">🚕</div>
+                  <h4>Safe Ride Program</h4>
+                  <p>Free safe ride home service for students late at night</p>
+                </div>
+                <div class="resource-card">
+                  <div class="resource-icon">🗺️</div>
+                  <h4>Campus Map</h4>
+                  <p>Well-lit pathways and emergency call boxes throughout campus</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- FINANCIAL SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'financial'">
-      <div class="section-header">
+      <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1551632786-5b17f1f6f4eb?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Tuition & Financial Aid</h2>
             <p class="section-subtitle">Cost breakdown and funding options</p>
       </div>
@@ -935,52 +1037,108 @@
 
         <!-- CONTACT SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'contact'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Contact & Links</h2>
             <p class="section-subtitle">Get in touch with the university</p>
         </div>
           <div class="section-content">
             <!-- Address -->
             <div class="subsection">
-              <h3>Campus Address</h3>
-              <div class="contact-info">
-                <p>{{ aiDetails()!.address.street }}</p>
-                <p>{{ aiDetails()!.address.city }}, {{ aiDetails()!.address.state }} {{ aiDetails()!.address.zipCode }}</p>
-                <p>{{ aiDetails()!.address.country }}</p>
-      </div>
-    </div>
-
-            <!-- Website -->
-            <div class="subsection" *ngIf="aiDetails()!.website">
-              <button class="website-btn" (click)="openWebsite(aiDetails()!.website)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="2" y1="12" x2="22" y2="12"></line>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                Visit Official Website
-              </button>
+              <h3>📍 Campus Address</h3>
+              <div class="contact-info-card">
+                <div class="address-icon">📬</div>
+                <div class="address-content">
+                  <p class="street">{{ aiDetails()!.address.street }}</p>
+                  <p class="city-state">{{ aiDetails()!.address.city }}, {{ aiDetails()!.address.state }} {{ aiDetails()!.address.zipCode }}</p>
+                  <p class="country">{{ aiDetails()!.address.country }}</p>
                 </div>
+              </div>
+            </div>
+
+            <!-- Website & Quick Links -->
+            <div class="subsection">
+              <h3>🔗 Quick Links</h3>
+              <div class="quick-links">
+                <button *ngIf="aiDetails()!.website" class="link-btn website-btn" (click)="openWebsite(aiDetails()!.website)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                  <span>Official Website</span>
+                </button>
+              </div>
+            </div>
 
             <!-- Social Media -->
             <div class="subsection" *ngIf="aiDetails()!.social_media">
-              <h3>Connect on Social Media</h3>
+              <h3>🌐 Connect on Social Media</h3>
               <div class="social-links">
-                <button *ngIf="aiDetails()!.social_media?.facebook" class="social-btn facebook" (click)="openWebsite(aiDetails()!.social_media?.facebook!)">
+                <button *ngIf="aiDetails()!.social_media?.facebook" class="social-btn facebook" (click)="openWebsite(aiDetails()!.social_media?.facebook!)" title="Visit Facebook">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.7 10h-2.6v8.4H9.6V12H8.3v-2.4h1.3V8.1c0-1.1.3-2.7 1.9-2.7h2.9v2.2h-2.1c-.3 0-.5.2-.5.5v1.5h2.7l-.4 2.4z"/>
+                  </svg>
                   <span>Facebook</span>
                 </button>
-                <button *ngIf="aiDetails()!.social_media?.twitter" class="social-btn twitter" (click)="openWebsite(aiDetails()!.social_media?.twitter!)">
+                <button *ngIf="aiDetails()!.social_media?.twitter" class="social-btn twitter" (click)="openWebsite(aiDetails()!.social_media?.twitter!)" title="Visit Twitter">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.12A9.374 9.374 0 0023 3z"/>
+                  </svg>
                   <span>Twitter</span>
                 </button>
-                <button *ngIf="aiDetails()!.social_media?.instagram" class="social-btn instagram" (click)="openWebsite(aiDetails()!.social_media?.instagram!)">
+                <button *ngIf="aiDetails()!.social_media?.instagram" class="social-btn instagram" (click)="openWebsite(aiDetails()!.social_media?.instagram!)" title="Visit Instagram">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16.5 7.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" fill="white"/>
+                    <circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="2"/>
+                  </svg>
                   <span>Instagram</span>
                 </button>
-                <button *ngIf="aiDetails()!.social_media?.linkedin" class="social-btn linkedin" (click)="openWebsite(aiDetails()!.social_media?.linkedin!)">
+                <button *ngIf="aiDetails()!.social_media?.linkedin" class="social-btn linkedin" (click)="openWebsite(aiDetails()!.social_media?.linkedin!)" title="Visit LinkedIn">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                    <circle cx="4" cy="4" r="2"/>
+                  </svg>
                   <span>LinkedIn</span>
                 </button>
-                <button *ngIf="aiDetails()!.social_media?.youtube" class="social-btn youtube" (click)="openWebsite(aiDetails()!.social_media?.youtube!)">
+                <button *ngIf="aiDetails()!.social_media?.youtube" class="social-btn youtube" (click)="openWebsite(aiDetails()!.social_media?.youtube!)" title="Visit YouTube">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.54c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33zM9.75 15.02v-6.04l5.75 3.02-5.75 3.02z"/>
+                  </svg>
                   <span>YouTube</span>
                 </button>
+              </div>
+            </div>
+
+            <!-- Key Contacts & Faculty -->
+            <div class="subsection" *ngIf="aiDetails()!.professor_contacts && aiDetails()!.professor_contacts!.length > 0">
+              <h3>👥 Key Contacts & Faculty</h3>
+              <div class="professors-grid">
+                <div *ngFor="let professor of aiDetails()!.professor_contacts" class="professor-card">
+                  <div class="professor-badge" [ngClass]="'role-' + professor.role.toLowerCase().replace(/\\s+/g, '-')">
+                    {{ professor.role.charAt(0) }}
+                  </div>
+                  <div class="professor-header">
+                    <h4 class="professor-name">{{ professor.name }}</h4>
+                    <span class="professor-role">{{ professor.role }}</span>
+                  </div>
+                  <div *ngIf="professor.department" class="professor-department">
+                    <span class="dept-icon">🏢</span>
+                    <span>{{ professor.department }}</span>
+                  </div>
+                  <div class="professor-divider"></div>
+                  <div class="professor-details">
+                    <div class="detail-item email-item">
+                      <span class="detail-icon">✉️</span>
+                      <a [href]="'mailto:' + professor.email" class="detail-link">{{ professor.email }}</a>
+                    </div>
+                    <div class="detail-item phone-item" *ngIf="professor.phone">
+                      <span class="detail-icon">☎️</span>
+                      <a [href]="'tel:' + professor.phone" class="detail-link">{{ professor.phone }}</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -988,7 +1146,8 @@
 
         <!-- REVIEWS SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'reviews' && aiDetails()!.student_reviews && aiDetails()!.student_reviews!.length > 0">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Student Reviews</h2>
             <p class="section-subtitle">What students are saying</p>
           </div>
@@ -1015,7 +1174,8 @@
 
         <!-- JOBS ON CAMPUS SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'jobs'">
-          <div class="section-header">
+          <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80');">
+            <div class="section-header-overlay"></div>
             <h2>Jobs On Campus</h2>
             <p class="section-subtitle">Student employment opportunities</p>
           </div>

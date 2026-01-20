@@ -51,6 +51,29 @@ export interface AdditionalResource {
   link: string; // Resource link
 }
 
+export interface ProfessorContact {
+  name: string; // Professor name
+  role: string; // Role (e.g., "Dean of Students", "Academic Advisor")
+  email: string; // Email address
+  phone?: string; // Phone number (optional)
+  department?: string; // Department name (optional)
+}
+
+export interface SafetyInfo {
+  overall_safety_rating: string; // Rating (e.g., "Safe", "Moderate", "Use Caution")
+  crime_statistics?: string; // General crime information for the area
+  safety_tips?: string[]; // Tips for students to stay safe
+  places_to_avoid?: string[]; // Areas or locations to avoid
+  emergency_contacts?: EmergencyContact[]; // Emergency numbers and contacts
+  campus_security?: string; // Campus security information
+}
+
+export interface EmergencyContact {
+  name: string; // Emergency service name (e.g., "Campus Police", "Medical Emergency")
+  number: string; // Phone number
+  description?: string; // Brief description
+}
+
 export interface UniversityDetail {
   name: string; // University name; example "Harvard University"
   description: string; // Brief description of the university; example "Harvard University is a prestigious Ivy League institution located in Cambridge, Massachusetts."
@@ -81,6 +104,8 @@ export interface UniversityDetail {
   near_by_pubs_and_bars?: string[]; // Optional list of nearby pubs and bars; example ["The Sinclair", "Grendel's Den"]
   near_by_cities_of_interest?: string[]; // Optional list of nearby cities of interest; example ["Boston", "Somerville"]
   need_car?: boolean; // Optional boolean indicating if a car is needed; example false
+  professor_contacts?: ProfessorContact[]; // Optional list of key contacts (DSO, advisors, etc.)
+  safety_info?: SafetyInfo; // Optional safety information about the area and campus
 }
 
 export interface Address {
@@ -236,7 +261,57 @@ The JSON must follow this exact structure:
   "near_by_libraries": ["Library1", "Library2"],
   "near_by_pubs_and_bars": ["Bar1", "Pub2", "Bar3"],
   "near_by_cities_of_interest": ["City1", "City2", "City3"],
-  "need_car": boolean_value
+  "need_car": boolean_value,
+  "professor_contacts": [
+    {
+      "name": "Full Name",
+      "role": "Position/Title (e.g., Dean of Students, International Student Advisor)",
+      "email": "email@university.edu",
+      "phone": "+1-XXX-XXX-XXXX",
+      "department": "Department Name (optional)"
+    },
+    {
+      "name": "Another Name",
+      "role": "Different Position (e.g., Graduate Program Advisor, DSO)",
+      "email": "email@university.edu",
+      "phone": "+1-XXX-XXX-XXXX",
+      "department": "Department Name (optional)"
+    }
+  ],
+  "safety_info": {
+    "overall_safety_rating": "Safe/Moderate/Use Caution",
+    "crime_statistics": "General information about crime rates in the area compared to national averages",
+    "safety_tips": [
+      "Always walk in groups, especially at night",
+      "Be aware of your surroundings",
+      "Use campus security escort services",
+      "Keep valuables secure",
+      "Trust your instincts and report suspicious activity"
+    ],
+    "places_to_avoid": [
+      "Specific neighborhoods or areas",
+      "Dangerous streets or blocks",
+      "Areas known for crime"
+    ],
+    "campus_security": "Information about campus security services, patrolling, and emergency protocols",
+    "emergency_contacts": [
+      {
+        "name": "Campus Police/Security",
+        "number": "+1-XXX-XXX-XXXX",
+        "description": "For emergencies and campus safety concerns"
+      },
+      {
+        "name": "Local Police Non-Emergency",
+        "number": "+1-XXX-XXX-XXXX",
+        "description": "For non-emergency police reports"
+      },
+      {
+        "name": "Emergency Medical Services",
+        "number": "911",
+        "description": "For medical emergencies"
+      }
+    ]
+  }
 }
 
 Requirements:
@@ -261,6 +336,20 @@ Requirements:
 - For indian_amenities: Include 4-6 Indian-specific places like Indian restaurants, Indian grocery stores, Indian sweet shops, temples, cultural centers within 1-10 miles of campus
 - For campus_jobs: Include 3-5 common on-campus job opportunities (GA, TA, Dining Services, Library, Research Assistant, etc.) with realistic pay rates and availability requirements
 - For need_car: Set to false if campus is walkable and has good public transit; true if car is beneficial
+- For professor_contacts: Include 3-5 key contacts such as:
+  * Dean of Students (DSO)
+  * International Student Advisor
+  * Graduate Program Advisor
+  * Admissions Contact
+  * Academic Advisor
+  Each contact should include their name, role, email, phone number, and department
+- For safety_info: Provide comprehensive safety information including:
+  * overall_safety_rating: Rate as "Safe", "Moderate", or "Use Caution" based on crime statistics
+  * crime_statistics: Provide factual information about crime rates in the area
+  * safety_tips: Include 5-6 practical safety tips for students (e.g., travel in groups, avoid isolated areas, use escort services)
+  * places_to_avoid: List 3-5 specific neighborhoods or areas known to have higher crime or that students should avoid
+  * campus_security: Describe campus security services, patrol presence, and emergency protocols
+  * emergency_contacts: Include campus police, local police non-emergency, and medical emergency numbers with descriptions
 - Ensure all fields are filled with accurate information
 - Return ONLY the JSON object, nothing else`;
 

@@ -7,7 +7,7 @@ import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
 import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
-type SectionType = 'overview' | 'accommodation' | 'amenities' | 'demographics' | 'academics' | 'financial' | 'contact' | 'reviews' | 'jobs';
+type SectionType = 'overview' | 'accommodation' | 'amenities' | 'academics' | 'demographics' | 'safety' | 'financial' | 'contact' | 'reviews' | 'jobs';
 
 interface NavSection {
   id: SectionType;
@@ -49,6 +49,7 @@ export class UniversityDetailsComponent implements OnInit {
     { id: 'amenities', label: 'Amenities & Neighborhood', icon: '🏙️' },
     { id: 'academics', label: 'Academic Programs', icon: '📚' },
     { id: 'demographics', label: 'Demographics', icon: '👥' },
+    { id: 'safety', label: 'Safety & Security', icon: '🛡️' },
     { id: 'financial', label: 'Tuition & Financial Aid', icon: '💰' },
     { id: 'contact', label: 'Contact & Links', icon: '📧' },
     { id: 'reviews', label: 'Student Reviews', icon: '⭐' },

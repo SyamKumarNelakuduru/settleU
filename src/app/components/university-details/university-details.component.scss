@@ -1,14 +1,12 @@
 // Import existing styles (keeping the first part as is)
 :host {
   display: block;
-  width: 100vw;
+  width: 100%;
   position: relative;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
 }
 
 .university-details-page {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
   padding: 0;
@@ -330,6 +328,7 @@
 
 .sidebar-navigation {
   width: 280px;
+  flex-shrink: 0;
   background: white;
   border-right: 1px solid #e1e8ed;
   padding: 2rem 0;
@@ -424,6 +423,8 @@
   flex: 1;
   padding: 2rem;
   background: #f8f9fa;
+  width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: 1024px) {
     padding: 1.5rem;
@@ -972,25 +973,58 @@
 // ============================================================
 // CONTACT SECTION
 // ============================================================
-.contact-info {
-  background: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 10px;
-  border-left: 4px solid #3498db;
+.contact-info-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e8f4fd 100%);
+  padding: 2rem;
+  border-radius: 12px;
+  border-left: 5px solid #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+  transition: all 0.3s ease;
 
-  p {
-    margin: 0.25rem 0;
-    color: #555;
-    font-size: 0.9375rem;
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15);
+  }
 
-    &:first-child {
-      font-weight: 600;
-      color: #2c3e50;
+  .address-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .address-content {
+    p {
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+
+      &.street {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 1rem;
+      }
+
+      &.city-state {
+        color: #555;
+      }
+
+      &.country {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+      }
     }
   }
 }
 
-.website-btn {
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.link-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -1000,75 +1034,334 @@
   border: none;
   border-radius: 10px;
   font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.35);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
   }
 }
 
 .social-links {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
 }
 
 .social-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 1rem;
   border: 2px solid #e1e8ed;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.875rem;
+  flex-direction: column;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 
   &:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
 
   &.facebook {
     &:hover {
       border-color: #3b5998;
-      color: #3b5998;
-      background: #f0f2f5;
+      color: white;
+      background: #3b5998;
     }
   }
 
   &.twitter {
     &:hover {
       border-color: #1da1f2;
-      color: #1da1f2;
-      background: #f7f9fa;
+      color: white;
+      background: #1da1f2;
     }
   }
 
   &.instagram {
     &:hover {
       border-color: #e1306c;
-      color: #e1306c;
-      background: #fef5f9;
+      color: white;
+      background: linear-gradient(135deg, #e1306c 0%, #c2185b 100%);
     }
   }
 
   &.linkedin {
     &:hover {
       border-color: #0077b5;
-      color: #0077b5;
-      background: #f3f6f8;
+      color: white;
+      background: #0077b5;
     }
   }
 
   &.youtube {
     &:hover {
       border-color: #ff0000;
-      color: #ff0000;
-      background: #ffe0e0;
+      color: white;
+      background: #ff0000;
+    }
+  }
+}
+
+// ============================================================
+// PROFESSOR/KEY CONTACTS SECTION
+// ============================================================
+.professors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.professor-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-top: 4px solid #3498db;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(30%, -30%);
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(52, 152, 219, 0.15);
+    border-top-color: #2980b9;
+  }
+
+  .professor-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    z-index: 1;
+
+    &.role-dso {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    }
+
+    &.role-advisor {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    }
+
+    &.role-dean {
+      background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
+    }
+
+    &.role-director {
+      background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+    }
+  }
+
+  .professor-header {
+    margin-bottom: 1rem;
+    padding-right: 3rem;
+
+    .professor-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0 0 0.4rem 0;
+      word-break: break-word;
+    }
+
+    .professor-role {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .professor-department {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+
+    .dept-icon {
+      font-size: 1rem;
+    }
+  }
+
+  .professor-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #e1e8ed 50%, transparent 100%);
+    margin: 1rem 0;
+  }
+
+  .professor-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+
+      .detail-icon {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+
+      .detail-text {
+        color: #555;
+      }
+
+      .detail-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        word-break: break-word;
+
+        &:hover {
+          color: #2980b9;
+          text-decoration: underline;
+        }
+      }
+
+      &.email-item {
+        .detail-link {
+          color: #e74c3c;
+
+          &:hover {
+            color: #c0392b;
+          }
+        }
+      }
+
+      &.phone-item {
+        .detail-link {
+          color: #27ae60;
+
+          &:hover {
+            color: #1e8449;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+
+    .professor-header {
+      padding-right: 2rem;
+    }
+
+    .professor-badge {
+      width: 36px;
+      height: 36px;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .professors-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .social-links {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .professors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-info-card {
+    flex-direction: column;
+    padding: 1.5rem;
+
+    .address-icon {
+      font-size: 1.5rem;
+    }
+  }
+
+  .social-links {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .social-btn {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .link-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+
+    svg {
+      width: 16px;
+      height: 16px;
     }
   }
 }
@@ -2227,5 +2520,274 @@
       padding: 0.625rem 1.25rem;
       font-size: 0.8125rem;
     }
+  }
+}
+
+// ============================================================
+// SAFETY & SECURITY SECTION
+// ============================================================
+.safety-rating-section {
+  margin-bottom: 2rem;
+}
+
+.safety-rating-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  border-left: 6px solid #3498db;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+  transition: all 0.3s ease;
+
+  .rating-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .rating-icon {
+      font-size: 2rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 0;
+    }
+  }
+
+  .rating-display {
+    margin-bottom: 1rem;
+  }
+
+  .rating-badge {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+  }
+
+  .rating-description {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  &.rating-safe {
+    border-left-color: #27ae60;
+    .rating-badge {
+      background: rgba(39, 174, 96, 0.15);
+      color: #27ae60;
+    }
+  }
+
+  &.rating-moderate {
+    border-left-color: #f39c12;
+    .rating-badge {
+      background: rgba(243, 156, 18, 0.15);
+      color: #f39c12;
+    }
+  }
+
+  &.rating-use-caution {
+    border-left-color: #e74c3c;
+    .rating-badge {
+      background: rgba(231, 76, 60, 0.15);
+      color: #e74c3c;
+    }
+  }
+}
+
+.security-info {
+  background: rgba(52, 152, 219, 0.08);
+  border-left: 4px solid #3498db;
+  padding: 1.5rem;
+  border-radius: 8px;
+  line-height: 1.7;
+  color: #333;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tip-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #f5f7fa 100%);
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+  }
+
+  .tip-icon {
+    flex-shrink: 0;
+    color: #27ae60;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .tip-text {
+    color: #333;
+    line-height: 1.5;
+  }
+}
+
+.warning-section {
+  background: rgba(231, 76, 60, 0.08);
+  border-left: 4px solid #e74c3c;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+
+  h3 {
+    color: #c0392b;
+  }
+
+  .warning-note {
+    color: #555;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+}
+
+.places-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.place-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border: 2px solid #e74c3c;
+  border-radius: 8px;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(231, 76, 60, 0.05);
+    transform: translateY(-2px);
+  }
+
+  .place-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .place-name {
+    color: #333;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+.emergency-contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.emergency-card {
+  background: linear-gradient(135deg, #fff8f0 0%, #ffe8d6 100%);
+  border: 2px solid #e74c3c;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.2);
+  }
+
+  .contact-header {
+    margin-bottom: 1rem;
+
+    h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c0392b;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .contact-number {
+      display: block;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #e74c3c;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+  }
+
+  .contact-desc {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.resources-section {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e8f4fd 100%);
+  border-left: 4px solid #3498db;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.resource-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  border: 1px solid #e1e8ed;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(52, 152, 219, 0.15);
+    border-color: #3498db;
+  }
+
+  .resource-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0.5rem 0;
+  }
+
+  p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
   }
 }
