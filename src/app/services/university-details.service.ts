@@ -8,6 +8,49 @@ export interface CampusJob {
   availability: string; // Availability info; example "Available for graduate students"
 }
 
+export interface TuitionFees {
+  annual_tuition?: string; // Annual tuition cost; example "$60,000"
+  in_state_tuition?: string; // In-state tuition; example "$30,000"
+  out_of_state_tuition?: string; // Out-of-state tuition; example "$60,000"
+  room_and_board?: string; // Room and board cost; example "$20,000"
+  books_and_supplies?: string; // Books and supplies cost; example "$1,200"
+}
+
+export interface AdmissionStats {
+  acceptance_rate?: string; // Acceptance rate; example "15%"
+  average_gpa?: string; // Average GPA; example "3.9"
+  sat_range?: string; // SAT score range; example "1450-1570"
+  act_range?: string; // ACT score range; example "33-35"
+}
+
+export interface FinancialAid {
+  aid_types: string[]; // Types of aid available; example ["Scholarships", "Grants", "Loans"]
+  international_student_support: string[]; // Support for international students; example ["Need-based aid", "Merit scholarships", "Work-study"]
+}
+
+export interface StudentReview {
+  reviewer_name: string; // Name of the reviewer
+  program: string; // Program/major of the reviewer
+  year: string; // Year of study
+  rating: number; // Rating out of 5
+  review_text: string; // The review text
+  highlights: string[]; // Key highlights/tags
+}
+
+export interface SocialMedia {
+  facebook?: string; // Facebook profile URL
+  twitter?: string; // Twitter profile URL
+  instagram?: string; // Instagram profile URL
+  linkedin?: string; // LinkedIn profile URL
+  youtube?: string; // YouTube channel URL
+}
+
+export interface AdditionalResource {
+  title: string; // Resource title
+  description: string; // Resource description
+  link: string; // Resource link
+}
+
 export interface UniversityDetail {
   name: string; // University name; example "Harvard University"
   description: string; // Brief description of the university; example "Harvard University is a prestigious Ivy League institution located in Cambridge, Massachusetts."
@@ -18,6 +61,12 @@ export interface UniversityDetail {
   address: Address; // Address object containing street, city, state, country, and zip code
   student_population: StudentPopulation; // Student population details
   campus_jobs?: CampusJob[]; // Optional list of on-campus job opportunities
+  tuition_fees?: TuitionFees; // Optional tuition and fees information
+  admission_stats?: AdmissionStats; // Optional admission statistics
+  financial_aid?: FinancialAid; // Optional financial aid information
+  student_reviews?: StudentReview[]; // Optional student reviews and testimonials
+  social_media?: SocialMedia; // Optional social media links
+  additional_resources?: AdditionalResource[]; // Optional additional resources
   indian_amenities?: string[]; // Optional list of Indian restaurants, grocery stores, and cultural amenities; example ["Maharaja Indian Restaurant", "India Bazaar Grocery", "Indian Spice House"]
   near_by_attractions?: string[]; // Optional list of nearby attractions; example ["Museum of Fine Arts", "Fenway Park"]
   near_by_transportation?: string[]; // Optional list of nearby transportation options; example ["Harvard Square T Station", "Bus routes 1, 66, 86"]
@@ -105,6 +154,55 @@ The JSON must follow this exact structure:
     },
     "domestic_students": domestic_number
   },
+  "tuition_fees": {
+    "annual_tuition": "$XX,XXX",
+    "in_state_tuition": "$XX,XXX (if applicable)",
+    "out_of_state_tuition": "$XX,XXX (if applicable)",
+    "room_and_board": "$X,XXX",
+    "books_and_supplies": "$XXX"
+  },
+  "admission_stats": {
+    "acceptance_rate": "X%",
+    "average_gpa": "X.XX",
+    "sat_range": "XXXX-XXXX",
+    "act_range": "XX-XX"
+  },
+  "financial_aid": {
+    "aid_types": ["Scholarships", "Grants", "Loans", "Work-Study"],
+    "international_student_support": ["Need-based aid", "Merit scholarships", "International student scholarships", "Assistantships"]
+  },
+  "student_reviews": [
+    {
+      "reviewer_name": "First Name Last Name",
+      "program": "Program/Major",
+      "year": "Freshman/Sophomore/Junior/Senior/Graduate",
+      "rating": 4 or 5,
+      "review_text": "A brief honest review about the student's experience at the university",
+      "highlights": ["Campus Life", "Academics", "Support Services"]
+    },
+    {
+      "reviewer_name": "Another Student",
+      "program": "Different Program",
+      "year": "Different Year",
+      "rating": 4 or 5,
+      "review_text": "Another genuine student perspective",
+      "highlights": ["Diversity", "Research Opportunities", "Community"]
+    }
+  ],
+  "social_media": {
+    "facebook": "https://facebook.com/universitypage",
+    "twitter": "https://twitter.com/universityhandle",
+    "instagram": "https://instagram.com/universityhandle",
+    "linkedin": "https://linkedin.com/school/universityname",
+    "youtube": "https://youtube.com/@universityhandle"
+  },
+  "additional_resources": [
+    {
+      "title": "Resource Title",
+      "description": "Brief description of what this resource offers",
+      "link": "https://link-to-resource.edu"
+    }
+  ],
   "campus_jobs": [
     {
       "title": "Graduate Assistant (GA)",
@@ -148,6 +246,10 @@ Requirements:
 - Student population numbers should be based on official enrollment statistics
 - Top countries for international students should be the actual top 3 countries
 - Percentage calculations should represent % of total student population
+- Tuition and financial aid should be accurate for 2024-2025
+- Admission stats should reflect current admission requirements
+- Student reviews should be realistic and diverse perspectives (3-4 reviews)
+- Social media links should be the official university accounts
 - For nearby amenities (attractions, transportation, housing, food, parks, healthcare, cultural centers, shopping, sports facilities, libraries, pubs/bars, cities):
   * Provide 3-6 real, specific locations for each category
   * Use actual names of places, not generic descriptions
