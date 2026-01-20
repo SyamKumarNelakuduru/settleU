@@ -7,6 +7,14 @@ import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
 import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
+type SectionType = 'overview' | 'accommodation' | 'amenities' | 'demographics' | 'academics' | 'financial' | 'contact' | 'reviews' | 'jobs';
+
+interface NavSection {
+  id: SectionType;
+  label: string;
+  icon: string;
+}
+
 @Component({
   selector: 'app-university-details',
   standalone: true,
@@ -20,8 +28,27 @@ export class UniversityDetailsComponent implements OnInit {
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
   isDemographicModalOpen = signal(false);
+  activeSection = signal<SectionType>('overview');
+  
+  // Accommodation subsection tracking
+  accommodationView = signal<'list' | 'onCampus' | 'offCampus'>('list');
+  expandedOffCampusCard = signal<string | null>(null);
+  expandedStudentArea = signal<string | null>(null);
 
-  private universityId: string | null = null;
+  universityId: string | null = null;
+  document = document; // Expose document to template
+  
+  navigationSections: NavSection[] = [
+    { id: 'overview', label: 'Overview', icon: '📋' },
+    { id: 'accommodation', label: 'Accommodation', icon: '🏠' },
+    { id: 'amenities', label: 'Amenities & Neighborhood', icon: '🏙️' },
+    { id: 'academics', label: 'Academic Programs', icon: '📚' },
+    { id: 'demographics', label: 'Demographics', icon: '👥' },
+    { id: 'financial', label: 'Tuition & Financial Aid', icon: '💰' },
+    { id: 'contact', label: 'Contact & Links', icon: '📧' },
+    { id: 'reviews', label: 'Student Reviews', icon: '⭐' },
+    { id: 'jobs', label: 'Jobs On Campus', icon: '💼' }
+  ];
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private universityDetailsService = inject(UniversityDetailsService);
@@ -137,26 +164,26 @@ export class UniversityDetailsComponent implements OnInit {
     }
   }
 
-      getInternationalCountryBreakdown(): Array<{ country: string; count: number; percentage: number }> {
-        const students = this.university()?.students;
-        if (!students?.internationalCountryBreakdown || !students.international || students.international === 0) {
-          return [];
-        }
+  getInternationalCountryBreakdown(): Array<{ country: string; count: number; percentage: number }> {
+    const students = this.university()?.students;
+    if (!students?.internationalCountryBreakdown || !students.international || students.international === 0) {
+      return [];
+    }
 
-        const breakdown = students.internationalCountryBreakdown;
-        const totalInternational = students.international;
+    const breakdown = students.internationalCountryBreakdown;
+    const totalInternational = students.international;
 
-        // Convert to array and calculate percentages
-        return Object.entries(breakdown)
-          .map(([country, count]) => ({
-            country,
-            count: count as number,
-            percentage: ((count as number) / totalInternational) * 100
-          }))
-          .sort((a, b) => b.count - a.count); // Sort by count descending
-      }
+    // Convert to array and calculate percentages
+    return Object.entries(breakdown)
+      .map(([country, count]) => ({
+        country,
+        count: count as number,
+        percentage: ((count as number) / totalInternational) * 100
+      }))
+      .sort((a, b) => b.count - a.count); // Sort by count descending
+  }
 
-      async addToCompare(university: University, event?: Event): Promise<void> {
+  async addToCompare(university: University, event?: Event): Promise<void> {
     if (event) {
       event.stopPropagation();
     }
@@ -223,6 +250,36 @@ export class UniversityDetailsComponent implements OnInit {
 
   closeDemographicModal(): void {
     this.isDemographicModalOpen.set(false);
+  }
+
+  selectSection(section: SectionType) {
+    this.activeSection.set(section);
+    // Reset accommodation view when switching to accommodation
+    if (section === 'accommodation') {
+      this.accommodationView.set('list');
+    }
+  }
+
+  selectAccommodationView(view: 'list' | 'onCampus' | 'offCampus') {
+    this.accommodationView.set(view);
+    // Reset expanded card when switching views
+    this.expandedOffCampusCard.set(null);
+  }
+
+  toggleOffCampusCard(cardName: string) {
+    if (this.expandedOffCampusCard() === cardName) {
+      this.expandedOffCampusCard.set(null);
+    } else {
+      this.expandedOffCampusCard.set(cardName);
+    }
+  }
+
+  toggleStudentArea(areaName: string) {
+    if (this.expandedStudentArea() === areaName) {
+      this.expandedStudentArea.set(null);
+    } else {
+      this.expandedStudentArea.set(areaName);
+    }
   }
 
   /**
