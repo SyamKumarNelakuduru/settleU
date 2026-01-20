@@ -6,13 +6,22 @@
   <!-- Loading State -->
   <div class="loading-container" *ngIf="isLoading()">
     <div class="spinner"></div>
-    <p>Loading university details...</p>
+    <p>Loading AI-powered university insights...</p>
   </div>
 
   <!-- Error State -->
   <div class="error-container" *ngIf="errorMessage() && !isLoading()">
     <div class="error-icon">⚠️</div>
     <h2>{{ errorMessage() }}</h2>
+    <p class="error-hint">Please check the browser console for more details</p>
+    <div class="error-actions">
+      <button class="retry-btn" (click)="loadUniversityDetails(universityIdValue!)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+        Retry
+      </button>
     <button class="back-btn" (click)="goBack()">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -20,11 +29,12 @@
       </svg>
       Back to Home
     </button>
+    </div>
   </div>
 
-  <!-- University Details -->
-  <div class="details-container" *ngIf="university() && !isLoading()">
-    <!-- Header Section -->
+  <!-- University Details with Sidebar Layout -->
+  <div class="details-container" *ngIf="aiDetails() && !isLoading()">
+    <!-- Navigation Header -->
     <div class="page-header">
       <button class="back-btn" (click)="goBack()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,319 +45,1161 @@
       </button>
     </div>
 
-    <!-- University Info Card -->
-    <div class="university-card">
-      <div class="university-header">
-        <div class="university-icon">
-          <img 
-            [src]="'https://ui-avatars.com/api/?name=' + university()!.name + '&size=200&background=667eea&color=fff&bold=true&font-size=0.4'" 
-            [alt]="university()!.name + ' logo'"
-            class="university-logo"
-            (error)="handleImageError($event)"
-          />
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <div class="hero-overlay"></div>
+      <div class="hero-wrapper">
+        <div class="hero-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <span>University Profile</span>
         </div>
-        <div class="university-info">
-          <h1 class="university-name">
-            <span>{{ university()!.name }}</span>
-
-            <button class="compare-icon-btn" (click)="addToCompare(university()!, $event)" title="Add to Compare">
+        <h1 class="hero-title">{{ aiDetails()!.name }}</h1>
+        <p class="hero-subtext">{{ aiDetails()!.location }}</p>
+        <p class="hero-description">{{ aiDetails()!.description }}</p>
+        <div class="hero-cta">
+          <button class="cta-primary" (click)="selectSection('overview')">
+            <span>Explore University</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <polyline points="19 12 12 19 5 12"></polyline>
               </svg>
             </button>
-          </h1>
-          <div class="university-about">
-            <p *ngIf="university()!.about">{{ university()!.about }}</p>
-            <p *ngIf="!university()!.about" class="no-data">No information available yet.</p>
-          </div>
-          <p class="university-location">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            {{ university()!.city }}, {{ university()!.state }}
-          </p>
-          <div class="badges">
-            <span class="type-badge" [class.public]="university()!.type === 'Public'" [class.private]="university()!.type === 'Private'">
-              {{ university()!.type }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Website Button -->
-      <button class="website-btn" *ngIf="university()!.website" (click)="openWebsite(university()!.website)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-        Visit Website
-      </button>
-    </div>
-
-    <!-- Student Population Section -->
-    <div class="content-section student-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <h2>Student Population</h2>
-      </div>
-
-      <div class="student-stats" *ngIf="university()!.students">
-        <div class="stat-card total-card">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon total">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="stat-details">
-              <p class="stat-label">Total Students</p>
-              <p class="stat-value">{{ university()!.students!.total.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">📊</span>
-                <span class="trend-text">Campus Population</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="stat-card international-card" (click)="openDemographicModal()" style="cursor: pointer;">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon international">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="2" y1="12" x2="22" y2="12"></line>
-                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="stat-details">
-              <p class="stat-label">International</p>
-              <p class="stat-value">{{ university()!.students!.international.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">🌍</span>
-                <span class="trend-text">{{ ((university()!.students!.international / university()!.students!.total) * 100).toFixed(1) }}% of total</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- International Country Breakdown -->
-        <div class="country-breakdown-card" *ngIf="getInternationalCountryBreakdown().length > 0">
-          <div class="breakdown-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="cta-secondary" *ngIf="aiDetails()!.website" (click)="openWebsite(aiDetails()!.website)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <h3>International Students by Country</h3>
-          </div>
-          <div class="breakdown-list">
-            <div class="breakdown-item" *ngFor="let item of getInternationalCountryBreakdown()">
-              <div class="country-info">
-                <span class="country-name">{{ item.country }}</span>
-                <span class="country-count">{{ item.count.toLocaleString() }} students</span>
-              </div>
-              <div class="percentage-bar">
-                <div class="percentage-fill" [style.width.%]="item.percentage"></div>
-                <span class="percentage-text">{{ item.percentage.toFixed(1) }}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="stat-card domestic-card">
-          <div class="card-background"></div>
-          <div class="card-content-wrapper">
-            <div class="stat-icon-wrapper">
-              <div class="stat-icon domestic">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="stat-details">
-              <p class="stat-label">Domestic</p>
-              <p class="stat-value">{{ university()!.students!.domestic.toLocaleString() }}</p>
-              <div class="stat-trend">
-                <span class="trend-icon">🏠</span>
-                <span class="trend-text">{{ ((university()!.students!.domestic / university()!.students!.total) * 100).toFixed(1) }}% of total</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="data-source-card" *ngIf="university()!.students!.source">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <span>Data from: {{ university()!.students!.source }} ({{ university()!.students!.year }})</span>
+            <span>Visit Website</span>
+          </button>
         </div>
       </div>
+    </section>
 
-      <p *ngIf="!university()!.students" class="no-data">No student data available yet.</p>
-    </div>
+    <!-- Main Content Area with Sidebar -->
+    <div class="content-wrapper">
+      <!-- LEFT SIDEBAR NAVIGATION -->
+      <aside class="sidebar-navigation">
+        <nav class="nav-menu">
+          <button 
+            *ngFor="let section of navigationSections"
+            class="nav-item"
+            [class.active]="activeSection() === section.id"
+            (click)="selectSection(section.id)"
+          >
+            <span class="nav-icon">{{ section.icon }}</span>
+            <span class="nav-label">{{ section.label }}</span>
+          </button>
+        </nav>
+      </aside>
 
-    <!-- Safety Section -->
-    <div class="content-section safety-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        <h2>Safety Near Campus</h2>
-      </div>
-      <div class="section-content">
-        <div *ngIf="university()!.safety" class="safety-info">
-          <div class="safety-level" [class.safe]="university()!.safety!.level === 'Safe'" 
-               [class.moderate]="university()!.safety!.level === 'Moderate'" 
-               [class.caution]="university()!.safety!.level === 'Use Caution'">
-            <span class="level-badge">{{ university()!.safety!.level }}</span>
+      <!-- MAIN CONTENT AREA -->
+      <main class="main-content">
+        <!-- OVERVIEW SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'overview'">
+          <div class="section-header">
+            <h2>Overview</h2>
+            <p class="section-subtitle">{{ aiDetails()!.location }}</p>
           </div>
-          <p class="safety-note">{{ university()!.safety!.note }}</p>
-          <p *ngIf="university()!.safety!.source" class="safety-source">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            Source: {{ university()!.safety!.source }}
-          </p>
-        </div>
-        <p *ngIf="!university()!.safety" class="no-data">Safety information not available yet.</p>
-      </div>
-    </div>
-
-    <!-- Best Areas to Live Section -->
-    <div class="content-section areas-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        <h2>Best Areas to Live</h2>
-      </div>
-      <div class="section-content">
-        <div *ngIf="university()!.bestAreasToLive && university()!.bestAreasToLive!.length > 0" class="areas-list">
-          <div *ngFor="let area of university()!.bestAreasToLive" class="area-card">
-            <div class="area-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </div>
-            <div class="area-content">
-              <h3 class="area-name">
-                <a *ngIf="area.link" [href]="area.link" target="_blank" rel="noopener noreferrer" class="area-link">
-                  {{ area.name }}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="external-icon">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
+          <div class="section-content">
+            <div class="overview-grid">
+              <div class="overview-card">
+                <div class="card-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                   </svg>
-                </a>
-                <span *ngIf="!area.link">{{ area.name }}</span>
-              </h3>
-              <p class="area-reason">{{ area.reason }}</p>
+                  <h3>About {{ aiDetails()!.name }}</h3>
+                </div>
+                <p class="card-content">{{ aiDetails()!.description }}</p>
+                <div class="card-meta">
+                  <span class="meta-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <strong>Established:</strong> {{ aiDetails()!.established }}
+                  </span>
+                  <span class="meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+                    <strong>Location:</strong> {{ aiDetails()!.location }}
+            </span>
+          </div>
+        </div>
+
+              <div class="overview-card">
+                <div class="card-header">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                  <h3>Quick Facts</h3>
+                </div>
+                <div class="quick-facts">
+                  <div class="fact">
+                    <span class="fact-icon">🎓</span>
+                    <span class="fact-label">Tuition (Annual)</span>
+                    <span class="fact-value">{{ aiDetails()!.tuition_fees?.annual_tuition || 'N/A' }}</span>
+                  </div>
+                  <div class="fact">
+                    <span class="fact-icon">📊</span>
+                    <span class="fact-label">Acceptance Rate</span>
+                    <span class="fact-value">{{ aiDetails()!.admission_stats?.acceptance_rate || 'N/A' }}</span>
+                  </div>
+                  <div class="fact">
+                    <span class="fact-icon">🏆</span>
+                    <span class="fact-label">Avg GPA</span>
+                    <span class="fact-value">{{ aiDetails()!.admission_stats?.average_gpa || 'N/A' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ACCOMMODATION SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'accommodation'">
+          <div class="section-header">
+            <h2>Accommodation</h2>
+            <p class="section-subtitle">Housing options and transportation</p>
+      </div>
+          <div class="section-content">
+
+            <!-- Accommodation View: Main List -->
+            <div *ngIf="accommodationView() === 'list'">
+              <!-- On-Campus vs Off-Campus Selection -->
+              <div class="accommodation-type-selector">
+                <button 
+                  class="accommodation-type-btn"
+                  [class.active]="accommodationView() === 'onCampus'"
+                  (click)="selectAccommodationView('onCampus')"
+                >
+                  <span class="type-icon">🏢</span>
+                  <span class="type-label">On-Campus</span>
+                  <span class="type-desc">University managed housing</span>
+                </button>
+                <button 
+                  class="accommodation-type-btn"
+                  [class.active]="accommodationView() === 'offCampus'"
+                  (click)="selectAccommodationView('offCampus')"
+                >
+                  <span class="type-icon">🏘️</span>
+                  <span class="type-label">Off-Campus</span>
+                  <span class="type-desc">Private housing options</span>
+      </button>
+    </div>
+
+              <!-- Transportation Info -->
+              <div class="subsection" *ngIf="aiDetails()!.need_car !== undefined" style="margin-top: 2rem;">
+                <h3>Transportation</h3>
+                <div class="status-badge" [class.needed]="aiDetails()!.need_car" [class.not-needed]="!aiDetails()!.need_car">
+                  <svg *ngIf="!aiDetails()!.need_car" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <svg *ngIf="aiDetails()!.need_car" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+                  <div>
+                    <span class="status-title" *ngIf="!aiDetails()!.need_car">Car Not Required</span>
+                    <span class="status-title" *ngIf="aiDetails()!.need_car">Car Recommended</span>
+                    <p class="status-desc" *ngIf="!aiDetails()!.need_car">Good public transportation and walkable campus area.</p>
+                    <p class="status-desc" *ngIf="aiDetails()!.need_car">Having a car would be beneficial for getting around.</p>
+                  </div>
+                </div>
+              </div>
+      </div>
+
+            <!-- On-Campus Housing View -->
+            <div *ngIf="accommodationView() === 'onCampus'" class="accommodation-detail-view">
+              <button class="back-to-list-btn" (click)="selectAccommodationView('list')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Options
+              </button>
+              
+              <div class="accommodation-detail-header">
+                <h3>🏢 On-Campus Housing</h3>
+                <p>University-managed dormitories and residence halls</p>
+              </div>
+
+              <!-- On-Campus Housing Options -->
+              <div class="accommodation-options-grid">
+                <div class="accommodation-card">
+                  <div class="card-title">Freshman Dormitory</div>
+                  <div class="card-details">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Semester:</span>
+                      <span class="detail-value">$5,500</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$11,000</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">Double Occupancy</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Meal Plan:</span>
+                      <span class="detail-value">Included</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Capacity:</span>
+                      <span class="detail-value">2 students per room</span>
+                    </div>
+                  </div>
+                  <div class="card-features">
+                    <span class="feature">✓ WiFi</span>
+                    <span class="feature">✓ AC/Heating</span>
+                    <span class="feature">✓ Utilities</span>
+                    <span class="feature">✓ Security</span>
+                  </div>
+                </div>
+
+                <div class="accommodation-card">
+                  <div class="card-title">Sophomore Dormitory</div>
+                  <div class="card-details">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Semester:</span>
+                      <span class="detail-value">$5,800</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$11,600</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">Single or Double</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Meal Plan:</span>
+                      <span class="detail-value">Included</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Capacity:</span>
+                      <span class="detail-value">1-2 students per room</span>
+                    </div>
+                  </div>
+                  <div class="card-features">
+                    <span class="feature">✓ WiFi</span>
+                    <span class="feature">✓ AC/Heating</span>
+                    <span class="feature">✓ Utilities</span>
+                    <span class="feature">✓ Study Areas</span>
+                  </div>
+                </div>
+
+                <div class="accommodation-card">
+                  <div class="card-title">University Apartments</div>
+                  <div class="card-details">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Semester:</span>
+                      <span class="detail-value">$6,200</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$12,400</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">1 or 2 Bedroom</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Meal Plan:</span>
+                      <span class="detail-value">Optional</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Capacity:</span>
+                      <span class="detail-value">2-4 students</span>
+                    </div>
+                  </div>
+                  <div class="card-features">
+                    <span class="feature">✓ WiFi</span>
+                    <span class="feature">✓ Kitchen</span>
+                    <span class="feature">✓ Utilities</span>
+                    <span class="feature">✓ Laundry</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accommodation-note">
+                <span class="note-icon">ℹ️</span>
+                <span>On-campus housing includes utilities, internet, and access to university facilities. Apply early for best room options.</span>
+              </div>
+            </div>
+
+            <!-- Off-Campus Housing View -->
+            <div *ngIf="accommodationView() === 'offCampus'" class="accommodation-detail-view">
+              <button class="back-to-list-btn" (click)="selectAccommodationView('list')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Options
+              </button>
+
+              <div class="accommodation-detail-header">
+                <h3>🏘️ Off-Campus Housing</h3>
+                <p>Private rental apartments and houses near campus</p>
+              </div>
+
+              <!-- Off-Campus Housing Options -->
+              <div class="accommodation-options-grid">
+                <div class="accommodation-card" [class.expanded]="expandedOffCampusCard() === 'shared'">
+                  <button class="card-title-btn" (click)="toggleOffCampusCard('shared')">
+                    <div class="card-title">
+                      <span>Shared Apartment</span>
+                      <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </button>
+                  <div class="card-details" *ngIf="expandedOffCampusCard() === 'shared'">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Month:</span>
+                      <span class="detail-value">$800 - $1,200</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$9,600 - $14,400</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">Shared Bedrooms</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Utilities:</span>
+                      <span class="detail-value">Shared (~$150/month)</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Housemates:</span>
+                      <span class="detail-value">2-6 people</span>
+                    </div>
+                  </div>
+                  <div class="card-features" *ngIf="expandedOffCampusCard() === 'shared'">
+                    <span class="feature">✓ Independent</span>
+                    <span class="feature">✓ Kitchen</span>
+                    <span class="feature">✓ Furnished</span>
+                    <span class="feature">✓ Flexible</span>
+                  </div>
+                </div>
+
+                <div class="accommodation-card" [class.expanded]="expandedOffCampusCard() === 'private'">
+                  <button class="card-title-btn" (click)="toggleOffCampusCard('private')">
+                    <div class="card-title">
+                      <span>Private Bedroom</span>
+                      <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </button>
+                  <div class="card-details" *ngIf="expandedOffCampusCard() === 'private'">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Month:</span>
+                      <span class="detail-value">$1,200 - $1,800</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$14,400 - $21,600</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">Private Bedroom</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Utilities:</span>
+                      <span class="detail-value">Shared (~$150/month)</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Housemates:</span>
+                      <span class="detail-value">1-3 people</span>
+                    </div>
+                  </div>
+                  <div class="card-features" *ngIf="expandedOffCampusCard() === 'private'">
+                    <span class="feature">✓ Privacy</span>
+                    <span class="feature">✓ Kitchen</span>
+                    <span class="feature">✓ Lock</span>
+                    <span class="feature">✓ Freedom</span>
+                  </div>
+                </div>
+
+                <div class="accommodation-card" [class.expanded]="expandedOffCampusCard() === 'studio'">
+                  <button class="card-title-btn" (click)="toggleOffCampusCard('studio')">
+                    <div class="card-title">
+                      <span>Studio/1-Bed Apartment</span>
+                      <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </button>
+                  <div class="card-details" *ngIf="expandedOffCampusCard() === 'studio'">
+                    <div class="detail-row">
+                      <span class="detail-label">💰 Cost per Month:</span>
+                      <span class="detail-value">$1,500 - $2,200</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">📅 Cost per Year:</span>
+                      <span class="detail-value">$18,000 - $26,400</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🛏️ Room Type:</span>
+                      <span class="detail-value">Studio or 1 Bedroom</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">🍽️ Utilities:</span>
+                      <span class="detail-value">Your responsibility</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">👥 Occupants:</span>
+                      <span class="detail-value">1-2 people</span>
+                    </div>
+                  </div>
+                  <div class="card-features" *ngIf="expandedOffCampusCard() === 'studio'">
+                    <span class="feature">✓ Independent</span>
+                    <span class="feature">✓ Full Control</span>
+                    <span class="feature">✓ Furnished</span>
+                    <span class="feature">✓ Comfortable</span>
             </div>
           </div>
         </div>
-        <p *ngIf="!university()!.bestAreasToLive || university()!.bestAreasToLive!.length === 0" class="no-data">No area recommendations available yet.</p>
+        
+              <div class="accommodation-note">
+                <span class="note-icon">ℹ️</span>
+                <span>Off-campus costs shown are average prices. Actual costs vary by location and lease terms. Utilities typically include internet, electricity, and water.</span>
+              </div>
+
+              <!-- Popular Student Living Areas -->
+              <div class="student-areas-section">
+                <h3>📍 Popular Student Living Areas</h3>
+                <div class="areas-grid">
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'downtown'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('downtown')">
+                      <div class="area-header">
+                        <h4>Downtown District</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~0.5 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'downtown'">
+                      <li>The Lofts at Central</li>
+                      <li>Urban Student Housing</li>
+                      <li>Downtown Commons</li>
+                      <li>City View Apartments</li>
+                      <li>The Station Lofts</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'downtown'">
+                      <span class="highlight">Walkable</span>
+                      <span class="highlight">Nightlife</span>
+                      <span class="highlight">Trendy</span>
+                    </div>
+                  </div>
+
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'universitypark'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('universitypark')">
+                      <div class="area-header">
+                        <h4>University Park Area</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~0.8 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'universitypark'">
+                      <li>Campus Park Residences</li>
+                      <li>The Ivy Apartments</li>
+                      <li>Park Side Living</li>
+                      <li>Green Valley Complex</li>
+                      <li>Parkside Student Homes</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'universitypark'">
+                      <span class="highlight">Safe</span>
+                      <span class="highlight">Quiet</span>
+                      <span class="highlight">Affordable</span>
+                    </div>
+                  </div>
+
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'midtown'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('midtown')">
+                      <div class="area-header">
+                        <h4>Midtown/Arts Quarter</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~1.2 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'midtown'">
+                      <li>Arts District Lofts</li>
+                      <li>Midtown Studios</li>
+                      <li>Creative Living Spaces</li>
+                      <li>Gallery Apartments</li>
+                      <li>Studio 42 Complex</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'midtown'">
+                      <span class="highlight">Artistic</span>
+                      <span class="highlight">Cultural</span>
+                      <span class="highlight">Vibrant</span>
+                    </div>
+                  </div>
+
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'heights'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('heights')">
+                      <div class="area-header">
+                        <h4>University Heights</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~1.5 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'heights'">
+                      <li>Heights Student Living</li>
+                      <li>Mountain View Apartments</li>
+                      <li>Hillside Residences</li>
+                      <li>Panorama Towers</li>
+                      <li>University Crest</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'heights'">
+                      <span class="highlight">Views</span>
+                      <span class="highlight">Modern</span>
+                      <span class="highlight">Amenities</span>
+                    </div>
+                  </div>
+
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'village'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('village')">
+                      <div class="area-header">
+                        <h4>Student Village District</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~1.8 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'village'">
+                      <li>The Village at Campus</li>
+                      <li>Student Square</li>
+                      <li>College Station Apartments</li>
+                      <li>The Commons</li>
+                      <li>Scholars Landing</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'village'">
+                      <span class="highlight">Community</span>
+                      <span class="highlight">Furnished</span>
+                      <span class="highlight">Pet-Friendly</span>
+                    </div>
+                  </div>
+
+                  <div class="area-card" [class.expanded]="expandedStudentArea() === 'riverside'">
+                    <button class="area-header-btn" (click)="toggleStudentArea('riverside')">
+                      <div class="area-header">
+                        <h4>Riverside Neighborhood</h4>
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                      </div>
+                    </button>
+                    <p class="area-distance">~2.2 miles from campus</p>
+                    <ul class="area-apartments" *ngIf="expandedStudentArea() === 'riverside'">
+                      <li>Riverside Residences</li>
+                      <li>Waterfront Living</li>
+                      <li>Riverside Commons</li>
+                      <li>Riverside Luxury Lofts</li>
+                      <li>Riverstone Apartments</li>
+                    </ul>
+                    <div class="area-highlights" *ngIf="expandedStudentArea() === 'riverside'">
+                      <span class="highlight">Scenic</span>
+                      <span class="highlight">Recreation</span>
+                      <span class="highlight">Peaceful</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="student-tips-section">
+                <div class="tips-header">
+                  <h3>💡 Tips for Finding Off-Campus Housing</h3>
+                </div>
+                <div class="tips-grid">
+                  <div class="tip-card">
+                    <div class="tip-icon">🔍</div>
+                    <h4>Start Early</h4>
+                    <p>Begin your search 3-4 months before move-in date for best selection</p>
+                  </div>
+                  <div class="tip-card">
+                    <div class="tip-icon">🚍</div>
+                    <h4>Check Transit</h4>
+                    <p>Verify bus routes and commute times to campus before deciding</p>
+                  </div>
+                  <div class="tip-card">
+                    <div class="tip-icon">🤝</div>
+                    <h4>Find Roommates</h4>
+                    <p>Use student Facebook groups and housing portals to find compatible roommates</p>
+                  </div>
+                  <div class="tip-card">
+                    <div class="tip-icon">📋</div>
+                    <h4>Read Lease Terms</h4>
+                    <p>Carefully review all lease terms and included amenities</p>
+                  </div>
+                  <div class="tip-card">
+                    <div class="tip-icon">🏠</div>
+                    <h4>Visit in Person</h4>
+                    <p>Always visit the apartment before signing any agreements</p>
+            </div>
+                  <div class="tip-card">
+                    <div class="tip-icon">💰</div>
+                    <h4>Budget Everything</h4>
+                    <p>Include utilities, internet, parking, and other hidden costs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          </div>
+        </section>
+
+        <!-- AMENITIES SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'amenities'">
+          <div class="section-header">
+            <h2>Neighborhood & Amenities</h2>
+            <p class="section-subtitle">Explore what's around the campus</p>
+          </div>
+          <div class="section-content">
+            <div class="amenities-grid">
+              <!-- Food & Dining -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_food_options && aiDetails()!.near_by_food_options!.length > 0">
+                <div class="amenity-header">
+                  <h4>🍽️ Food & Dining</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let food of aiDetails()!.near_by_food_options">{{ food }}</li>
+                </ul>
+              </div>
+
+              <!-- Indian Amenities -->
+              <div class="amenity-card" *ngIf="aiDetails()!.indian_amenities && aiDetails()!.indian_amenities!.length > 0">
+                <div class="amenity-header">
+                  <h4>🇮🇳 Indian Restaurants & Grocery</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let amenity of aiDetails()!.indian_amenities">{{ amenity }}</li>
+                </ul>
+              </div>
+
+              <!-- Parks & Recreation -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_parks_and_recreation && aiDetails()!.near_by_parks_and_recreation!.length > 0">
+                <div class="amenity-header">
+                  <h4>🌳 Parks & Recreation</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let park of aiDetails()!.near_by_parks_and_recreation">{{ park }}</li>
+                </ul>
+              </div>
+
+              <!-- Transportation -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_transportation && aiDetails()!.near_by_transportation!.length > 0">
+                <div class="amenity-header">
+                  <h4>🚌 Public Transportation</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let transport of aiDetails()!.near_by_transportation">{{ transport }}</li>
+                </ul>
+              </div>
+
+              <!-- Healthcare Facilities -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_healthcare_facilities && aiDetails()!.near_by_healthcare_facilities!.length > 0">
+                <div class="amenity-header">
+                  <h4>🏥 Healthcare</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let healthcare of aiDetails()!.near_by_healthcare_facilities">{{ healthcare }}</li>
+                </ul>
+              </div>
+
+              <!-- Shopping -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_shopping_centers && aiDetails()!.near_by_shopping_centers!.length > 0">
+                <div class="amenity-header">
+                  <h4>🛍️ Shopping</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let shopping of aiDetails()!.near_by_shopping_centers">{{ shopping }}</li>
+                </ul>
+              </div>
+
+              <!-- Cultural Centers -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_cultural_centers && aiDetails()!.near_by_cultural_centers!.length > 0">
+                <div class="amenity-header">
+                  <h4>🎭 Cultural Centers</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let cultural of aiDetails()!.near_by_cultural_centers">{{ cultural }}</li>
+                </ul>
+              </div>
+
+              <!-- Sports Facilities -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_sports_facilities && aiDetails()!.near_by_sports_facilities!.length > 0">
+                <div class="amenity-header">
+                  <h4>⚽ Sports Facilities</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let sports of aiDetails()!.near_by_sports_facilities">{{ sports }}</li>
+                </ul>
+              </div>
+
+              <!-- Libraries -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_libraries && aiDetails()!.near_by_libraries!.length > 0">
+                <div class="amenity-header">
+                  <h4>📚 Libraries</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let library of aiDetails()!.near_by_libraries">{{ library }}</li>
+                </ul>
+              </div>
+
+              <!-- Nightlife & Social -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_pubs_and_bars && aiDetails()!.near_by_pubs_and_bars!.length > 0">
+                <div class="amenity-header">
+                  <h4>🎉 Nightlife & Social</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let pub of aiDetails()!.near_by_pubs_and_bars">{{ pub }}</li>
+                </ul>
+              </div>
+
+              <!-- Nearby Attractions -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_attractions && aiDetails()!.near_by_attractions!.length > 0">
+                <div class="amenity-header">
+                  <h4>🗺️ Nearby Attractions</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let attraction of aiDetails()!.near_by_attractions">{{ attraction }}</li>
+                </ul>
+              </div>
+
+              <!-- Nearby Cities -->
+              <div class="amenity-card" *ngIf="aiDetails()!.near_by_cities_of_interest && aiDetails()!.near_by_cities_of_interest!.length > 0">
+                <div class="amenity-header">
+                  <h4>🏙️ Nearby Cities</h4>
+                </div>
+                <ul class="amenity-items">
+                  <li *ngFor="let city of aiDetails()!.near_by_cities_of_interest">{{ city }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ACADEMICS SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'academics'">
+          <div class="section-header">
+            <h2>Academic Programs</h2>
+            <p class="section-subtitle">Notable programs offered</p>
+        </div>
+          <div class="section-content">
+            <div class="programs-showcase">
+              <div *ngFor="let program of aiDetails()!.notablePrograms" class="program-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>{{ program }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DEMOGRAPHICS SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'demographics'">
+          <div class="section-header">
+            <h2>Student Demographics</h2>
+            <p class="section-subtitle">Campus population breakdown</p>
+          </div>
+          <div class="section-content">
+            <div class="demographics-grid">
+              <div class="demo-card">
+                <h4>Total Students</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.total_students.toLocaleString() }}</p>
+              </div>
+              <div class="demo-card">
+                <h4>Undergraduate</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.undergraduate_students.toLocaleString() }}</p>
+              </div>
+              <div class="demo-card">
+                <h4>Graduate</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.graduate_students.toLocaleString() }}</p>
+              </div>
+              <div class="demo-card">
+                <h4>Domestic</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.domestic_students.toLocaleString() }}</p>
+              </div>
+              <div class="demo-card highlighted">
+                <h4>International</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.international_students.total_international_students.toLocaleString() }}</p>
+                <p class="demo-percentage">{{ ((aiDetails()!.student_population.international_students.total_international_students / aiDetails()!.student_population.total_students) * 100).toFixed(1) }}% of total</p>
+              </div>
+              <div class="demo-card">
+                <h4>Countries</h4>
+                <p class="demo-value">{{ aiDetails()!.student_population.international_students.countries_represented }}</p>
+              </div>
+            </div>
+
+            <!-- Top Countries -->
+            <div class="top-countries">
+              <h3>Top Countries of Origin</h3>
+              <div class="countries-list">
+                <div *ngFor="let country of aiDetails()!.student_population.international_students.top_countries; let i = index" class="country-row">
+                  <span class="country-rank">{{ i + 1 }}</span>
+                  <span class="country-name">{{ country }}</span>
+                  <div class="country-bar">
+                    <div class="country-bar-fill" [style.width.%]="aiDetails()!.student_population.international_students.countires_percentage_population[country] || 0"></div>
+                  </div>
+                  <span class="country-percent">{{ aiDetails()!.student_population.international_students.countires_percentage_population[country] || 0 }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FINANCIAL SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'financial'">
+      <div class="section-header">
+            <h2>Tuition & Financial Aid</h2>
+            <p class="section-subtitle">Cost breakdown and funding options</p>
+      </div>
+      <div class="section-content">
+            <!-- Tuition Breakdown -->
+            <div class="subsection" *ngIf="aiDetails()!.tuition_fees">
+              <h3>Tuition & Fees</h3>
+              <div class="tuition-grid">
+                <div class="tuition-card" *ngIf="aiDetails()!.tuition_fees?.in_state_tuition">
+                  <h4>In-State Tuition</h4>
+                  <p class="price">{{ aiDetails()!.tuition_fees?.in_state_tuition }}</p>
+                </div>
+                <div class="tuition-card" *ngIf="aiDetails()!.tuition_fees?.out_of_state_tuition">
+                  <h4>Out-of-State Tuition</h4>
+                  <p class="price">{{ aiDetails()!.tuition_fees?.out_of_state_tuition }}</p>
+                </div>
+                <div class="tuition-card" *ngIf="aiDetails()!.tuition_fees?.room_and_board">
+                  <h4>Room & Board</h4>
+                  <p class="price">{{ aiDetails()!.tuition_fees?.room_and_board }}</p>
+          </div>
+                <div class="tuition-card" *ngIf="aiDetails()!.tuition_fees?.books_and_supplies">
+                  <h4>Books & Supplies</h4>
+                  <p class="price">{{ aiDetails()!.tuition_fees?.books_and_supplies }}</p>
+        </div>
       </div>
     </div>
 
-    <!-- Student Accommodation Groups Section -->
-    <div class="content-section accommodation-section">
-      <div class="section-header">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            <!-- Financial Aid -->
+            <div class="subsection" *ngIf="aiDetails()!.financial_aid">
+              <h3>Financial Aid & Scholarships</h3>
+              <div class="aid-grid">
+                <div class="aid-card" *ngIf="aiDetails()!.financial_aid?.aid_types">
+                  <h4>Aid Available</h4>
+                  <ul class="aid-list">
+                    <li *ngFor="let aid of aiDetails()!.financial_aid?.aid_types">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        <h2>Student Accommodation Groups</h2>
+                      {{ aid }}
+                    </li>
+                  </ul>
       </div>
-      <div class="section-content">
-        <div *ngIf="university()!.accommodationGroups && university()!.accommodationGroups!.length > 0" class="accommodation-content">
-          <div class="groups-list">
-            <div *ngFor="let group of university()!.accommodationGroups" class="group-card">
-              <div class="group-header">
-                <div class="group-info">
-                  <h3 class="group-name">{{ group.name }}</h3>
-                  <span class="platform-badge" [class]="'badge-' + group.platform.toLowerCase()">
-                    <svg *ngIf="group.platform === 'Facebook'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Discord'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Telegram'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'WhatsApp'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967c-.273-.099-.471-.148-.67.15c-.197.297-.767.966-.94 1.164c-.173.199-.347.223-.644.075c-.297-.15-1.255-.463-2.39-1.475c-.883-.788-1.48-1.761-1.653-2.059c-.173-.297-.018-.458.13-.606c.134-.133.298-.347.446-.52c.149-.174.198-.298.298-.497c.099-.198.05-.371-.025-.52c-.075-.149-.669-1.612-.916-2.207c-.242-.579-.487-.5-.669-.51c-.173-.008-.371-.01-.57-.01c-.198 0-.52.074-.792.372c-.272.297-1.04 1.016-1.04 2.479c0 1.462 1.065 2.875 1.213 3.074c.149.198 2.096 3.2 5.077 4.487c.709.306 1.262.489 1.694.625c.712.227 1.36.195 1.871.118c.571-.085 1.758-.719 2.006-1.413c.248-.694.248-1.289.173-1.413c-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214l-3.741.982l.998-3.648l-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884c2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    <svg *ngIf="group.platform === 'Website'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="aid-card" *ngIf="aiDetails()!.financial_aid?.international_student_support">
+                  <h4>International Support</h4>
+                  <ul class="aid-list">
+                    <li *ngFor="let support of aiDetails()!.financial_aid?.international_student_support">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+                      {{ support }}
+                    </li>
+                  </ul>
+                </div>
+            </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'contact'">
+          <div class="section-header">
+            <h2>Contact & Links</h2>
+            <p class="section-subtitle">Get in touch with the university</p>
+        </div>
+          <div class="section-content">
+            <!-- Address -->
+            <div class="subsection">
+              <h3>Campus Address</h3>
+              <div class="contact-info">
+                <p>{{ aiDetails()!.address.street }}</p>
+                <p>{{ aiDetails()!.address.city }}, {{ aiDetails()!.address.state }} {{ aiDetails()!.address.zipCode }}</p>
+                <p>{{ aiDetails()!.address.country }}</p>
+      </div>
+    </div>
+
+            <!-- Website -->
+            <div class="subsection" *ngIf="aiDetails()!.website">
+              <button class="website-btn" (click)="openWebsite(aiDetails()!.website)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="2" y1="12" x2="22" y2="12"></line>
                       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                     </svg>
-                    {{ group.platform }}
-                  </span>
+                Visit Official Website
+              </button>
                 </div>
-                <button *ngIf="group.url" class="open-btn" (click)="openGroupUrl(group.url)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
-                  Open
+
+            <!-- Social Media -->
+            <div class="subsection" *ngIf="aiDetails()!.social_media">
+              <h3>Connect on Social Media</h3>
+              <div class="social-links">
+                <button *ngIf="aiDetails()!.social_media?.facebook" class="social-btn facebook" (click)="openWebsite(aiDetails()!.social_media?.facebook!)">
+                  <span>Facebook</span>
+                </button>
+                <button *ngIf="aiDetails()!.social_media?.twitter" class="social-btn twitter" (click)="openWebsite(aiDetails()!.social_media?.twitter!)">
+                  <span>Twitter</span>
+                </button>
+                <button *ngIf="aiDetails()!.social_media?.instagram" class="social-btn instagram" (click)="openWebsite(aiDetails()!.social_media?.instagram!)">
+                  <span>Instagram</span>
+                </button>
+                <button *ngIf="aiDetails()!.social_media?.linkedin" class="social-btn linkedin" (click)="openWebsite(aiDetails()!.social_media?.linkedin!)">
+                  <span>LinkedIn</span>
+                </button>
+                <button *ngIf="aiDetails()!.social_media?.youtube" class="social-btn youtube" (click)="openWebsite(aiDetails()!.social_media?.youtube!)">
+                  <span>YouTube</span>
                 </button>
               </div>
-              <p class="group-note">{{ group.note }}</p>
             </div>
           </div>
+        </section>
 
-          <!-- Safety Tips Box -->
-          <div class="safety-tips-box">
-            <div class="tips-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              <h4>Safety Tips</h4>
+        <!-- REVIEWS SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'reviews' && aiDetails()!.student_reviews && aiDetails()!.student_reviews!.length > 0">
+          <div class="section-header">
+            <h2>Student Reviews</h2>
+            <p class="section-subtitle">What students are saying</p>
+          </div>
+          <div class="section-content">
+            <div class="reviews-grid">
+              <div *ngFor="let review of aiDetails()!.student_reviews" class="review-card">
+                <div class="review-header">
+                  <div class="reviewer-info">
+                    <h4>{{ review.reviewer_name }}</h4>
+                    <p class="review-meta">{{ review.program }} • {{ review.year }}</p>
+                  </div>
+                  <div class="review-rating">
+                    <span class="stars" *ngFor="let i of [1,2,3,4,5]">⭐</span>
+                  </div>
+                </div>
+                <p class="review-text">{{ review.review_text }}</p>
+                <div class="review-tags">
+                  <span class="tag" *ngFor="let tag of review.highlights">{{ tag }}</span>
+                </div>
+              </div>
             </div>
-            <ul class="tips-list">
-              <li *ngFor="let tip of getAccommodationTips()">{{ tip }}</li>
-            </ul>
+          </div>
+        </section>
+
+        <!-- JOBS ON CAMPUS SECTION -->
+        <section class="content-section" *ngIf="activeSection() === 'jobs'">
+          <div class="section-header">
+            <h2>Jobs On Campus</h2>
+            <p class="section-subtitle">Student employment opportunities</p>
+          </div>
+          <div class="section-content">
+            <div class="jobs-grid">
+              <!-- Library Assistant -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>Library Assistant</h3>
+                    <p class="department">Library Services</p>
+                  </div>
+                  <span class="job-badge">Part-time</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">10-15 hrs/week</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$12.50/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Assist with cataloging, shelving books, and providing patron support at the main library.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Organization</span>
+                  <span class="skill-tag">Customer Service</span>
+                  <span class="skill-tag">Attention to Detail</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+              </div>
+
+              <!-- Dining Hall Staff -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>Dining Hall Staff</h3>
+                    <p class="department">Dining Services</p>
+                  </div>
+                  <span class="job-badge">Part-time</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">8-20 hrs/week</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$13.00/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Work in food preparation, serving, and kitchen areas. Meals provided during shifts.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Food Handling</span>
+                  <span class="skill-tag">Teamwork</span>
+                  <span class="skill-tag">Physical Activity</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+              </div>
+
+              <!-- Campus Tour Guide -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>Campus Tour Guide</h3>
+                    <p class="department">Admissions Office</p>
+                  </div>
+                  <span class="job-badge">Seasonal</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">Flexible</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$14.00/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Lead prospective students and families on campus tours. Highlight campus facilities and student life.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Communication</span>
+                  <span class="skill-tag">Public Speaking</span>
+                  <span class="skill-tag">Campus Knowledge</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+              </div>
+
+              <!-- Research Assistant -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>Research Assistant</h3>
+                    <p class="department">Various Departments</p>
+                  </div>
+                  <span class="job-badge">Part-time</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">10-20 hrs/week</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$15.00/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Support faculty research in laboratory or field settings. Data entry, analysis, and literature review.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Research</span>
+                  <span class="skill-tag">Data Analysis</span>
+                  <span class="skill-tag">Attention to Detail</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+              </div>
+
+              <!-- Tutoring Center -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>Peer Tutor</h3>
+                    <p class="department">Tutoring Center</p>
+                  </div>
+                  <span class="job-badge">Part-time</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">5-15 hrs/week</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$14.50/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Help fellow students with challenging courses. Requires strong academic standing in your subject.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Teaching</span>
+                  <span class="skill-tag">Patience</span>
+                  <span class="skill-tag">Subject Knowledge</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+              </div>
+
+              <!-- IT Help Desk -->
+              <div class="job-card">
+                <div class="job-header">
+                  <div class="job-title">
+                    <h3>IT Help Desk Technician</h3>
+                    <p class="department">Information Technology</p>
+                  </div>
+                  <span class="job-badge">Part-time</span>
+                </div>
+                <div class="job-details">
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hours:</span>
+                    <span class="detail-value">10-20 hrs/week</span>
+                  </div>
+                  <div class="job-detail-item">
+                    <span class="detail-label">Hourly Rate:</span>
+                    <span class="detail-value">$15.50/hr</span>
+                  </div>
+                </div>
+                <p class="job-description">Provide technical support to students and faculty. Troubleshoot hardware and software issues.</p>
+                <div class="job-skills">
+                  <span class="skill-tag">Technical Skills</span>
+                  <span class="skill-tag">Problem Solving</span>
+                  <span class="skill-tag">Customer Support</span>
+                </div>
+                <button class="apply-btn">Apply Now</button>
           </div>
         </div>
-        <p *ngIf="!university()!.accommodationGroups || university()!.accommodationGroups!.length === 0" class="no-data">No accommodation groups added yet.</p>
       </div>
+        </section>
+      </main>
     </div>
+
   </div>
 </div>
 
 <!-- International Student Demographics Modal -->
 <app-international-student-demographics
   [isOpen]="isDemographicModalOpen()"
-  [universityName]="university()?.name || ''"
+  [universityName]="aiDetails()?.name || ''"
   (close)="closeDemographicModal()">
 </app-international-student-demographics>

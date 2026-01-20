@@ -38,6 +38,11 @@ export class UniversityDetailsComponent implements OnInit {
   universityId: string | null = null;
   document = document; // Expose document to template
   
+  // Make universityId accessible in template
+  get universityIdValue(): string | null {
+    return this.universityId;
+  }
+  
   navigationSections: NavSection[] = [
     { id: 'overview', label: 'Overview', icon: '📋' },
     { id: 'accommodation', label: 'Accommodation', icon: '🏠' },

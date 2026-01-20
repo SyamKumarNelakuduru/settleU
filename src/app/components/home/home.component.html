@@ -1,33 +1,16 @@
 <section class="home-root">
-  <!-- Hero Section with Search -->
+  <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <div class="trust-badges">
-        <span class="badge">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          </svg>
-          <span>Verified Universities</span>
-        </span>
-        <span class="badge">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 6v6l4 2"></path>
-          </svg>
-          <span>24/7 Support</span>
-        </span>
-        <span class="badge">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span>Trusted by Thousands</span>
-        </span>
+      <h1 class="hero-title">Your Dream Home, Our Expertise, Confirmed Placements</h1>
+      <p class="hero-subtitle">Get Guided By America's Best Student Accommodation Platform</p>
+      
+      <div class="trust-stats">
+        <span class="stat-badge">50,000+ students placed in verified accommodations</span>
+        <span class="stat-badge">Trusted by 500,000+ students</span>
+        <span class="stat-badge">Over 10+ years of service</span>
       </div>
-      
-      <h1 class="hero-title">Find Your Perfect Student Home</h1>
-      <p class="hero-subtitle">Discover verified student accommodations near top universities across the United States</p>
-      
+
       <div class="search-container">
         <div class="search-wrapper">
           <div class="search-input-group">
@@ -51,211 +34,169 @@
             </svg>
           </button>
         </div>
-        <div class="quick-filters">
-          <span class="filter-label">Top Rankings:</span>
-          <button class="quick-filter-btn" *ngFor="let option of quickSearchUniversities" (click)="searchByUniversityRank(option.count)">
-            {{ option.label }}
-          </button>
-        </div>
-      </div>
-
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-value">1M+</span>
-          <span class="stat-label">Happy Students</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">800+</span>
-          <span class="stat-label">Universities</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">250+</span>
-          <span class="stat-label">Cities</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">50K+</span>
-          <span class="stat-label">Listings</span>
-        </div>
       </div>
     </div>
   </div>
 
+  <!-- Services Section -->
+  <section class="services-section">
+    <div class="container">
+      <h2 class="section-title">Your All-in-One Platform for Student Accommodation</h2>
+      <p class="section-subtitle">Discover, Compare, and Secure with SettleU!</p>
+      
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🏠</div>
+          <h3 class="service-title">Verified Accommodations</h3>
+          <p class="service-description">Expert verification of properties, detailed reviews, and verified listings to ensure safe and secure student housing near top universities.</p>
+          <button class="service-btn">Explore Properties</button>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🔍</div>
+          <h3 class="service-title">Smart Search & Compare</h3>
+          <p class="service-description">AI-powered search to find the perfect place. Compare prices, amenities, locations, and student reviews all in one place.</p>
+          <button class="service-btn">Start Searching</button>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">💰</div>
+          <h3 class="service-title">Financial Assistance</h3>
+          <p class="service-description">Get guidance on housing budgets, find student-friendly payment plans, and discover accommodation scholarships and grants.</p>
+          <button class="service-btn">Learn More</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track Record Section -->
+  <section class="track-record-section">
+    <div class="container">
+      <h2 class="section-title">We Don't Just Find Accommodations - We Secure Your Perfect Home</h2>
+      <p class="section-subtitle">Our Track Record Speaks for Itself</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">50,000+</div>
+          <div class="stat-label">Students placed in verified accommodations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">98%</div>
+          <div class="stat-label">Success Rate<br>Nearly perfect placement satisfaction</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">$5M+</div>
+          <div class="stat-label">Saved by Students<br>Best deals and price matching</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support Section -->
+  <section class="support-section">
+    <div class="container">
+      <h2 class="section-title">End-to-End Accommodation Support</h2>
+      <p class="section-subtitle">One Team, From Search to Move-In</p>
+
+      <div class="support-grid">
+        <div class="support-item">
+          <div class="support-icon">🎯</div>
+          <h3 class="support-title">Personalized Matching</h3>
+          <p class="support-description">Receive one-on-one guidance to find accommodations that match your budget, preferences, and university location - helping you find the perfect home.</p>
+        </div>
+
+        <div class="support-item">
+          <div class="support-icon">🏛️</div>
+          <h3 class="support-title">University Area Expertise</h3>
+          <p class="support-description">Get insights into the best neighborhoods near your university, transportation options, and student-friendly areas with detailed guides.</p>
+        </div>
+
+        <div class="support-item">
+          <div class="support-icon">✅</div>
+          <h3 class="support-title">Verified Listings & Booking</h3>
+          <p class="support-description">Browse only verified properties with real photos, accurate descriptions, and secure booking process designed to protect your interests.</p>
+        </div>
+
+        <div class="support-item">
+          <div class="support-icon">💳</div>
+          <h3 class="support-title">Financial Guidance & Support</h3>
+          <p class="support-description">Receive clear guidance on budgeting, payment plans, deposit protection, and assistance throughout your accommodation journey.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Popular Cities Section -->
   <section class="popular-cities-section">
-    <div class="section-header">
+    <div class="container">
       <h2 class="section-title">Popular Cities Across The United States</h2>
       <p class="section-subtitle">Book student accommodations near top cities and universities</p>
-    </div>
 
-    <div class="cities-grid">
-      <div class="city-card" *ngFor="let city of popularCities" (click)="searchByCity(city.name)">
-        <div class="city-image">
-          <img [src]="city.image" [alt]="city.name" />
-          <div class="city-overlay">
+      <div class="cities-list">
+        <div class="city-item" *ngFor="let city of popularCities" (click)="searchByCity(city.name)">
+          <div class="city-image">
+            <img [src]="city.image" [alt]="city.name" />
+          </div>
+          <div class="city-content">
             <h3 class="city-name">{{ city.name }}</h3>
-            <p class="city-universities">{{ city.universities }} Universities</p>
+            <div class="city-info">
+              <p class="city-universities">{{ city.universities }} Universities</p>
+              <p class="city-description">{{ getCityDescription(city.name) }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features-section">
-    <div class="section-header">
-      <h2 class="section-title">Why Choose SettleU?</h2>
-      <p class="section-subtitle">Take the hassle out of securing your student home</p>
-    </div>
+  <!-- Success Stories Section -->
+  <section class="success-stories-section">
+    <div class="container">
+      <h2 class="section-title">Success Stories</h2>
+      <p class="section-subtitle">Thousands of Life Changing Moments. Are You Next?</p>
 
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          </svg>
-        </div>
-        <h3 class="feature-title">100% Verified Listings</h3>
-        <p class="feature-description">We promise to deliver what you see on the website</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 6v6l4 2"></path>
-          </svg>
-        </div>
-        <h3 class="feature-title">24x7 Assistance</h3>
-        <p class="feature-description">If you have a doubt or a query, we're always a call away</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-          </svg>
-        </div>
-        <h3 class="feature-title">Lowest Price Guarantee</h3>
-        <p class="feature-description">Find a lower price and we'll match it. No questions asked</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-        </div>
-        <h3 class="feature-title">Instant & Easy Bookings</h3>
-        <p class="feature-description">Time is money. Save both when you book with us</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials-section">
-    <div class="section-header">
-      <h2 class="section-title">Trusted by Students Worldwide</h2>
-      <p class="section-subtitle">See what students are saying about their SettleU experience</p>
-    </div>
-
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"SettleU made finding my student accommodation so easy! The verified listings gave me peace of mind, and I found the perfect place near my university."</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">S</div>
-          <div class="author-info">
-            <div class="author-name">Sarah Johnson</div>
-            <div class="author-location">Boston University</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"The 24/7 support team was incredibly helpful throughout my entire journey. They answered all my questions and made the process stress-free."</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">M</div>
-          <div class="author-info">
-            <div class="author-name">Michael Chen</div>
-            <div class="author-location">NYU</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"I compared multiple options and found the best deal through SettleU. The price guarantee is real - they matched a lower price I found elsewhere!"</p>
-        </div>
-        <div class="testimonial-author">
-          <div class="author-avatar">E</div>
-          <div class="author-info">
-            <div class="author-name">Emily Rodriguez</div>
-            <div class="author-location">UCLA</div>
+      <div class="stories-grid">
+        <div class="story-card" *ngFor="let story of successStories">
+          <div class="story-content">
+            <div class="story-header">
+              <div class="story-avatar">{{ story.initial }}</div>
+              <div class="story-info">
+                <div class="story-name">{{ story.name }}</div>
+                <div class="story-university">{{ story.university }}</div>
+              </div>
+            </div>
+            <p class="story-text">"{{ story.quote }}"</p>
+            <div class="story-location">{{ story.city }}</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Student Journey Section -->
-  <section class="cards-section">
-    <div class="journey-card">
-      <h2 class="journey-title">Student Journey</h2>
-      <div class="journey-kpis">
-        <div class="journey-kpi">
-          <div class="kpi-image-container">
-            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Discover Areas" class="kpi-image">
-            <div class="kpi-content">
-              <div class="step-number">1</div>
-              <h3 class="kpi-label">Discover Areas</h3>
-            </div>
-          </div>
-        </div>
-        
-        <div class="journey-kpi">
-          <div class="kpi-image-container">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Compare Options" class="kpi-image">
-            <div class="kpi-content">
-              <div class="step-number">2</div>
-              <h3 class="kpi-label">Compare Options</h3>
-            </div>
-          </div>
-        </div>
-        
-        <div class="journey-kpi">
-          <div class="kpi-image-container">
-            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Find Your Place" class="kpi-image">
-            <div class="kpi-content">
-              <div class="step-number">3</div>
-              <h3 class="kpi-label">Find Your Place</h3>
-            </div>
-          </div>
-        </div>
-        
-        <div class="journey-kpi">
-          <div class="kpi-image-container">
-            <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Move In" class="kpi-image">
-            <div class="kpi-content">
-              <div class="step-number">4</div>
-              <h3 class="kpi-label">Move In</h3>
-            </div>
-          </div>
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title">Let's Find Your Perfect Home Together!</h2>
+      <div class="cta-features">
+        <div class="cta-feature">✓ Property & Area Matching</div>
+        <div class="cta-feature">✓ Get personalized recommendations based on your needs</div>
+        <div class="cta-feature">✓ Budget & Financial Guidance</div>
+        <div class="cta-feature">✓ Get clarity on costs, deposits, and payment options</div>
+      </div>
+      <button class="cta-btn" (click)="openSearchModal()">Start Your Search</button>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item" *ngFor="let faq of faqs">
+          <h3 class="faq-question">{{ faq.question }}</h3>
+          <p class="faq-answer">{{ faq.answer }}</p>
         </div>
       </div>
-    </div>
-    
-    <div class="button-container">
-      <button class="journey-btn"><span>Start Your Journey</span></button>
     </div>
   </section>
 </section>
-

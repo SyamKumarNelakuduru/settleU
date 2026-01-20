@@ -62,7 +62,10 @@ export class SearchComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     // autofocus the input when the modal opens
     setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
-    this.getFilteredUniversities();
+    // Use setTimeout to defer the change to the next change detection cycle
+    setTimeout(() => {
+      this.getFilteredUniversities();
+    }, 0);
   }
 
   getFilteredUniversities(): void {
@@ -102,14 +105,18 @@ export class SearchComponent implements AfterViewInit {
   }
 
   getUniversityLogo(university: any): string {
-    // Return the logo URL if available, otherwise fallback to UI Avatars
-    return university.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(university.name)}&background=667eea&color=fff&size=128&bold=true&font-size=0.4`;
+    // Skip Clearbit (may be blocked/unavailable) and use UI Avatars directly
+    // This prevents ERR_NAME_NOT_RESOLVED errors
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(university.name)}&background=667eea&color=fff&size=128&bold=true&font-size=0.4`;
   }
 
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    // Fallback to a default university icon
-    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"%3E%3Cpath d="M22 10v6M2 10l10-5 10 5-10 5z"%3E%3C/path%3E%3Cpath d="M6 12v5c3 3 9 3 12 0v-5"%3E%3C/path%3E%3C/svg%3E';
+    // Prevent infinite error loops by checking if already set to fallback
+    if (!img.src.startsWith('data:image/svg+xml')) {
+      // Fallback to a default university icon SVG
+      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"%3E%3Cpath d="M22 10v6M2 10l10-5 10 5-10 5z"%3E%3C/path%3E%3Cpath d="M6 12v5c3 3 9 3 12 0v-5"%3E%3C/path%3E%3C/svg%3E';
+    }
   }
 
   async addToCompare(university: { id: string, name: string, city: string, type: string, website: string }, event?: Event): Promise<void> {
