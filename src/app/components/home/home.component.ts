@@ -82,8 +82,12 @@ export class HomeComponent implements OnInit {
     }
   ];
 
-  ngOnInit(): void {
-    // Component initialization
+  openFaqIndex: number | null = null;
+
+  ngOnInit(): void {}
+
+  toggleFaq(index: number): void {
+    this.openFaqIndex = this.openFaqIndex === index ? null : index;
   }
 
   openSearchModal(): void {

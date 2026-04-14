@@ -333,17 +333,20 @@
   border-right: 1px solid #e1e8ed;
   padding: 2rem 0;
   position: sticky;
-  top: 0;
-  max-height: 100vh;
+  top: 72px;
+  max-height: calc(100vh - 72px);
   overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
   @media (max-width: 1024px) {
     width: 100%;
-    max-height: auto;
-    padding: 1rem;
+    max-height: none;
+    position: static;
+    padding: 0.75rem 1rem;
     border-right: none;
     border-bottom: 1px solid #e1e8ed;
+    overflow-x: auto;
+    overflow-y: visible;
   }
 
   .nav-menu {
@@ -352,6 +355,14 @@
     gap: 0;
     padding: 0;
     margin: 0;
+
+    @media (max-width: 1024px) {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 0.375rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
   }
 
   .nav-item {
@@ -395,12 +406,15 @@
 
     @media (max-width: 1024px) {
       display: inline-flex;
-      padding: 0.75rem 1rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
+      width: auto;
+      flex-shrink: 0;
+      padding: 0.5rem 0.875rem;
       border-left: none;
       border-bottom: 3px solid transparent;
+      border-radius: 8px;
       background: #f5f7fa;
+      white-space: nowrap;
+      font-size: 0.8125rem;
 
       &:hover {
         background: rgba(52, 152, 219, 0.15);
@@ -410,10 +424,21 @@
         background: rgba(52, 152, 219, 0.2);
         border-left: none;
         border-bottom-color: #3498db;
+        color: #3498db;
       }
 
       .nav-label {
-        display: none;
+        display: inline;
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 0.5rem 0.625rem;
+      font-size: 0.75rem;
+
+      .nav-icon {
+        font-size: 1rem;
+        width: 18px;
       }
     }
   }
@@ -2234,6 +2259,74 @@
   }
 }
 
+// Jobs portal banner
+.jobs-portal-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+
+  .portal-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1e40af;
+    font-size: 0.9rem;
+    svg { flex-shrink: 0; color: #3b82f6; }
+    strong { font-weight: 700; }
+  }
+
+  .portal-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+  }
+}
+
+// Jobs empty state
+.jobs-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  text-align: center;
+  color: #94a3b8;
+
+  p { font-size: 1rem; margin: 0; }
+
+  .apply-btn {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
 // Jobs On Campus Section Styling
 .jobs-grid {
   display: grid;
@@ -2386,6 +2479,10 @@
   }
 
   .apply-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
     color: white;
     border: none;
@@ -2397,6 +2494,9 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: 0.3px;
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+    text-decoration: none;
+
+    svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     &:hover {
       transform: translateY(-2px);

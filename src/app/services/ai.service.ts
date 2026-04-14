@@ -23,15 +23,8 @@ export class AiService {
         console.log('🔑 Initializing Gemini AI with API key:', API_KEY.substring(0, 10) + '...');
         this.genAI = new GoogleGenerativeAI(API_KEY);
         
-        // Try gemini-2.5-flash first, fallback to gemini-1.5-flash if needed
-        try {
-            this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-            console.log('✅ Gemini model initialized: gemini-2.5-flash');
-        } catch (error) {
-            console.warn('⚠️ gemini-2.5-flash not available, trying gemini-1.5-flash');
-            this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-            console.log('✅ Gemini model initialized: gemini-1.5-flash');
-        }
+        this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        console.log('✅ Gemini model initialized: gemini-1.5-flash');
     }
 
     /**

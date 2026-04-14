@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject, signal } from '@angular/core';
+import { Component, OnInit, HostListener, inject, signal, ViewChild, ElementRef } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { LoginComponent } from '../login/login.component';
 import { CommonModule } from '@angular/common';
@@ -21,6 +21,8 @@ export class HeaderComponent implements OnInit {
   currentUser = signal<User | null>(null);
   isAdmin = signal<boolean>(false);
   compareCount = signal<number>(0);
+  isMobileMenuOpen = signal<boolean>(false);
+  isScrolled = false;
   
   private authService = inject(AuthService);
   private userService = inject(UserService);
@@ -120,9 +122,23 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update(v => !v);
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    this.isScrolled = window.scrollY > 10;
+  }
+
   @HostListener('window:keydown.escape')
   onEscape(): void {
     if (this.isSearchOpen) this.closeSearch();
     if (this.isLoginOpen) this.closeLogin();
+    if (this.isMobileMenuOpen()) this.closeMobileMenu();
   }
 }

@@ -6,6 +6,7 @@ export interface CampusJob {
   description: string; // Brief job description; example "Assist professors with research and teaching duties"
   hourlyRate: string; // Pay rate range; example "$15-20/hour"
   availability: string; // Availability info; example "Available for graduate students"
+  apply_url: string; // Direct URL to the university's student employment / jobs portal; example "https://studentjobs.hr.illinois.edu/"
 }
 
 export interface TuitionFees {
@@ -233,19 +234,22 @@ The JSON must follow this exact structure:
       "title": "Graduate Assistant (GA)",
       "description": "Brief description of GA responsibilities and departments",
       "hourlyRate": "$XX-XX/hour or stipend amount",
-      "availability": "Available for graduate students enrolled in specific programs"
+      "availability": "Available for graduate students enrolled in specific programs",
+      "apply_url": "https://actual-university-student-employment-portal.edu/jobs"
     },
     {
       "title": "Teaching Assistant (TA)",
       "description": "Brief description of TA responsibilities",
       "hourlyRate": "$XX-XX/hour",
-      "availability": "Available for graduate and advanced undergraduate students"
+      "availability": "Available for graduate and advanced undergraduate students",
+      "apply_url": "https://actual-university-student-employment-portal.edu/jobs"
     },
     {
       "title": "Dining Services",
       "description": "Brief description of dining hall positions",
       "hourlyRate": "$XX-XX/hour",
-      "availability": "Available for all students"
+      "availability": "Available for all students",
+      "apply_url": "https://actual-university-student-employment-portal.edu/jobs"
     }
   ],
   "indian_amenities": ["Indian Restaurant 1", "Indian Grocery Store 1", "Indian Restaurant 2", "Indian Grocery Store 2", "Indian Cultural Center or Temple"],
@@ -334,7 +338,7 @@ Requirements:
 - For housing: Include nearby neighborhoods, apartment complexes, student housing areas
 - For food: Include diverse cuisine options, popular student restaurants, cafes (exclude Indian food from this list)
 - For indian_amenities: Include 4-6 Indian-specific places like Indian restaurants, Indian grocery stores, Indian sweet shops, temples, cultural centers within 1-10 miles of campus
-- For campus_jobs: Include 3-5 common on-campus job opportunities (GA, TA, Dining Services, Library, Research Assistant, etc.) with realistic pay rates and availability requirements
+- For campus_jobs: Include 3-5 common on-campus job opportunities (GA, TA, Dining Services, Library, Research Assistant, etc.) with realistic pay rates and availability requirements. For apply_url, provide the REAL student employment portal URL of the university (e.g. student jobs board, HR careers page, or financial aid work-study page). All jobs at the same university will share the same apply_url pointing to their central student employment portal.
 - For need_car: Set to false if campus is walkable and has good public transit; true if car is beneficial
 - For professor_contacts: Include 3-5 key contacts such as:
   * Dean of Students (DSO)

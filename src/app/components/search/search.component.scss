@@ -257,6 +257,106 @@
   }
 }
 
+// Loading state
+.results-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2.5rem;
+  color: #64748b;
+  font-size: 0.95rem;
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+}
+
+// Free-text search row
+.free-search-option {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 0.75rem;
+  cursor: pointer;
+  border-top: 1px solid #e2e8f0;
+  background: #fafbff;
+  border-radius: 0 0 12px 12px;
+  transition: background 0.15s ease;
+  margin-top: 0.25rem;
+
+  &:hover {
+    background: #f0f3ff;
+
+    .free-search-arrow { transform: translateX(3px); }
+  }
+
+  .free-search-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    svg { color: white; }
+  }
+
+  .free-search-text {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #374151;
+
+    .free-search-label { color: #64748b; }
+    strong { color: #667eea; margin: 0 0.25rem; }
+    .free-search-hint { color: #94a3b8; font-size: 0.85rem; }
+  }
+
+  .free-search-arrow {
+    color: #667eea;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+}
+
+// Empty state
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+// Result meta fix (was nested incorrectly before)
+.result-meta {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.result-link {
+  font-size: 0.85rem;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(44, 62, 80, 0.08);
+    color: #1a252f;
+  }
+}
+
   /* Animations */
   @keyframes overlayFade {
     from { opacity: 0; }

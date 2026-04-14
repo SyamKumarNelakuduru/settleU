@@ -1,18 +1,98 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100dvh;
 }
 
 .main-content {
   flex: 1;
-  overflow-y: auto;
   overflow-x: hidden;
-  padding-top: 80px; /* Height of fixed header */
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-top: 72px;
+}
+
+.app-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  margin-top: 0;
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem 2rem;
+    display: flex;
+    gap: 4rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2rem 1.25rem;
+    }
+  }
+
+  .footer-brand {
+    flex: 1;
+    min-width: 200px;
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 480px) { gap: 2rem; }
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    h4 {
+      color: #f1f5f9;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    a {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      cursor: pointer;
+
+      &:hover { color: #e2e8f0; }
+    }
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.25rem 2rem;
+    text-align: center;
+    font-size: 0.825rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 640px) { padding: 1rem 1.25rem; }
+  }
 }

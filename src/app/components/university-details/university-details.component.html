@@ -1177,179 +1177,55 @@
           <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80');">
             <div class="section-header-overlay"></div>
             <h2>Jobs On Campus</h2>
-            <p class="section-subtitle">Student employment opportunities</p>
+            <p class="section-subtitle">Student employment opportunities at {{ aiDetails()?.name }}</p>
           </div>
           <div class="section-content">
+
+            <!-- Portal banner -->
+            <div class="jobs-portal-banner" *ngIf="aiDetails()?.campus_jobs?.length">
+              <div class="portal-banner-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Clicking <strong>Apply Now</strong> takes you to <strong>{{ aiDetails()?.name }}'s</strong> official student employment portal.</span>
+              </div>
+              <a [href]="getJobsPortalUrl()" target="_blank" rel="noopener noreferrer" class="portal-link-btn">
+                View All Jobs
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              </a>
+            </div>
+
             <div class="jobs-grid">
-              <!-- Library Assistant -->
-              <div class="job-card">
+              <div class="job-card" *ngFor="let job of aiDetails()?.campus_jobs">
                 <div class="job-header">
                   <div class="job-title">
-                    <h3>Library Assistant</h3>
-                    <p class="department">Library Services</p>
+                    <h3>{{ job.title }}</h3>
+                    <p class="department">{{ job.availability }}</p>
                   </div>
                   <span class="job-badge">Part-time</span>
                 </div>
                 <div class="job-details">
                   <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">10-15 hrs/week</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$12.50/hr</span>
+                    <span class="detail-label">Pay:</span>
+                    <span class="detail-value">{{ job.hourlyRate }}</span>
                   </div>
                 </div>
-                <p class="job-description">Assist with cataloging, shelving books, and providing patron support at the main library.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Organization</span>
-                  <span class="skill-tag">Customer Service</span>
-                  <span class="skill-tag">Attention to Detail</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
+                <p class="job-description">{{ job.description }}</p>
+                <button class="apply-btn" (click)="applyForJob(job)">
+                  Apply Now
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </button>
               </div>
 
-              <!-- Dining Hall Staff -->
-              <div class="job-card">
-                <div class="job-header">
-                  <div class="job-title">
-                    <h3>Dining Hall Staff</h3>
-                    <p class="department">Dining Services</p>
-                  </div>
-                  <span class="job-badge">Part-time</span>
-                </div>
-                <div class="job-details">
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">8-20 hrs/week</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$13.00/hr</span>
-                  </div>
-                </div>
-                <p class="job-description">Work in food preparation, serving, and kitchen areas. Meals provided during shifts.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Food Handling</span>
-                  <span class="skill-tag">Teamwork</span>
-                  <span class="skill-tag">Physical Activity</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
+              <!-- Empty state if AI returned no jobs -->
+              <div class="jobs-empty" *ngIf="!aiDetails()?.campus_jobs?.length">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                <p>No on-campus jobs listed yet.</p>
+                <a [href]="getJobsPortalUrl()" target="_blank" rel="noopener noreferrer" class="apply-btn">
+                  Search {{ aiDetails()?.name }} Jobs
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
               </div>
-
-              <!-- Campus Tour Guide -->
-              <div class="job-card">
-                <div class="job-header">
-                  <div class="job-title">
-                    <h3>Campus Tour Guide</h3>
-                    <p class="department">Admissions Office</p>
-                  </div>
-                  <span class="job-badge">Seasonal</span>
-                </div>
-                <div class="job-details">
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">Flexible</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$14.00/hr</span>
-                  </div>
-                </div>
-                <p class="job-description">Lead prospective students and families on campus tours. Highlight campus facilities and student life.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Communication</span>
-                  <span class="skill-tag">Public Speaking</span>
-                  <span class="skill-tag">Campus Knowledge</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
-              </div>
-
-              <!-- Research Assistant -->
-              <div class="job-card">
-                <div class="job-header">
-                  <div class="job-title">
-                    <h3>Research Assistant</h3>
-                    <p class="department">Various Departments</p>
-                  </div>
-                  <span class="job-badge">Part-time</span>
-                </div>
-                <div class="job-details">
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">10-20 hrs/week</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$15.00/hr</span>
-                  </div>
-                </div>
-                <p class="job-description">Support faculty research in laboratory or field settings. Data entry, analysis, and literature review.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Research</span>
-                  <span class="skill-tag">Data Analysis</span>
-                  <span class="skill-tag">Attention to Detail</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
-              </div>
-
-              <!-- Tutoring Center -->
-              <div class="job-card">
-                <div class="job-header">
-                  <div class="job-title">
-                    <h3>Peer Tutor</h3>
-                    <p class="department">Tutoring Center</p>
-                  </div>
-                  <span class="job-badge">Part-time</span>
-                </div>
-                <div class="job-details">
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">5-15 hrs/week</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$14.50/hr</span>
-                  </div>
-                </div>
-                <p class="job-description">Help fellow students with challenging courses. Requires strong academic standing in your subject.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Teaching</span>
-                  <span class="skill-tag">Patience</span>
-                  <span class="skill-tag">Subject Knowledge</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
-              </div>
-
-              <!-- IT Help Desk -->
-              <div class="job-card">
-                <div class="job-header">
-                  <div class="job-title">
-                    <h3>IT Help Desk Technician</h3>
-                    <p class="department">Information Technology</p>
-                  </div>
-                  <span class="job-badge">Part-time</span>
-                </div>
-                <div class="job-details">
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hours:</span>
-                    <span class="detail-value">10-20 hrs/week</span>
-                  </div>
-                  <div class="job-detail-item">
-                    <span class="detail-label">Hourly Rate:</span>
-                    <span class="detail-value">$15.50/hr</span>
-                  </div>
-                </div>
-                <p class="job-description">Provide technical support to students and faculty. Troubleshoot hardware and software issues.</p>
-                <div class="job-skills">
-                  <span class="skill-tag">Technical Skills</span>
-                  <span class="skill-tag">Problem Solving</span>
-                  <span class="skill-tag">Customer Support</span>
-                </div>
-                <button class="apply-btn">Apply Now</button>
+            </div>
           </div>
-        </div>
-      </div>
         </section>
       </main>
     </div>

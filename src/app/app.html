@@ -1,4 +1,27 @@
 <app-header></app-header>
 <div class="main-content">
   <router-outlet></router-outlet>
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">settleU</span>
+        <p>Helping students find their home away from home across the United States.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a (click)="openSearch()" style="cursor:pointer">Find Universities</a>
+          <a routerLink="/compare">Compare Schools</a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a routerLink="/profile">My Profile</a>
+          <a (click)="openLogin()" style="cursor:pointer">Sign In</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {{ currentYear }} SettleU. All rights reserved.</span>
+    </div>
+  </footer>
 </div>

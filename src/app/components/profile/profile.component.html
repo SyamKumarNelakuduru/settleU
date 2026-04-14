@@ -2,43 +2,45 @@
   @if (currentUser()) {
     <div class="profile-card">
       <div class="profile-header">
-        <img 
-          [src]="currentUser()?.photoURL || '/assets/default-avatar.png'" 
+        <img
+          [src]="currentUser()?.photoURL || getAvatarUrl()"
           [alt]="currentUser()?.displayName || 'User'"
           class="profile-avatar"
+          (error)="handleImageError($event)"
         />
         <h1 class="profile-name">{{ currentUser()?.displayName || 'User' }}</h1>
         <p class="profile-email">{{ currentUser()?.email }}</p>
+        @if (isAdmin()) {
+          <span class="admin-badge">Admin</span>
+        }
       </div>
 
       <div class="profile-info">
         <div class="info-section">
-          <h2>University Card</h2>
-          <div class="university-info">
-            <h3 class="university-name">University Name</h3>
-            <div class="university-about">
-              <h4>About</h4>
-              <p class="about-text">
-                This is a placeholder for university information. The university description, 
-                programs offered, campus facilities, and other relevant details will be displayed here.
-              </p>
-            </div>
+          <h2>Account Details</h2>
+          <div class="info-item">
+            <span class="info-label">Name</span>
+            <span class="info-value">{{ currentUser()?.displayName || '—' }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Location:</span>
-            <span class="info-value">City, Country</span>
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ currentUser()?.email }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Established:</span>
-            <span class="info-value">Year</span>
+            <span class="info-label">Sign-in method</span>
+            <span class="info-value provider-badge">
+              @if (isGoogleUser()) { Google } @else { Email }
+            </span>
           </div>
           <div class="info-item">
-            <span class="info-label">Type:</span>
-            <span class="info-value">Public/Private</span>
+            <span class="info-label">Account role</span>
+            <span class="info-value">{{ isAdmin() ? 'Administrator' : 'Student' }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Website:</span>
-            <span class="info-value">university.edu</span>
+            <span class="info-label">Email verified</span>
+            <span class="info-value" [class.verified]="currentUser()?.emailVerified">
+              {{ currentUser()?.emailVerified ? '✓ Verified' : 'Not verified' }}
+            </span>
           </div>
         </div>
 
@@ -49,8 +51,11 @@
       </div>
     </div>
   } @else {
-    <div class="loading">
-      <p>Loading profile...</p>
+    <div class="not-logged-in">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <h2>You're not signed in</h2>
+      <p>Sign in to view your profile.</p>
+      <button class="btn btn-secondary" routerLink="/">Go Home</button>
     </div>
   }
 </div>

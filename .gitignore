@@ -42,10 +42,9 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Environment files with sensitive keys
+# Environment files with sensitive keys — DO NOT commit these
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
 
-# Environment files with sensitive keys
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+# Firebase local config (can contain personal project aliases)
+.firebase/

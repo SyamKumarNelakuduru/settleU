@@ -1,10 +1,19 @@
-import { Component, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, HostListener, inject } from '@angular/core';
+import { Component, EventEmitter, Output, AfterViewInit, ViewChild, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UniversityService, University, StudentData } from '../../services/university.service';
+import { UniversityService, University } from '../../services/university.service';
 import { CompareService } from '../../services/compare.service';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
+
+interface SearchUniversity {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  type: string;
+  website: string;
+}
 
 @Component({
   selector: 'app-search-modal',
@@ -20,74 +29,83 @@ export class SearchComponent implements AfterViewInit {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   query = '';
-  selectedUniversity: (University & { id: string }) | null = null;
-  isLoadingDetails = false;
+  isLoading = signal(true);
+
+  private allUniversities: SearchUniversity[] = [];
+  filteredUniversities: SearchUniversity[] = [];
 
   private universityService = inject(UniversityService);
   private router = inject(Router);
   private compareService = inject(CompareService);
   private flyToCompareService = inject(FlyToCompareService);
 
-  universities = [
-    { id: 'uiuc', name: 'University of Illinois Urbana-Champaign', city: 'Urbana-Champaign', type: 'Public', website: 'https://illinois.edu', logo: 'https://logo.clearbit.com/illinois.edu' },
-    { id: 'northwestern', name: 'Northwestern University', city: 'Evanston', type: 'Private', website: 'https://www.northwestern.edu', logo: 'https://logo.clearbit.com/northwestern.edu' },
-    { id: 'uchicago', name: 'University of Chicago', city: 'Chicago', type: 'Private', website: 'https://www.uchicago.edu', logo: 'https://logo.clearbit.com/uchicago.edu' },
-    { id: 'illinois-state', name: 'Illinois State University', city: 'Normal', type: 'Public', website: 'https://illinoisstate.edu', logo: 'https://logo.clearbit.com/illinoisstate.edu' },
-    { id: 'siue', name: 'Southern Illinois University Edwardsville', city: 'Edwardsville', type: 'Public', website: 'https://www.siue.edu', logo: 'https://logo.clearbit.com/siue.edu' },
-    { id: 'niu', name: 'Northern Illinois University', city: 'DeKalb', type: 'Public', website: 'https://www.niu.edu', logo: 'https://logo.clearbit.com/niu.edu' },
-    { id: 'luc', name: 'Loyola University Chicago', city: 'Chicago', type: 'Private', website: 'https://www.luc.edu', logo: 'https://logo.clearbit.com/luc.edu' },
-    { id: 'depaul', name: 'DePaul University', city: 'Chicago', type: 'Private', website: 'https://www.depaul.edu', logo: 'https://logo.clearbit.com/depaul.edu' },
-    { id: 'iwu', name: 'Illinois Wesleyan University', city: 'Bloomington', type: 'Private', website: 'https://www.iwu.edu', logo: 'https://logo.clearbit.com/iwu.edu' },
-    { id: 'bradley', name: 'Bradley University', city: 'Peoria', type: 'Private', website: 'https://www.bradley.edu', logo: 'https://logo.clearbit.com/bradley.edu' },
-    { id: 'siu-carbondale', name: 'Southern Illinois University Carbondale', city: 'Carbondale', type: 'Public', website: 'https://siu.edu', logo: 'https://logo.clearbit.com/siu.edu' },
-    { id: 'neiu', name: 'Northeastern Illinois University', city: 'Chicago', type: 'Public', website: 'https://www.neiu.edu', logo: 'https://logo.clearbit.com/neiu.edu' },
-    { id: 'chicago-state', name: 'Chicago State University', city: 'Chicago', type: 'Public', website: 'https://www.csu.edu', logo: 'https://logo.clearbit.com/csu.edu' },
-    { id: 'elmhurst', name: 'Elmhurst University', city: 'Elmhurst', type: 'Private', website: 'https://www.elmhurst.edu', logo: 'https://logo.clearbit.com/elmhurst.edu' },
-    { id: 'millikin', name: 'Millikin University', city: 'Decatur', type: 'Private', website: 'https://www.millikin.edu', logo: 'https://logo.clearbit.com/millikin.edu' },
-    { id: 'wiu', name: 'Western Illinois University', city: 'Macomb', type: 'Public', website: 'https://www.wiu.edu', logo: 'https://logo.clearbit.com/wiu.edu' },
-    { id: 'eiu', name: 'Eastern Illinois University', city: 'Charleston', type: 'Public', website: 'https://www.eiu.edu', logo: 'https://logo.clearbit.com/eiu.edu' },
-    { id: 'augustana', name: 'Augustana College', city: 'Rock Island', type: 'Private', website: 'https://www.augustana.edu', logo: 'https://logo.clearbit.com/augustana.edu' },
-    { id: 'benedictine', name: 'Benedictine University', city: 'Lisle', type: 'Private', website: 'https://www.ben.edu', logo: 'https://logo.clearbit.com/ben.edu' },
-    { id: 'rockford', name: 'Rockford University', city: 'Rockford', type: 'Private', website: 'https://www.rockford.edu', logo: 'https://logo.clearbit.com/rockford.edu' }
-  ];
-
-  filteredUniversities: { id: string, name: string, city: string, type: string, website: string, logo: string }[] = [];
-
-  // get filteredUniversities() {
-  //   const q = this.query.trim().toLowerCase();
-  //   if (!q) return this.universities.slice(0, 10);
-  //   return this.universities.filter(u => u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)).slice(0, 10);
-  // }
-
-  ngAfterViewInit(): void {
-    // autofocus the input when the modal opens
+  async ngAfterViewInit(): Promise<void> {
     setTimeout(() => this.searchInput?.nativeElement.focus(), 0);
-    // Use setTimeout to defer the change to the next change detection cycle
-    setTimeout(() => {
-      this.getFilteredUniversities();
-    }, 0);
+    await this.loadUniversities();
   }
 
-  getFilteredUniversities(): void {
-    const q = this.query.trim().toLowerCase();
-    if (!q) {
-      this.filteredUniversities = this.universities;
-    } else {
-      this.filteredUniversities = this.universities.filter(u => u.name.toLowerCase().includes(q) || u.city.toLowerCase().includes(q)).slice(0, 10);
+  private async loadUniversities(): Promise<void> {
+    try {
+      const universities = await this.universityService.getAllUniversities();
+      this.allUniversities = universities.map(u => ({
+        id: u.id,
+        name: u.name,
+        city: u.city,
+        state: u.state,
+        type: u.type,
+        website: u.website
+      })).sort((a, b) => a.name.localeCompare(b.name));
+      this.filterUniversities();
+    } catch (error) {
+      console.error('Failed to load universities:', error);
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
+  private filterUniversities(): void {
+    const q = this.query.trim().toLowerCase();
+    if (!q) {
+      this.filteredUniversities = this.allUniversities.slice(0, 12);
+    } else {
+      this.filteredUniversities = this.allUniversities
+        .filter(u =>
+          u.name.toLowerCase().includes(q) ||
+          u.city.toLowerCase().includes(q) ||
+          u.state.toLowerCase().includes(q)
+        )
+        .slice(0, 12);
+    }
+  }
+
+  // Returns true when user typed something that has no exact match in the Firestore list
+  get showFreeSearch(): boolean {
+    const q = this.query.trim();
+    if (!q) return false;
+    const exactMatch = this.allUniversities.some(u => u.name.toLowerCase() === q.toLowerCase());
+    return !exactMatch;
+  }
+
   onInputChange(): void {
-    this.getFilteredUniversities();
+    this.filterUniversities();
   }
 
   submit(): void {
-    this.searchSubmit.emit(this.query);
+    const q = this.query.trim();
+    if (q) {
+      this.navigateToFreeSearch(q);
+    }
   }
 
-  selectUniversity(u: { id: string, name: string }): void {
-    // Navigate to university details page and close modal
+  selectUniversity(u: SearchUniversity): void {
     this.router.navigate(['/university', u.id]);
+    this.close.emit();
+  }
+
+  // Navigate to a university by its full name — AI will look it up
+  navigateToFreeSearch(name: string): void {
+    // Use the name directly as the route param (URL-encoded automatically by Angular router)
+    this.router.navigate(['/university', name]);
     this.close.emit();
   }
 
@@ -104,71 +122,36 @@ export class SearchComponent implements AfterViewInit {
     this.close.emit();
   }
 
-  getUniversityLogo(university: any): string {
-    // Skip Clearbit (may be blocked/unavailable) and use UI Avatars directly
-    // This prevents ERR_NAME_NOT_RESOLVED errors
+  getUniversityLogo(university: SearchUniversity): string {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(university.name)}&background=667eea&color=fff&size=128&bold=true&font-size=0.4`;
   }
 
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    // Prevent infinite error loops by checking if already set to fallback
     if (!img.src.startsWith('data:image/svg+xml')) {
-      // Fallback to a default university icon SVG
       img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"%3E%3Cpath d="M22 10v6M2 10l10-5 10 5-10 5z"%3E%3C/path%3E%3Cpath d="M6 12v5c3 3 9 3 12 0v-5"%3E%3C/path%3E%3C/svg%3E';
     }
   }
 
-  async addToCompare(university: { id: string, name: string, city: string, type: string, website: string }, event?: Event): Promise<void> {
-    if (event) {
-      event.stopPropagation();
-    }
+  async addToCompare(university: SearchUniversity, event?: Event): Promise<void> {
+    if (event) event.stopPropagation();
 
-    // Check if already in compare list
-    if (this.compareService.isInCompareList(university.id)) {
-      console.log('Already in compare list:', university.name);
-      return;
-    }
+    if (this.compareService.isInCompareList(university.id)) return;
+    if (!this.compareService.canAddUniversity(university.id)) return;
 
-    // Get the source element (the compare icon button)
     const sourceElement = event?.currentTarget as HTMLElement;
-    if (!sourceElement) {
-      console.warn('Source element not found for animation');
-      return;
-    }
+    if (!sourceElement) return;
 
-    // Extract state from city if available, otherwise default to Illinois (all search universities are in Illinois)
-    // This is a simple mapping - you may want to enhance this based on your needs
-    const state = this.getStateFromCity(university.city);
-    
     const compareUniversity = {
       id: university.id,
       name: university.name,
       city: university.city,
-      state: state,
+      state: university.state,
       type: university.type as 'Public' | 'Private',
       website: university.website
     };
 
-    // Check if university can be added (only checks if already in list)
-    if (!this.compareService.canAddUniversity(university.id)) {
-      console.log('Already in compare list:', university.name);
-      return;
-    }
-
-    // Trigger fly animation (uses CSS selector for target element)
     await this.flyToCompareService.animate(sourceElement, '.compare-btn');
-
-    // Add to compare list after animation completes
-    const result = this.compareService.addToCompare(compareUniversity);
-    if (result.success) {
-      console.log('Added to compare:', university.name);
-    }
-  }
-
-  private getStateFromCity(city: string): string {
-    // Since all universities in the search component are in Illinois, default to Illinois
-    // You can enhance this with a proper mapping if needed
-    return 'Illinois';
+    this.compareService.addToCompare(compareUniversity);
   }
 }

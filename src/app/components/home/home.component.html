@@ -2,8 +2,8 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <h1 class="hero-title">Your Dream Home, Our Expertise, Confirmed Placements</h1>
-      <p class="hero-subtitle">Get Guided By America's Best Student Accommodation Platform</p>
+      <h1 class="hero-title">Settle smarter. Live better.</h1>
+      <p class="hero-subtitle">Discover universities, neighborhoods, and real student life — all in one place</p>
       
       <div class="trust-stats">
         <span class="stat-badge">50,000+ students placed in verified accommodations</span>
@@ -41,29 +41,29 @@
   <!-- Services Section -->
   <section class="services-section">
     <div class="container">
-      <h2 class="section-title">Your All-in-One Platform for Student Accommodation</h2>
-      <p class="section-subtitle">Discover, Compare, and Secure with SettleU!</p>
+      <h2 class="section-title">Your All-in-One Platform for Student Life</h2>
+      <p class="section-subtitle">Make confident student decisions beyond just academics.</p>
       
       <div class="services-grid">
         <div class="service-card">
           <div class="service-icon">🏠</div>
-          <h3 class="service-title">Verified Accommodations</h3>
-          <p class="service-description">Expert verification of properties, detailed reviews, and verified listings to ensure safe and secure student housing near top universities.</p>
-          <button class="service-btn">Explore Properties</button>
+          <h3 class="service-title">Universities & Student Life</h3>
+          <p class="service-description">Explore universities with real insights on academics, campus culture, student demographics, and life beyond the classroom.</p>
+          <button class="service-btn" (click)="openSearchModal()">Explore Universities</button>
         </div>
 
         <div class="service-card">
           <div class="service-icon">🔍</div>
           <h3 class="service-title">Smart Search & Compare</h3>
-          <p class="service-description">AI-powered search to find the perfect place. Compare prices, amenities, locations, and student reviews all in one place.</p>
-          <button class="service-btn">Start Searching</button>
+          <p class="service-description">AI-powered search to compare universities, neighborhoods, housing, safety, amenities, and student reviews — all in one place.</p>
+          <button class="service-btn" (click)="openSearchModal()">Start Exploring</button>
         </div>
 
         <div class="service-card">
           <div class="service-icon">💰</div>
-          <h3 class="service-title">Financial Assistance</h3>
-          <p class="service-description">Get guidance on housing budgets, find student-friendly payment plans, and discover accommodation scholarships and grants.</p>
-          <button class="service-btn">Learn More</button>
+          <h3 class="service-title">Neighborhoods & Essentials</h3>
+          <p class="service-description">Discover nearby grocery stores, gas stations, public transport, safety insights, part-time jobs, and daily essentials around campus.</p>
+          <button class="service-btn" (click)="openSearchModal()">View Nearby Essentials</button>
         </div>
       </div>
     </div>
@@ -191,10 +191,19 @@
   <section class="faq-section">
     <div class="container">
       <h2 class="section-title">Frequently Asked Questions</h2>
-      <div class="faq-grid">
-        <div class="faq-item" *ngFor="let faq of faqs">
-          <h3 class="faq-question">{{ faq.question }}</h3>
-          <p class="faq-answer">{{ faq.answer }}</p>
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.open]="openFaqIndex === i" (click)="toggleFaq(i)">
+          <div class="faq-header">
+            <h3 class="faq-question">{{ faq.question }}</h3>
+            <span class="faq-chevron">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="faq-body">
+            <p class="faq-answer">{{ faq.answer }}</p>
+          </div>
         </div>
       </div>
     </div>

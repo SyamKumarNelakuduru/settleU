@@ -1,10 +1,11 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UniversityDetailsService, UniversityDetail } from '../../services/university-details.service';
+import { UniversityDetailsService, UniversityDetail, CampusJob } from '../../services/university-details.service';
 import { CompareService } from '../../services/compare.service';
 import { FlyToCompareService } from '../../services/fly-to-compare.service';
 import { University } from '../../models/university.model';
+import { UniversityService } from '../../services/university.service';
 import { InternationalStudentDemographicsComponent } from '../international-student-demographics/international-student-demographics.component';
 
 type SectionType = 'overview' | 'accommodation' | 'amenities' | 'academics' | 'demographics' | 'safety' | 'financial' | 'contact' | 'reviews' | 'jobs';
@@ -60,6 +61,7 @@ export class UniversityDetailsComponent implements OnInit {
   private universityDetailsService = inject(UniversityDetailsService);
   private compareService = inject(CompareService);
   private flyToCompareService = inject(FlyToCompareService);
+  private universityService = inject(UniversityService);
 
   ngOnInit() {
     this.universityId = this.route.snapshot.paramMap.get('id');
@@ -76,34 +78,26 @@ export class UniversityDetailsComponent implements OnInit {
       this.isLoading.set(true);
       this.errorMessage.set(null);
       console.log('Fetching university with ID:', id);
-      
-      // Map university IDs to their full names for AI service
-      const universityNameMap: { [key: string]: string } = {
-        'uiuc': 'University of Illinois Urbana-Champaign',
-        'northwestern': 'Northwestern University',
-        'uchicago': 'University of Chicago',
-        'illinois-state': 'Illinois State University',
-        'siue': 'Southern Illinois University Edwardsville',
-        'niu': 'Northern Illinois University',
-        'luc': 'Loyola University Chicago',
-        'depaul': 'DePaul University',
-        'iwu': 'Illinois Wesleyan University',
-        'bradley': 'Bradley University',
-        'siu-carbondale': 'Southern Illinois University Carbondale',
-        'neiu': 'Northeastern Illinois University',
-        'chicago-state': 'Chicago State University',
-        'elmhurst': 'Elmhurst University',
-        'millikin': 'Millikin University',
-        'wiu': 'Western Illinois University',
-        'eiu': 'Eastern Illinois University',
-        'augustana': 'Augustana College',
-        'benedictine': 'Benedictine University',
-        'rockford': 'Rockford University'
-      };
-      
-      const universityName = universityNameMap[id] || id;
-      
-      // Use only AI service to fetch university details
+
+      // Step 1: Try to get the university name from Firestore by ID
+      // Step 2: If not in Firestore, treat the ID itself as the university name
+      //         (supports free-text search like "/university/Harvard University")
+      let universityName = id;
+      try {
+        const firestoreUniversity = await this.universityService.getUniversityById(id);
+        if (firestoreUniversity) {
+          universityName = firestoreUniversity.name;
+          console.log('✅ Found in Firestore:', universityName);
+        } else {
+          // Decode URL-encoded name (e.g. "Harvard%20University" → "Harvard University")
+          universityName = decodeURIComponent(id);
+          console.log('ℹ️ Not in Firestore, using name from URL:', universityName);
+        }
+      } catch {
+        universityName = decodeURIComponent(id);
+      }
+
+      // Use AI service to fetch university details
       try {
         console.log('🤖 Fetching university details from AI service for:', universityName);
         const aiDetails = await this.universityDetailsService.getUniversityDetails(universityName);
@@ -235,6 +229,48 @@ export class UniversityDetailsComponent implements OnInit {
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
+  }
+
+  /**
+   * Opens the real student employment portal for this job.
+   * Uses the AI-provided apply_url, falls back to university website /jobs,
+   * then falls back to a Google search for the university's student employment page.
+   */
+  applyForJob(job: CampusJob): void {
+    const url = this.getApplyUrl(job);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  getApplyUrl(job: CampusJob): string {
+    // Prefer AI-provided URL
+    if (job.apply_url && job.apply_url.startsWith('http') && !job.apply_url.includes('actual-university')) {
+      return job.apply_url;
+    }
+    return this.getJobsPortalUrl();
+  }
+
+  /**
+   * Returns the best available URL for the university's jobs portal.
+   * Falls back to a targeted Google search if no URL is known.
+   */
+  getJobsPortalUrl(): string {
+    const name = this.aiDetails()?.name || '';
+    const website = this.aiDetails()?.website || '';
+
+    // Use the first AI job's apply_url as the portal URL if valid
+    const jobs = this.aiDetails()?.campus_jobs;
+    if (jobs?.length) {
+      const firstUrl = jobs[0].apply_url;
+      if (firstUrl && firstUrl.startsWith('http') && !firstUrl.includes('actual-university')) {
+        return firstUrl;
+      }
+    }
+
+    // Fallback: Google search for the university's student employment page
+    const query = name
+      ? `${name} student employment jobs portal`
+      : 'student employment on campus jobs';
+    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
   }
 
   getAccommodationTips(): string[] {
