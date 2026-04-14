@@ -2,20 +2,13 @@ import { Injectable } from '@angular/core';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { environment } from '../../environments/environment';
 
-// Ordered list of models to try. First available model wins.
-// gemini-2.5-flash-preview-04-17 → gemini-2.0-flash-lite (stable GA fallback)
-const MODEL_CASCADE = [
-  'gemini-2.5-flash-preview-04-17',
-  'gemini-2.0-flash-lite',
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class AiService {
   private genAI: GoogleGenerativeAI;
 
-  // Simple in-memory response cache: prompt → response text
+  // Simple in-memory response cache: cacheKey → response text
   private cache = new Map<string, string>();
 
   constructor() {
@@ -31,64 +24,60 @@ export class AiService {
   }
 
   /**
-   * Send a prompt to Gemini, trying each model in MODEL_CASCADE until one succeeds.
-   * Caches responses so repeated lookups for the same university skip the API call.
+   * Send a prompt to Gemini (gemini-1.5-flash).
+   * Responses are cached in memory so repeat lookups within a session skip the API.
+   * Throws a typed error on failure — callers decide how to degrade gracefully.
    */
   async getGeminiResponse(prompt: string): Promise<string> {
-    // Return cached result if available
-    const cacheKey = prompt.substring(0, 200);
+    const cacheKey = prompt.substring(0, 300);
+
     if (this.cache.has(cacheKey)) {
       console.log('📦 Returning cached Gemini response');
       return this.cache.get(cacheKey)!;
     }
 
-    let lastError: Error | null = null;
+    const MODEL = 'gemini-1.5-flash';
 
-    for (const modelName of MODEL_CASCADE) {
-      try {
-        console.log(`🚀 Trying Gemini model: ${modelName}`);
-        const model = this.genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+    try {
+      console.log(`🚀 Calling Gemini model: ${MODEL}`);
+      const model = this.genAI.getGenerativeModel({ model: MODEL });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
 
-        if (!text || text.trim() === '') {
-          throw new Error('Empty response from model');
-        }
-
-        console.log(`✅ Response received from ${modelName} (${text.length} chars)`);
-        this.cache.set(cacheKey, text);
-        return text;
-
-      } catch (err: any) {
-        const msg = err?.message?.toLowerCase() ?? '';
-        const status = err?.status ?? 0;
-
-        console.warn(`⚠️ ${modelName} failed (${status}): ${err?.message}`);
-
-        // Hard-stop errors — no point trying other models
-        if (
-          msg.includes('api key') ||
-          msg.includes('api_key') ||
-          status === 401 || status === 403
-        ) {
-          throw new Error('Invalid or unauthorized API key. Check your Gemini API key in environment.ts.');
-        }
-
-        if (msg.includes('quota') || status === 429) {
-          throw new Error('Gemini API quota exceeded. Please try again later.');
-        }
-
-        // Soft errors (model unavailable / 404) → try next model
-        lastError = err instanceof Error ? err : new Error(String(err));
+      if (!text || text.trim() === '') {
+        throw new Error('Empty response received from Gemini');
       }
-    }
 
-    // All models failed
-    console.error('❌ All Gemini models failed. Last error:', lastError?.message);
-    throw new Error(`Gemini API unavailable: ${lastError?.message ?? 'Unknown error'}`);
+      console.log(`✅ Gemini response received (${text.length} chars)`);
+      this.cache.set(cacheKey, text);
+      return text;
+
+    } catch (err: any) {
+      // Classify the error for clear logging — never expose a raw SDK error to the UI
+      const msg: string = err?.message ?? '';
+      const status: number = err?.status ?? err?.statusCode ?? 0;
+
+      if (status === 401 || status === 403 || msg.toLowerCase().includes('api key')) {
+        console.error('❌ Gemini auth error — check your API key:', msg);
+        throw new Error('GEMINI_AUTH_ERROR');
+      }
+
+      if (status === 429 || msg.toLowerCase().includes('quota')) {
+        console.error('❌ Gemini quota exceeded:', msg);
+        throw new Error('GEMINI_QUOTA_ERROR');
+      }
+
+      if (status === 404 || msg.toLowerCase().includes('not found') || msg.toLowerCase().includes('no longer available')) {
+        console.error(`❌ Gemini model ${MODEL} unavailable (404):`, msg);
+        throw new Error('GEMINI_MODEL_UNAVAILABLE');
+      }
+
+      console.error('❌ Gemini API error:', msg);
+      throw new Error(`GEMINI_ERROR: ${msg}`);
+    }
   }
 
-  /** Clears the response cache (useful in tests or after key rotation). */
+  /** Clears the in-memory cache (e.g. after an API key change). */
   clearCache(): void {
     this.cache.clear();
   }

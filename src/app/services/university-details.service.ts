@@ -383,14 +383,73 @@ Requirements:
       return universityDetail;
       
     } catch (error) {
-      console.error(`❌ Error fetching university details for "${universityName}":`, error);
-      console.error('Error details:', {
-        name: error instanceof Error ? error.name : 'Unknown',
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      throw new Error(`Failed to fetch university details: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      console.warn(`⚠️ AI unavailable for "${universityName}" — returning static fallback. Reason: ${errMsg}`);
+      return this.buildFallback(universityName);
     }
+  }
+
+  /**
+   * Returns a minimal UniversityDetail so the UI always has something to render
+   * when the Gemini API is unavailable. Sections that depend on AI data will
+   * show their own empty-state UI.
+   */
+  private buildFallback(universityName: string): UniversityDetail {
+    return {
+      name: universityName,
+      description: `Information about ${universityName} is temporarily unavailable. Please try again later or visit the university website directly.`,
+      location: 'Location data unavailable',
+      established: 0,
+      notablePrograms: [],
+      website: '',
+      address: {
+        street: '',
+        city: '',
+        state: '',
+        country: '',
+        zipCode: ''
+      },
+      student_population: {
+        total_students: 0,
+        undergraduate_students: 0,
+        graduate_students: 0,
+        domestic_students: 0,
+        international_students: {
+          total_international_students: 0,
+          countries_represented: 0,
+          top_countries: [],
+          countires_percentage_population: {}
+        }
+      },
+      campus_jobs: [],
+      tuition_fees: {},
+      admission_stats: {},
+      financial_aid: { aid_types: [], international_student_support: [] },
+      student_reviews: [],
+      social_media: {},
+      additional_resources: [],
+      indian_amenities: [],
+      near_by_attractions: [],
+      near_by_transportation: [],
+      near_by_housing_options: [],
+      near_by_food_options: [],
+      near_by_parks_and_recreation: [],
+      near_by_healthcare_facilities: [],
+      near_by_cultural_centers: [],
+      near_by_shopping_centers: [],
+      near_by_sports_facilities: [],
+      near_by_libraries: [],
+      near_by_pubs_and_bars: [],
+      near_by_cities_of_interest: [],
+      need_car: false,
+      professor_contacts: [],
+      safety_info: {
+        overall_safety_rating: 'Unknown',
+        safety_tips: [],
+        places_to_avoid: [],
+        emergency_contacts: []
+      }
+    };
   }
 
   /**
