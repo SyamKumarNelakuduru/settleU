@@ -121,6 +121,6 @@ export class Compare implements OnInit {
   async testAI(event: Event): Promise<void> {
     event.stopPropagation();
     console.log('Testing Gemini AI...');
-    await this.aiService.testGemini();
+    await this.aiService.getGeminiResponse('Tell me an interesting fact about universities in 2 sentences.');
   }
 }

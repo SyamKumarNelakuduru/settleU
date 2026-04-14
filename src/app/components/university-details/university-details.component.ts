@@ -28,6 +28,7 @@ export class UniversityDetailsComponent implements OnInit {
   aiDetails = signal<UniversityDetail | null>(null);
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
+  aiUnavailable = signal(false); // true when AI failed but Firestore data is shown
   isDemographicModalOpen = signal(false);
   activeSection = signal<SectionType>('overview');
   
@@ -77,19 +78,17 @@ export class UniversityDetailsComponent implements OnInit {
     try {
       this.isLoading.set(true);
       this.errorMessage.set(null);
-      console.log('Fetching university with ID:', id);
+      this.aiUnavailable.set(false);
 
-      // Step 1: Try to get the university name from Firestore by ID
-      // Step 2: If not in Firestore, treat the ID itself as the university name
-      //         (supports free-text search like "/university/Harvard University")
+      // Step 1: Resolve university name — Firestore first, then decode URL param
       let universityName = id;
+      let firestoreUniversity: University | null = null;
       try {
-        const firestoreUniversity = await this.universityService.getUniversityById(id);
+        firestoreUniversity = await this.universityService.getUniversityById(id);
         if (firestoreUniversity) {
           universityName = firestoreUniversity.name;
           console.log('✅ Found in Firestore:', universityName);
         } else {
-          // Decode URL-encoded name (e.g. "Harvard%20University" → "Harvard University")
           universityName = decodeURIComponent(id);
           console.log('ℹ️ Not in Firestore, using name from URL:', universityName);
         }
@@ -97,44 +96,39 @@ export class UniversityDetailsComponent implements OnInit {
         universityName = decodeURIComponent(id);
       }
 
-      // Use AI service to fetch university details
+      // Step 2: Fetch rich details from AI
       try {
-        console.log('🤖 Fetching university details from AI service for:', universityName);
+        console.log('🤖 Fetching details from AI for:', universityName);
         const aiDetails = await this.universityDetailsService.getUniversityDetails(universityName);
-        console.log('✅ AI-powered details received:', aiDetails);
-        
-        // Store AI details
         this.aiDetails.set(aiDetails);
-        
-        // Convert AI data to University format
-        console.log('📊 Converting AI data to University format');
-        const convertedUniversity = this.convertAIDetailsToUniversity(aiDetails);
-        this.university.set(convertedUniversity);
-        console.log('✅ University data set from AI:', convertedUniversity);
-        
+        this.university.set(this.convertAIDetailsToUniversity(aiDetails));
+        console.log('✅ AI details loaded:', aiDetails.name);
+
       } catch (aiError: any) {
-        console.error('❌ AI service error:', aiError);
-        console.error('Error details:', {
-          message: aiError?.message,
-          name: aiError?.name,
-          code: aiError?.code,
-          status: aiError?.status,
-          stack: aiError?.stack
-        });
-        console.warn('⚠️ AI service unavailable');
-        this.errorMessage.set('Unable to load university details from AI service. Please check your internet connection and try again.');
-      }
-      
-      // Check if we have data
-      if (!this.university()) {
-        console.warn('No university data available from AI service');
-        if (!this.errorMessage()) {
-          this.errorMessage.set('University not found');
+        console.warn('⚠️ AI service failed, falling back to Firestore data:', aiError?.message);
+        this.aiUnavailable.set(true);
+
+        // Fallback: use whatever Firestore gave us (may be partial)
+        if (firestoreUniversity) {
+          this.university.set(firestoreUniversity);
+          console.log('📦 Showing Firestore data as fallback');
+        } else {
+          // Nothing to show — create a minimal placeholder so the page renders
+          this.university.set({
+            name: universityName,
+            city: '',
+            state: '',
+            country: '',
+            type: 'Public',
+            website: '',
+            about: ''
+          } as University);
         }
       }
+
     } catch (error) {
       console.error('Error loading university:', error);
-      this.errorMessage.set('Failed to load university details');
+      this.errorMessage.set('Failed to load university details. Please try again.');
     } finally {
       this.isLoading.set(false);
     }

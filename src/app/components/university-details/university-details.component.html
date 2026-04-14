@@ -98,6 +98,13 @@
 
       <!-- MAIN CONTENT AREA -->
       <main class="main-content">
+
+        <!-- AI UNAVAILABLE BANNER -->
+        <div class="ai-unavailable-banner" *ngIf="aiUnavailable()">
+          <span class="banner-icon">⚠️</span>
+          <span>Detailed AI data is temporarily unavailable. Showing basic information from our database. Please try again later.</span>
+        </div>
+
         <!-- OVERVIEW SECTION -->
         <section class="content-section" *ngIf="activeSection() === 'overview'">
           <div class="section-header" style="background-image: url('https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=1200&q=80');">
