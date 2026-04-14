@@ -23,8 +23,8 @@ export class AiService {
         console.log('🔑 Initializing Gemini AI with API key:', API_KEY.substring(0, 10) + '...');
         this.genAI = new GoogleGenerativeAI(API_KEY);
         
-        this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-        console.log('✅ Gemini model initialized: gemini-1.5-flash');
+        this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        console.log('✅ Gemini model initialized: gemini-2.0-flash');
     }
 
     /**
