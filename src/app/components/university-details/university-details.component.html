@@ -688,126 +688,159 @@
             <p class="section-subtitle">Explore what's around the campus</p>
           </div>
           <div class="section-content">
+
+            <!-- Car needed badge -->
+            <div class="car-badge" *ngIf="aiDetails()!.need_car !== undefined">
+              <span class="car-badge-icon">{{ aiDetails()!.need_car ? '🚗' : '🚶' }}</span>
+              <span class="car-badge-text">{{ aiDetails()!.need_car ? 'Car recommended' : 'Walkable campus' }}</span>
+            </div>
+
             <div class="amenities-grid">
+
               <!-- Food & Dining -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_food_options && aiDetails()!.near_by_food_options!.length > 0">
-                <div class="amenity-header">
-                  <h4>🍽️ Food & Dining</h4>
+              <div class="amenity-card cat-food" *ngIf="aiDetails()!.near_by_food_options?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🍽️</div>
+                  <h4 class="amenity-title">Food & Dining</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let food of aiDetails()!.near_by_food_options">{{ food }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let food of aiDetails()!.near_by_food_options">{{ food }}</li>
-                </ul>
               </div>
 
               <!-- Indian Amenities -->
-              <div class="amenity-card" *ngIf="aiDetails()!.indian_amenities && aiDetails()!.indian_amenities!.length > 0">
-                <div class="amenity-header">
-                  <h4>🇮🇳 Indian Restaurants & Grocery</h4>
+              <div class="amenity-card cat-indian" *ngIf="aiDetails()!.indian_amenities?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🇮🇳</div>
+                  <h4 class="amenity-title">Indian Restaurants & Grocery</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let amenity of aiDetails()!.indian_amenities">{{ amenity }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let amenity of aiDetails()!.indian_amenities">{{ amenity }}</li>
-                </ul>
               </div>
 
               <!-- Parks & Recreation -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_parks_and_recreation && aiDetails()!.near_by_parks_and_recreation!.length > 0">
-                <div class="amenity-header">
-                  <h4>🌳 Parks & Recreation</h4>
+              <div class="amenity-card cat-parks" *ngIf="aiDetails()!.near_by_parks_and_recreation?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🌳</div>
+                  <h4 class="amenity-title">Parks & Recreation</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let park of aiDetails()!.near_by_parks_and_recreation">{{ park }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let park of aiDetails()!.near_by_parks_and_recreation">{{ park }}</li>
-                </ul>
               </div>
 
               <!-- Transportation -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_transportation && aiDetails()!.near_by_transportation!.length > 0">
-                <div class="amenity-header">
-                  <h4>🚌 Public Transportation</h4>
+              <div class="amenity-card cat-transit" *ngIf="aiDetails()!.near_by_transportation?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🚌</div>
+                  <h4 class="amenity-title">Public Transportation</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let transport of aiDetails()!.near_by_transportation">{{ transport }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let transport of aiDetails()!.near_by_transportation">{{ transport }}</li>
-                </ul>
               </div>
 
-              <!-- Healthcare Facilities -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_healthcare_facilities && aiDetails()!.near_by_healthcare_facilities!.length > 0">
-                <div class="amenity-header">
-                  <h4>🏥 Healthcare</h4>
+              <!-- Healthcare -->
+              <div class="amenity-card cat-health" *ngIf="aiDetails()!.near_by_healthcare_facilities?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🏥</div>
+                  <h4 class="amenity-title">Healthcare</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let healthcare of aiDetails()!.near_by_healthcare_facilities">{{ healthcare }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let healthcare of aiDetails()!.near_by_healthcare_facilities">{{ healthcare }}</li>
-                </ul>
               </div>
 
               <!-- Shopping -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_shopping_centers && aiDetails()!.near_by_shopping_centers!.length > 0">
-                <div class="amenity-header">
-                  <h4>🛍️ Shopping</h4>
+              <div class="amenity-card cat-shopping" *ngIf="aiDetails()!.near_by_shopping_centers?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🛍️</div>
+                  <h4 class="amenity-title">Shopping</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let shopping of aiDetails()!.near_by_shopping_centers">{{ shopping }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let shopping of aiDetails()!.near_by_shopping_centers">{{ shopping }}</li>
-                </ul>
               </div>
 
               <!-- Cultural Centers -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_cultural_centers && aiDetails()!.near_by_cultural_centers!.length > 0">
-                <div class="amenity-header">
-                  <h4>🎭 Cultural Centers</h4>
+              <div class="amenity-card cat-culture" *ngIf="aiDetails()!.near_by_cultural_centers?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🎭</div>
+                  <h4 class="amenity-title">Cultural Centers</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let cultural of aiDetails()!.near_by_cultural_centers">{{ cultural }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let cultural of aiDetails()!.near_by_cultural_centers">{{ cultural }}</li>
-                </ul>
               </div>
 
-              <!-- Sports Facilities -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_sports_facilities && aiDetails()!.near_by_sports_facilities!.length > 0">
-                <div class="amenity-header">
-                  <h4>⚽ Sports Facilities</h4>
+              <!-- Sports -->
+              <div class="amenity-card cat-sports" *ngIf="aiDetails()!.near_by_sports_facilities?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">⚽</div>
+                  <h4 class="amenity-title">Sports Facilities</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let sports of aiDetails()!.near_by_sports_facilities">{{ sports }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let sports of aiDetails()!.near_by_sports_facilities">{{ sports }}</li>
-                </ul>
               </div>
 
               <!-- Libraries -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_libraries && aiDetails()!.near_by_libraries!.length > 0">
-                <div class="amenity-header">
-                  <h4>📚 Libraries</h4>
+              <div class="amenity-card cat-library" *ngIf="aiDetails()!.near_by_libraries?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">📚</div>
+                  <h4 class="amenity-title">Libraries</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let library of aiDetails()!.near_by_libraries">{{ library }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let library of aiDetails()!.near_by_libraries">{{ library }}</li>
-                </ul>
               </div>
 
-              <!-- Nightlife & Social -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_pubs_and_bars && aiDetails()!.near_by_pubs_and_bars!.length > 0">
-                <div class="amenity-header">
-                  <h4>🎉 Nightlife & Social</h4>
+              <!-- Nightlife -->
+              <div class="amenity-card cat-nightlife" *ngIf="aiDetails()!.near_by_pubs_and_bars?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🎉</div>
+                  <h4 class="amenity-title">Nightlife & Social</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let pub of aiDetails()!.near_by_pubs_and_bars">{{ pub }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let pub of aiDetails()!.near_by_pubs_and_bars">{{ pub }}</li>
-                </ul>
               </div>
 
-              <!-- Nearby Attractions -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_attractions && aiDetails()!.near_by_attractions!.length > 0">
-                <div class="amenity-header">
-                  <h4>🗺️ Nearby Attractions</h4>
+              <!-- Attractions -->
+              <div class="amenity-card cat-attract" *ngIf="aiDetails()!.near_by_attractions?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🗺️</div>
+                  <h4 class="amenity-title">Nearby Attractions</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let attraction of aiDetails()!.near_by_attractions">{{ attraction }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let attraction of aiDetails()!.near_by_attractions">{{ attraction }}</li>
-                </ul>
               </div>
 
               <!-- Nearby Cities -->
-              <div class="amenity-card" *ngIf="aiDetails()!.near_by_cities_of_interest && aiDetails()!.near_by_cities_of_interest!.length > 0">
-                <div class="amenity-header">
-                  <h4>🏙️ Nearby Cities</h4>
+              <div class="amenity-card cat-cities" *ngIf="aiDetails()!.near_by_cities_of_interest?.length">
+                <div class="amenity-top-bar"></div>
+                <div class="amenity-body">
+                  <div class="amenity-icon-wrap">🏙️</div>
+                  <h4 class="amenity-title">Nearby Cities</h4>
+                  <div class="place-tags">
+                    <span class="place-tag" *ngFor="let city of aiDetails()!.near_by_cities_of_interest">{{ city }}</span>
+                  </div>
                 </div>
-                <ul class="amenity-items">
-                  <li *ngFor="let city of aiDetails()!.near_by_cities_of_interest">{{ city }}</li>
-                </ul>
               </div>
+
             </div>
           </div>
         </section>

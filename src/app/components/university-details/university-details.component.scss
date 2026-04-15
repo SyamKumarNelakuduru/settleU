@@ -725,56 +725,135 @@
 // ============================================================
 // AMENITIES SECTION
 // ============================================================
+
+// Per-category accent colours
+$cat-colors: (
+  food:      (#ff6b6b, #ee5a24),
+  indian:    (#f9a825, #e65100),
+  parks:     (#2ecc71, #1a8a4a),
+  transit:   (#3498db, #1a6aab),
+  health:    (#e74c3c, #c0392b),
+  shopping:  (#9b59b6, #6c3483),
+  culture:   (#e67e22, #ca6f1e),
+  sports:    (#1abc9c, #148f77),
+  library:   (#16a085, #0e6655),
+  nightlife: (#8e44ad, #6c3483),
+  attract:   (#f39c12, #d68910),
+  cities:    (#2c3e50, #1a252f),
+);
+
+@mixin cat-theme($color-start, $color-end) {
+  .amenity-top-bar {
+    background: linear-gradient(90deg, $color-start, $color-end);
+  }
+  .amenity-icon-wrap {
+    background: linear-gradient(135deg, $color-start, $color-end);
+    box-shadow: 0 4px 12px rgba($color-start, 0.4);
+  }
+  .amenity-title { color: darken($color-start, 10%); }
+  .place-tag {
+    background: rgba($color-start, 0.1);
+    color: darken($color-start, 15%);
+    border-color: rgba($color-start, 0.25);
+    &:hover {
+      background: rgba($color-start, 0.2);
+    }
+  }
+}
+
+.car-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0369a1;
+
+  .car-badge-icon { font-size: 1rem; }
+}
+
 .amenities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
 }
 
 .amenity-card {
-  background: white;
-  border: 1px solid #e1e8ed;
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    border-color: #3498db;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   }
 
-  .amenity-header {
-    margin-bottom: 1rem;
+  // Apply per-category themes
+  &.cat-food     { @include cat-theme(#ff6b6b, #ee5a24); }
+  &.cat-indian   { @include cat-theme(#f9a825, #e65100); }
+  &.cat-parks    { @include cat-theme(#2ecc71, #1a8a4a); }
+  &.cat-transit  { @include cat-theme(#3498db, #1a6aab); }
+  &.cat-health   { @include cat-theme(#e74c3c, #c0392b); }
+  &.cat-shopping { @include cat-theme(#9b59b6, #6c3483); }
+  &.cat-culture  { @include cat-theme(#e67e22, #ca6f1e); }
+  &.cat-sports   { @include cat-theme(#1abc9c, #148f77); }
+  &.cat-library  { @include cat-theme(#16a085, #0e6655); }
+  &.cat-nightlife{ @include cat-theme(#8e44ad, #6c3483); }
+  &.cat-attract  { @include cat-theme(#f39c12, #d68910); }
+  &.cat-cities   { @include cat-theme(#2c3e50, #1a252f); }
+}
 
-    h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #2c3e50;
-      margin: 0;
-    }
-  }
+.amenity-top-bar {
+  height: 5px;
+  width: 100%;
+}
 
-  .amenity-items {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.amenity-body {
+  padding: 1.25rem 1.25rem 1.4rem;
+}
 
-    li {
-      font-size: 0.875rem;
-      color: #666;
-      padding-left: 0;
+.amenity-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
 
-      &:before {
-        content: "•";
-        color: #3498db;
-        margin-right: 0.5rem;
-        font-weight: bold;
-      }
-    }
-  }
+.amenity-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 0.85rem;
+  letter-spacing: 0.01em;
+}
+
+.place-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.place-tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: default;
+  transition: background 0.2s ease;
+  line-height: 1.3;
 }
 
 // ============================================================

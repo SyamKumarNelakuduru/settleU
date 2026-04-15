@@ -34,7 +34,7 @@ export class AiService {
    * Results are cached per unique prompt prefix so the same university
    * search in one session doesn't hit the API twice.
    */
-  async getGeminiResponse(prompt: string): Promise<string> {
+  async getGeminiResponse(prompt: string, useGrounding = false): Promise<string> {
     const cacheKey = prompt.substring(0, 300);
 
     if (this.cache.has(cacheKey)) {
@@ -45,11 +45,17 @@ export class AiService {
     const MODEL = 'gemini-2.5-flash';
 
     try {
-      console.log(`🚀 Gemini request → ${MODEL} (v1)`);
+      console.log(`🚀 Gemini request → ${MODEL} (v1)${useGrounding ? ' [grounded]' : ''}`);
+
+      const requestConfig: any = {};
+      if (useGrounding) {
+        requestConfig.tools = [{ googleSearch: {} }];
+      }
 
       const result = await this.ai.models.generateContent({
         model: MODEL,
-        contents: prompt
+        contents: prompt,
+        config: Object.keys(requestConfig).length > 0 ? requestConfig : undefined
       });
 
       const text = result.text ?? '';

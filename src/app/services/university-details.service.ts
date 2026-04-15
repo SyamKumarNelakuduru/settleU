@@ -139,6 +139,51 @@ export class UniversityDetailsService {
   private aiService = inject(AiService);
 
   /**
+   * Fetch real neighborhood & amenities data using Gemini with Google Search grounding.
+   * The grounded call searches the web so results reflect actual, currently-operating places.
+   */
+  private async getNeighborhoodAmenities(universityName: string): Promise<Partial<UniversityDetail>> {
+    const prompt = `Search the web right now and find REAL, currently-operating places near ${universityName}.
+
+Return ONLY a valid JSON object (no markdown, no backticks, no explanations) with these exact keys:
+{
+  "indian_amenities": ["<real Indian restaurant name>", "<real Indian grocery name>", ...],
+  "near_by_attractions": ["<real attraction name>", ...],
+  "near_by_transportation": ["<real transit station/route>", ...],
+  "near_by_housing_options": ["<real neighborhood/complex name>", ...],
+  "near_by_food_options": ["<real restaurant/cafe name>", ...],
+  "near_by_parks_and_recreation": ["<real park name>", ...],
+  "near_by_healthcare_facilities": ["<real hospital/clinic name>", ...],
+  "near_by_cultural_centers": ["<real museum/theater name>", ...],
+  "near_by_shopping_centers": ["<real mall/store name>", ...],
+  "near_by_sports_facilities": ["<real gym/stadium name>", ...],
+  "near_by_libraries": ["<real library name>", ...],
+  "near_by_pubs_and_bars": ["<real bar/pub name>", ...],
+  "near_by_cities_of_interest": ["<real nearby city name>", ...]
+}
+
+Rules:
+- Use actual business/place names found via web search — no placeholders or generic descriptions
+- Each list: 3-6 real entries within 1-5 miles of campus (Indian amenities up to 10 miles)
+- near_by_food_options must NOT include Indian places (those go in indian_amenities)
+- Return ONLY the JSON object, nothing else`;
+
+    try {
+      const response = await this.aiService.getGeminiResponse(prompt, true);
+      let cleaned = response.trim();
+      // Strip markdown code fences if present
+      cleaned = cleaned.replace(/^```json\s*/i, '').replace(/\s*```$/i, '');
+      cleaned = cleaned.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+      // Strip any inline citation markers like [1], [2] that grounding may add
+      cleaned = cleaned.replace(/\[\d+\]/g, '');
+      return JSON.parse(cleaned) as Partial<UniversityDetail>;
+    } catch (err) {
+      console.warn('⚠️ Grounded neighborhood fetch failed, will use AI-only data:', err);
+      return {};
+    }
+  }
+
+  /**
    * Get detailed university information from AI service
    * @param universityName The name of the university to get details for
    * @returns Promise with UniversityDetail object
@@ -358,8 +403,13 @@ Requirements:
 - Return ONLY the JSON object, nothing else`;
 
       console.log(`📡 Fetching details for: ${universityName}`);
-      
-      const response = await this.aiService.getGeminiResponse(prompt);
+
+      // Run the main details call and the grounded neighborhood call in parallel
+      const [response, neighborhoodData] = await Promise.all([
+        this.aiService.getGeminiResponse(prompt),
+        this.getNeighborhoodAmenities(universityName)
+      ]);
+
       console.log('🤖 Raw AI Response:', response);
       
       if (!response || response.trim() === '') {
@@ -378,7 +428,22 @@ Requirements:
       
       // Parse the JSON response
       const universityDetail: UniversityDetail = JSON.parse(cleanedResponse);
-      
+
+      // Overwrite neighborhood fields with grounded (web-searched) real data when available
+      const neighborhoodKeys: (keyof UniversityDetail)[] = [
+        'indian_amenities', 'near_by_attractions', 'near_by_transportation',
+        'near_by_housing_options', 'near_by_food_options', 'near_by_parks_and_recreation',
+        'near_by_healthcare_facilities', 'near_by_cultural_centers', 'near_by_shopping_centers',
+        'near_by_sports_facilities', 'near_by_libraries', 'near_by_pubs_and_bars',
+        'near_by_cities_of_interest'
+      ];
+      for (const key of neighborhoodKeys) {
+        const grounded = (neighborhoodData as any)[key];
+        if (Array.isArray(grounded) && grounded.length > 0) {
+          (universityDetail as any)[key] = grounded;
+        }
+      }
+
       console.log('✅ Successfully fetched university details:', universityDetail.name);
       return universityDetail;
       
