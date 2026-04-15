@@ -47,14 +47,17 @@ export class SearchComponent implements AfterViewInit {
   private async loadUniversities(): Promise<void> {
     try {
       const universities = await this.universityService.getAllUniversities();
-      this.allUniversities = universities.map(u => ({
-        id: u.id,
-        name: u.name,
-        city: u.city,
-        state: u.state,
-        type: u.type,
-        website: u.website
-      })).sort((a, b) => a.name.localeCompare(b.name));
+      this.allUniversities = universities
+        .map(u => ({
+          id: u.id ?? '',
+          name: (u.name ?? '').trim(),
+          city: (u.city ?? '').trim(),
+          state: (u.state ?? '').trim(),
+          type: (u.type ?? '').trim(),
+          website: (u.website ?? '').trim()
+        }))
+        .filter(u => u.name.length > 0)           // drop records with no name
+        .sort((a, b) => a.name.localeCompare(b.name));
       this.filterUniversities();
     } catch (error) {
       console.error('Failed to load universities:', error);
@@ -64,15 +67,15 @@ export class SearchComponent implements AfterViewInit {
   }
 
   private filterUniversities(): void {
-    const q = this.query.trim().toLowerCase();
+    const q = (this.query ?? '').trim().toLowerCase();
     if (!q) {
       this.filteredUniversities = this.allUniversities.slice(0, 12);
     } else {
       this.filteredUniversities = this.allUniversities
         .filter(u =>
-          u.name.toLowerCase().includes(q) ||
-          u.city.toLowerCase().includes(q) ||
-          u.state.toLowerCase().includes(q)
+          (u.name  ?? '').toLowerCase().includes(q) ||
+          (u.city  ?? '').toLowerCase().includes(q) ||
+          (u.state ?? '').toLowerCase().includes(q)
         )
         .slice(0, 12);
     }
@@ -80,10 +83,10 @@ export class SearchComponent implements AfterViewInit {
 
   // Returns true when user typed something that has no exact match in the Firestore list
   get showFreeSearch(): boolean {
-    const q = this.query.trim();
+    const q = (this.query ?? '').trim();
     if (!q) return false;
-    const exactMatch = this.allUniversities.some(u => u.name.toLowerCase() === q.toLowerCase());
-    return !exactMatch;
+    const qLower = q.toLowerCase();
+    return !this.allUniversities.some(u => (u.name ?? '').toLowerCase() === qLower);
   }
 
   onInputChange(): void {
