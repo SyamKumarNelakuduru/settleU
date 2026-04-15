@@ -42,7 +42,7 @@ export class AiService {
       return this.cache.get(cacheKey)!;
     }
 
-    const MODEL = 'gemini-1.5-flash';
+    const MODEL = 'gemini-2.5-flash';
 
     try {
       console.log(`🚀 Gemini request → ${MODEL} (v1)`);
